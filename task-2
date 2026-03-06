@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS Платформа</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Підключення іконок Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="flex h-screen bg-gray-50 text-gray-800 font-sans overflow-hidden">
+
+  <!-- Мобільний хедер -->
+  <div class="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-50 flex items-center justify-between px-4 shadow-sm">
+    <h1 class="font-bold text-xl text-blue-600 truncate max-w-[80%]">LMS Платформа</h1>
+    <button onclick="toggleSidebar()" class="p-2 bg-gray-100 rounded-md text-gray-600 hover:bg-gray-200">
+      <i id="mobile-menu-icon" data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+  </div>
+
+  <!-- Оверлей для мобільного меню -->
+  <div id="sidebar-overlay" onclick="toggleSidebar()" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40 transition-opacity"></div>
+
+  <!-- БОКОВА ПАНЕЛЬ (SIDEBAR) -->
+  <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-80 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 mt-16 lg:mt-0">
+    <div class="p-6 border-b border-gray-100 hidden lg:block">
+      <h1 class="font-extrabold text-2xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Академія</h1>
+      <p class="text-sm text-gray-500 mt-1">Програма навчання</p>
+    </div>
+    
+    <div class="flex-1 overflow-y-auto pb-20 lg:pb-0">
+      <nav id="sidebar-nav" class="p-4 space-y-1">
+        <!-- Навігація буде згенерована через JavaScript -->
+      </nav>
+    </div>
+  </aside>
+
+  <!-- ГОЛОВНА ОБЛАСТЬ КОНТЕНТУ -->
+  <main class="flex-1 overflow-y-auto bg-gray-50 pt-16 lg:pt-0">
+    <div id="main-content" class="max-w-5xl mx-auto p-4 md:p-8">
+      <!-- Контент уроку буде згенерований через JavaScript -->
+    </div>
+  </main>
+
+  <script>
+    // --- ДАНІ КУРСУ ---
+    const courseData = [
+      {
+        id: 1,
+        title: "Обов'язково до прочитання ❗️",
+        isModule: true,
+        description: [
+          "Інформація про правила користування курсом.",
+          "Попередження про авторські права та юридичну відповідальність."
+        ],
+        videos: [],
+        links: [],
+        images: []
+      },
+      {
+        id: 2,
+        title: "🎁 МОДУЛЬ 0. ДЛЯ МАРКЕТОЛОГІВ, СММ ТА ПРОДЮСЕРІВ",
+        isModule: true,
+        description: ["Вступний блок для спеціалістів."],
+        videos: [],
+        links: [],
+        images: []
+      },
+      {
+        id: 3,
+        title: "Урок 1. Повноцінна інструкція як стати ефективним маркетологом або продюсером експертів?",
+        description: [
+          "Чому варто обирати шлях продюсування.",
+          "Відповідальність та рівень доходу продюсера.",
+          "Критерії вибору експерта для співпраці."
+        ],
+        videos: ["https://www.youtube.com/watch?v=yQwgUPniBIk"],
+        links: [
+          "https://drive.google.com/file/d/1A2ZV4gKMsiljA7aSMGUXXq4GE2vrx0HL/view",
+          "https://drive.google.com/file/d/1G9blZnB21sh2kSaGbbCbQwsiFFK0cFDY/view",
+          "https://drive.google.com/file/d/1yJ9mDX7v2aOY2lzKP9OW1XZ2IGOycCHj/view"
+        ],
+        images: []
+      },
+      {
+        id: 4,
+        title: "Урок 2. Як продюсеру знайти експерта?",
+        description: [
+          "4 стратегії пошуку експерта.",
+          "Робота з оголошеннями та холодними пропозиціями."
+        ],
+        videos: ["https://www.youtube.com/watch?v=S8esKoBSLA4"],
+        links: [],
+        images: []
+      },
+      {
+        id: 5,
+        title: "Урок 3. Хто такий маркетолог? Які функції? На чому може заробляти?",
+        description: [
+          "Сфери впливу маркетолога.",
+          "8 джерел доходу для СММ-спеціаліста."
+        ],
+        videos: ["https://www.youtube.com/watch?v=jtod0p_tRfY"],
+        links: [
+          "https://drive.google.com/file/d/1G9blZnB21sh2kSaGbbCbQwsiFFK0cFDY/view",
+          "https://drive.google.com/file/d/1nn14N97upDT3YDLQdPUbMpSLUJrVy_vJ/view"
+        ],
+        images: []
+      },
+      {
+        id: 6,
+        title: "Урок 4. Як клієнту давати результат?",
+        description: [
+          "Поняття стратегії та дорожньої карти.",
+          "Звітність та аналітика проекту."
+        ],
+        videos: ["https://www.youtube.com/watch?v=5Q1vYTdi09k"],
+        links: [
+          "https://drive.google.com/file/d/1Zz2gVHE7TqxAh4eEQrfqUcAgDLMmAurs/view",
+          "https://drive.google.com/file/d/1G9blZnB21sh2kSaGbbCbQwsiFFK0cFDY/view",
+          "https://docs.google.com/presentation/d/1BSQRjl4LP4B4t8BDz_mvi44DsbUshhS6xEvhrlkrBAg/view",
+          "https://docs.google.com/spreadsheets/d/1L443UZUG8U8RtWCURI51iOLRUwDqIWbds9ZtQ_O3pJ0/view",
+          "https://docs.google.com/document/d/1exeXloYy5Dk9hk0qbBYBtN7QBzNdMhdli-sxdtZI3j8/view",
+          "https://docs.google.com/presentation/d/1Houv2HTotdbwsf4ZiqY9wnJEm4fOqJh2qZHCJY9WrvA/view",
+          "https://docs.google.com/document/d/1E4AdulaIA-hHmdBTFcujX-nrjmGJ5RR1IfelZ5Nnnf8/view"
+        ],
+        images: []
+      },
+      {
+        id: 7,
+        title: "Урок 5. Безкоштовні способи пошуку клієнтів. Як системно залучати нових клієнтів?",
+        description: [
+          "Пакування акаунту для продажів.",
+          "Нетворкінг та безкоштовні розбори."
+        ],
+        videos: ["https://www.youtube.com/watch?v=e4vG5ht9i4k"],
+        links: ["https://drive.google.com/file/d/1JvyrPeJIbtXZtWVY_5GV0LQry49LrAtj/view"],
+        images: []
+      },
+      {
+        id: 8,
+        title: "🎁 МОДУЛЬ 0. МАСШТАБ ТА КОМАНДА",
+        isModule: true,
+        description: ["Стратегії росту бізнесу."],
+        videos: [],
+        links: [],
+        images: []
+      },
+      {
+        id: 9,
+        title: "Урок 1. Як експерту знайти команду? 3-етапна система відбору.",
+        description: [
+          "Структура команди та відділів.",
+          "Кого наймати першим.",
+          "Авторська система найму."
+        ],
+        videos: ["https://www.youtube.com/watch?v=kQ29aAJsQHo"],
+        links: [
+          "https://drive.google.com/file/d/1rvzmr5r3XmPGIcY5czvUsX0HgivAwY2K/view",
+          "https://docs.google.com/document/d/119ERERB1LhDDS6_byRwE7QwAlOi0XxwUXQ9-10X8IZQ/view",
+          "https://docs.google.com/spreadsheets/d/1r9wLmbyUAR8fh6NyG4xXNuaLh0PmJAVaCzQ7bTjLYI8/view"
+        ],
+        images: []
+      },
+      {
+        id: 10,
+        title: "Урок 2. Команда мрії.",
+        description: [
+          "Регламенти та правила роботи.",
+          "Юридична сторона найму та звільнення."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=hqGWNK5Q-cg",
+          "https://www.youtube.com/watch?v=neT5hOe0KPw",
+          "https://www.youtube.com/watch?v=LDLq7VVj7NA"
+        ],
+        links: [
+          "https://drive.google.com/file/d/18XvdZ0ktR-Irp_8-Nx6xBmEv8QtypAmW/view",
+          "https://docs.google.com/document/d/1MJ4kZadz0SNb8jfwUXC9zhrqf0WuIjld4sihN-k3J0g/view",
+          "https://docs.google.com/document/d/1dpHYdDdeRyV0R3Vb4f6y729NDQE2S-u8zFsosWbUGmY/view",
+          "https://docs.google.com/document/d/1_-8KdERy2N_F8Mhei6YpQPeuMHYKX5fPy0N6PFAvMY4/view"
+        ],
+        images: []
+      },
+      {
+        id: 11,
+        title: "Урок 3. Як масштабувати себе, продукт та свій блог?",
+        description: [
+          "Бізнес-моделі масштабування.",
+          "Розвиток софт-скілів."
+        ],
+        videos: ["https://www.youtube.com/watch?v=jtESfVSuff0"],
+        links: ["https://drive.google.com/file/d/1EYU5R-GsJl88Qxfvqv249vyTPy0sKOU1/view"],
+        images: []
+      },
+      {
+        id: 12,
+        title: "Урок 4. Сервіс. Як зробити клієнта постійним?",
+        description: [
+          "Формування лояльності через досвід клієнта.",
+          "Інструменти покращення сервісу."
+        ],
+        videos: ["https://www.youtube.com/watch?v=V6pDk6DIVyo"],
+        links: ["https://drive.google.com/file/d/1ZGZ5E-HWsQ4gt2-3Om7gMtrgKemz-Mrz/view"],
+        images: []
+      },
+      {
+        id: 13,
+        title: "МОДУЛЬ 1. ПРОДУКТ",
+        isModule: true,
+        description: ["Основи створення продуктової лінійки."],
+        videos: [],
+        links: [],
+        images: []
+      },
+      {
+        id: 14,
+        title: "Урок 1. Тайм-менеджмент. Організація роботи. Ірраціональні страхи.",
+        description: [
+          "Психологія навчання та правила ефективності.",
+          "Інструменти: Google Календар, Todoist."
+        ],
+        videos: ["https://www.youtube.com/watch?v=MiwvyNxkhlM"],
+        links: [
+          "https://drive.google.com/file/d/1UnMVskI50yZwXRDThmOwgENf-7oLwlQF/view",
+          "https://drive.google.com/file/d/1Nhy5RABngSBzYoTHETUZLo19QWo-KUR2/view",
+          "https://docs.google.com/presentation/d/1yrPJPRd2uKg-hZjcgNhNAzcFiODgeMZTiEvLH8pBBvw/view",
+          "https://app.todoist.com/app/today"
+        ],
+        images: []
+      },
+      {
+        id: 15,
+        title: "Урок 2. Працюючі моделі продажів 2026.",
+        description: [
+          "Стратегії для послуг, інфопродуктів та товарки.",
+          "Позиціонування та оформлення блогу."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=i3Kg8yfHsYc",
+          "https://www.youtube.com/watch?v=bOqrnbiBy9A"
+        ],
+        links: [
+          "https://drive.google.com/file/d/1yjE7nAYGuw5FLQtMl9JzR8_0yze7YGkR/view",
+          "https://docs.google.com/spreadsheets/d/1MrJo2Mg6gmcAmyTCbxTpj7HrEsKPTOtOtE3XRLT_Mx0/view"
+        ],
+        images: []
+      },
+      {
+        id: 16,
+        title: "Урок 3. Аналіз ЦА. Кастдеви.",
+        description: [
+          "Методи аналізу аудиторії.",
+          "Сценарії для глибинних інтерв'ю."
+        ],
+        videos: ["https://www.youtube.com/watch?v=AgAP-QqWViY"],
+        links: [
+          "https://drive.google.com/file/d/1egpPVlhgmVClcDepV7AR12mQZuMyBo4U/view",
+          "https://docs.google.com/document/d/1B0e3RSq3Rg9JbIbc9-JE3T3saobajR0Trz8GiVMtyfQ/view",
+          "https://docs.google.com/document/d/1iOUNK-abxVkDlUScBIDzo1fnkw89oJZknwEqYMyWV8Q/view",
+          "https://docs.google.com/document/d/1zdaxq4dsPyROme5tHlx60ZES4T9c0tao8LJzH5LKL9M/view"
+        ],
+        images: []
+      },
+      {
+        id: 17,
+        title: "Урок 4. Технічні уроки по інстаграм. ШІ. Шаблони.",
+        description: [
+          "Сервіси для роботи та ШІ-інструменти.",
+          "Технічне налаштування вебінарів та платіжних систем."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=sc5WvInsOoM",
+          "https://media.kwigacdn.com/cabinet-446/al8gvjqUWBkq/vidnovlennia_storis__TPL_.mp4",
+          "https://www.youtube.com/watch?v=01_tsxLLyB4",
+          "https://www.youtube.com/watch?v=YjSiRUoNgys",
+          "https://www.youtube.com/watch?v=kjmmlJRux_E",
+          "https://www.youtube.com/watch?v=V-LjTpLAfxk",
+          "https://www.youtube.com/watch?v=ZuKz6EV8cdM"
+        ],
+        links: [
+          "https://docs.google.com/spreadsheets/d/1MrJo2Mg6gmcAmyTCbxTpj7HrEsKPTOtOtE3XRLT_Mx0/view",
+          "https://drive.google.com/file/d/1aeASMKBeZCgL-w7ml5fHfsIWG6VdnEoY/view",
+          "https://drive.google.com/file/d/1S0Ctym6EwWCbMzEXmPCFO5IS1DZcxwDk/view",
+          "https://drive.google.com/file/d/13Mv_mqEtl_ef6jiO0RAkLibriKtLpLBA/view",
+          "https://drive.google.com/file/d/1Nhy5RABngSBzYoTHETUZLo19QWo-KUR2/view",
+          "https://drive.google.com/file/d/1bscO0_DohW9RE8xZ7YIWU6V5m1DGJNYK/view",
+          "https://drive.google.com/file/d/1thIUC8ubBsl9muvz9erfdhJgzJKfsR_J/view",
+          "https://docs.google.com/presentation/d/1yrPJPRd2uKg-hZjcgNhNAzcFiODgeMZTiEvLH8pBBvw/view",
+          "https://app.todoist.com/app/today",
+          "https://docs.google.com/spreadsheets/d/1r9wLmbyUAR8fh6NyG4xXNuaLh0PmJAVaCzQ7bTjLYI8/view",
+          "https://ua.weblium.com",
+          "https://kwiga.com/ua",
+          "https://drive.google.com/file/d/10yN7l0lmVloNNNhvWPYuI1nyJltolJV9/view",
+          "https://fas.st/t/uX2u1hxX",
+          "https://drive.google.com/file/d/1xbm3zdo95fz0HaAZQVRxnGsm5G29tuNZ/view",
+          "https://radial-money-3b0.notion.site/94c9a80c87d34dc68eb6429bb51f58db",
+          "https://docs.google.com/document/d/1KzuoIGoJiy6yPY3f9fU4UV_X7SqfvUGXpIfsUt5EGYc/view"
+        ],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/yDvek3pN63wJ/2.8%20%D0%91%D0%BE%D0%BD%D1%83%D1%81.png"]
+      },
+      {
+        id: 18,
+        title: "МОДУЛЬ 1.1 ІНФОПРОДУКТИ",
+        isModule: true,
+        description: ["Створення та запуск освітніх продуктів."],
+        videos: [],
+        links: [],
+        images: []
+      },
+      {
+        id: 19,
+        title: "Урок 1. Моделі інфопродуктів 2026. Фінансовий план.",
+        description: [
+          "Порядок запуску будь-якого інфопродукту.",
+          "Чистий прибуток та фінансова стратегія."
+        ],
+        videos: ["https://www.youtube.com/watch?v=2ImvLiDHjP0"],
+        links: [
+          "https://drive.google.com/file/d/1tse-vwU6bRdS2XkgAeoGplzdkDFZnpVL/view",
+          "https://docs.google.com/spreadsheets/d/1MrJo2Mg6gmcAmyTCbxTpj7HrEsKPTOtOtE3XRLT_Mx0/view"
+        ],
+        images: []
+      },
+      {
+        id: 20,
+        title: "Урок 2. Методологія інфопродукту. Таблиця конверсій.",
+        description: [
+          "Створення ефективної програми навчання.",
+          "Наповнення тарифів та бонуси.",
+          "Юридичні шаблони (оферта, конфіденційність)."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=1gHsxFwUKC0",
+          "https://www.youtube.com/watch?v=V-LjTpLAfxk",
+          "https://www.youtube.com/watch?v=YjSiRUoNgys"
+        ],
+        links: [
+          "https://drive.google.com/file/d/1jZM-tptpQYERGvBOl3HKF-Aw0BbnQomI/view",
+          "https://radial-money-3b0.notion.site/94c9a80c87d34dc68eb6429bb51f58db",
+          "https://docs.google.com/document/d/1KzuoIGoJiy6yPY3f9fU4UV_X7SqfvUGXpIfsUt5EGYc/view",
+          "https://docs.google.com/presentation/d/1Yc3CTAXBudJg44R7DMpUB4njLeK7mTVm6ZWH1pQ0c_Y/view",
+          "https://docs.google.com/spreadsheets/d/1JYpRm11AZ2scNVXrT_a8lU3UyqTqSK8VfZzEtPLjlEo/view",
+          "https://drive.google.com/file/d/1NrHE7G004BQxUEBvmr59P6BxIKgPvawe/view",
+          "https://drive.google.com/file/d/10yN7l0lmVloNNNhvWPYuI1nyJltolJV9/view",
+          "https://t.me/Ten4ik24",
+          "https://docs.google.com/document/d/1BTp9jMGCTYd13525CtfC8cqiV71_8DA3d4Myt6Nu7VU/view",
+          "https://docs.google.com/document/d/1jvEWQZNX4Ea4SIKMYpqJXzmcW95O1jDu/view",
+          "https://fas.st/t/uX2u1hxX",
+          "https://kwiga.com/ua"
+        ],
+        images: []
+      },
+      {
+        id: 21,
+        title: "Урок 3. Запуск високочекових інфопродуктів. Календар продажів.",
+        description: [
+          "Етапи запуску.",
+          "Точки продажів та хвилі активності."
+        ],
+        videos: ["https://www.youtube.com/watch?v=pc7F0qpuMMw"],
+        links: ["https://drive.google.com/file/d/1ZaVRxZ0gAflq8ALibJaroy_BcsknEfGR/view"],
+        images: []
+      },
+      {
+        id: 22,
+        title: "Урок 4. Продажі через вебінар, прямий ефір, розбори.",
+        description: [
+          "Воронка вебінару та структура презентації.",
+          "Приклади прогрівів та скриптів розсилок."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=A4Q9UJmEGZ0",
+          "https://www.youtube.com/watch?v=ZuKz6EV8cdM",
+          "https://www.youtube.com/watch?v=f6ySN7xtfEU",
+          "https://www.youtube.com/watch?v=zbMUMfzRCXU",
+          "https://www.youtube.com/watch?v=MGrXFVKI7JA",
+          "https://www.youtube.com/watch?v=pQS1RcOTC8w",
+          "https://www.youtube.com/watch?v=8xGdpZPtKO8"
+        ],
+        links: [
+          "https://drive.google.com/file/d/1iELDiH4gCkVqO8T-_pWN7siZsQW1flco/view",
+          "https://forms.gle/phXKAzuk3UkA4LYF6",
+          "https://docs.google.com/spreadsheets/d/1DpOz5QS8MJWqMF67AVg-Wc_X0gq5LnUko18y7b1lF9k/view",
+          "https://docs.google.com/presentation/d/1sl_4R74wb0Z9QXPdEyVE2Pt9Vc0N-HeJxQgf9egspAE/view",
+          "https://t.me/+3eeROkqSd6UzZmQy",
+          "https://radial-money-3b0.notion.site/20a9acc578158023aacbc4396412310a",
+          "https://docs.google.com/document/d/1foubp2xB5ExM7vQuTLV2-eTshtd1sdhJeC-EafuO0fw/view",
+          "https://drive.google.com/file/d/1xbm3zdo95fz0HaAZQVRxnGsm5G29tuNZ/view",
+          "https://drive.google.com/file/d/1YpWy6RAlGuC4Ux-Vvdg2XcRXsBhnHudi/view",
+          "https://docs.google.com/presentation/d/1OC7T73vJi-vyhZ749gBRvnSQIN2EkHSqW47dekoe1xs/view",
+          "https://docs.google.com/presentation/d/1aMBsq6tdKLuPckuE62oFNUk_-uo95ZPv1hMiFOeYlh8/view",
+          "https://docs.google.com/presentation/d/1ZiO484SnsDWIxZwSvcdieUf_2zfyFMdPgvNoi3F9Kvw/view",
+          "https://docs.google.com/presentation/d/12q6nzxXut0M7_6TeqW-tkd_md_j6SyAkbpsrjVAl9Ng/view",
+          "https://docs.google.com/presentation/d/1hipElujLo2xuIN5yQZ2tTpjoXHHSCpjwqSqWF85ZKg4/view",
+          "https://docs.google.com/spreadsheets/d/1cmBZkacRGuKAJKfm07_-mvy-KT8DIDPH9eQ0SwmA0fU/view",
+          "https://docs.google.com/spreadsheets/d/14BfBuLjQ_m_OP8EC-S5VdWp2nEwwh6dq1nqjOjQ8xWU/view",
+          "https://docs.google.com/document/d/1HM2J9Q6AE9IpE29DdU47Sk0VhniOA1AJA_InDFAloj0/view",
+          "https://www.instagram.com/tv/CFzq9kinHut/",
+          "https://docs.google.com/presentation/d/1BSQRjl4LP4B4t8BDz_mvi44DsbUshhS6xEvhrlkrBAg/view",
+          "https://docs.google.com/spreadsheets/d/1Ngor9JGJHeNd4vNi3RvuCQMF67nhypCaoVcFwY_dfQU/view"
+        ],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/kdBYZ27u76Gp/7.5%20%D0%91%D0%BE%D0%BD%D1%83%D1%81.jpg"]
+      },
+      {
+        id: 23,
+        title: "Урок 5. Продажі через діагностики. Відділ продажів.",
+        description: [
+          "Структура безкоштовного зідзвону.",
+          "Робота з менеджерами з продажу."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=B5NS5BFjsw4",
+          "https://www.youtube.com/watch?v=Tf492bQPX4I",
+          "https://www.youtube.com/watch?v=Is4_PfH1NHM",
+          "https://www.youtube.com/watch?v=toucgOFqb6Y",
+          "https://www.youtube.com/watch?v=XEPsJLWlEH8",
+          "https://www.youtube.com/watch?v=ZH1eghaC3rQ",
+          "https://www.youtube.com/watch?v=YuHa_dcERhc",
+          "https://www.youtube.com/watch?v=OMjGa6FD2wI",
+          "https://www.youtube.com/watch?v=dXgUS6keCp8",
+          "https://www.youtube.com/watch?v=8Um0HRVYGj0",
+          "https://www.youtube.com/watch?v=J8wifaJFi3Y",
+          "https://www.youtube.com/watch?v=w-xXjxE1T64"
+        ],
+        links: [
+          "https://drive.google.com/file/d/1hMBFFzl9_-wpkyeSWjuVI6SFDdUB-Bov/view",
+          "https://docs.google.com/presentation/d/1WCe-SZf-f5lgZ7guInatJ7IjJoOTNX1YJUl58wjORdA/view",
+          "https://docs.google.com/spreadsheets/d/1r9wLmbyUAR8fh6NyG4xXNuaLh0PmJAVaCzQ7bTjLYI8/view",
+          "https://docs.google.com/spreadsheets/d/14681Jqf7qx_KQG7-BrdQw9DAyOtDnwtGX3y34s__g80/view",
+          "https://docs.google.com/presentation/d/1Xq2vG8RQK6C-wimeBGTRWSefDvATK8yzEmWWcG_qmW4/view",
+          "https://drive.google.com/file/d/1c62P6AXG5XqQinbaRmcyB0ecbP2rhgv4/view",
+          "https://forms.gle/abVPzGRzBehfYgJf7",
+          "https://docs.google.com/document/d/1lzAu_eQ4xob7Ai_jXdQA-qOimzG5XTJ_odQ_iXVa8JU/view",
+          "https://docs.google.com/spreadsheets/d/1oxoU4wEZP7coDbkR3JTpmJXatYJl0h3JGDloS1YkrGs/view",
+          "https://www.instagram.com/falev_sergey"
+        ],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/3EZOtM3x0BP5/%D0%9М%D0%BE%D0%B4%D1%83%D0%BB%D1%8C%201.1%20%D1%83%D1%80%D0%BE%D0%BA%2011.jpg"]
+      },
+      {
+        id: 24,
+        title: "Урок 6. Запуск низькочекових інфопродуктів (лекція, марафон, зум).",
+        description: [
+          "Формати міні-продуктів та робота в Telegram.",
+          "План створення та проведення закритого зуму."
+        ],
+        videos: ["https://www.youtube.com/watch?v=_tSL1Ar01kw"],
+        links: [
+          "https://drive.google.com/file/d/1qgiw0Vu9ZtQpFmGVr7YCUUwySxthG7yS/view",
+          "https://docs.google.com/presentation/d/1U88lh4TPG-Eyza7iY14cOOszyY0XydM1ZQ8yTzT0zc8/view",
+          "https://docs.google.com/presentation/d/1foHKxgXThqVJd9NOyA5oq-evkE36isCmCNNVNk7ldGs/view",
+          "https://t.me/+QwGqBt27wPk4ZDdi",
+          "https://drive.google.com/file/d/1LUKHd2uGQuZwzlJMlZ_3XcoyNZvrjA5i/view",
+          "https://docs.google.com/presentation/d/1_2hZsJ7lVClJcWXEV581CuDKIcN9mlvUzJrNiSZjMmM/view",
+          "https://radial-money-3b0.notion.site/25e9acc57815804d96f2d2cb479a7c05",
+          "https://docs.google.com/presentation/d/1xTvqaQBU7dobqsWF4AiRQSwoiCXfyU_up1QkwW8K1MQ/view",
+          "https://docs.google.com/presentation/d/14_6li2Rw556I2Qk0jq8Us4xeRwkT3gQ8g1bMVash8MI/view",
+          "https://t.me/+JMo1ItCwnKE5MWUy",
+          "https://docs.google.com/presentation/d/1gwb0YL3LiKgW3b4oJEm12Ri89j9BOR4W-1L78AvDiDw/view"
+        ],
+        images: []
+      },
+      {
+        id: 25,
+        title: "Урок 7. Запуск інфопродуктів по підписці (клуб).",
+        description: [
+          "Наповнення та утримання аудиторії в клубі.",
+          "Приклад демо-тижня та ботів."
+        ],
+        videos: ["https://www.youtube.com/watch?v=hVPLiTzhauM"],
+        links: [
+          "https://drive.google.com/file/d/15iIeOihoicWfobtoC8rPH_DaruJ6RvOD/view",
+          "https://docs.google.com/presentation/d/1KMXqRceSbOm-24frgTwDUeDblogAmY7nzqi90lOoLJM/view",
+          "https://app.manychat.com/flowPlayerPage?share_hash=4015934_2c7b728e92e11998f6c97c7fbb46750362b7d3cb"
+        ],
+        images: []
+      },
+      {
+        id: 26,
+        title: "Урок 8. Посібник з рятування продажів.",
+        description: [
+          "Аналіз провалів та корекція стратегії."
+        ],
+        videos: ["https://www.youtube.com/watch?v=XKME8PAAzxI"],
+        links: ["https://drive.google.com/file/d/1-zeA2z53KjcUyCQVD5stBZMDTPj-BRi_/view"],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/xM2wfkz6tY25/3.12.png"]
+      },
+      {
+        id: 27,
+        title: "Урок 9. Масштабування через менторів.",
+        description: [
+          "Пошук та відбір кураторів/менторів.",
+          "Правила роботи з чатами навчання."
+        ],
+        videos: ["https://www.youtube.com/watch?v=y3YoD-Gd2Qw"],
+        links: [
+          "https://drive.google.com/file/d/1PrzyDYke4FbYzhQ_RzyvP8b2qE3JxGMX/view",
+          "https://forms.gle/bt9kwpiucVwiqRpw7",
+          "https://docs.google.com/document/d/16QC-BkWVYqncm-tg0ZKPDP74qlSg2rHssEWVHZIDVGw/view",
+          "https://docs.google.com/spreadsheets/d/1yhbkYxZug_Mt7mAwahvucF3sekr5J-chkAIXDAvw4OQ/view",
+          "https://forms.gle/6byxA77W3EpmWiUN6",
+          "https://forms.gle/WkngaSrDkPLU2ZEz8"
+        ],
+        images: []
+      },
+      {
+        id: 28,
+        title: "Урок 10. Технічна сторона інфопродуктів. Результати. WayForPay.",
+        description: [
+          "Заміри результатів та таблиці конверсій.",
+          "Інструкція по роботі з ClipWise та WayForPay."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=Vxvz7Tf-lPU",
+          "https://www.youtube.com/watch?v=kjmmlJRux_E"
+        ],
+        links: [
+          "https://drive.google.com/file/d/1JnqGGwzodKBDtKZVxdbYp_cKmz2z7GCj/view",
+          "https://forms.gle/QfjAwZGmtA88wX3S6",
+          "https://docs.google.com/forms/d/1AjnHtkB8PGWx-DtvZWv47gF7-OCijO09vVlfI1uV2fI/view",
+          "https://forms.gle/6byxA77W3EpmWiUN6",
+          "https://docs.google.com/spreadsheets/d/1knMelJUBYKgjWiCyl00b5d7NtgHicfoCi4C65vaCAvg/view",
+          "https://docs.google.com/spreadsheets/d/1K81pIct3zBDK39-Tu9IFS-3WOi29AD-U6cilTc0obW0/view",
+          "https://docs.google.com/spreadsheets/d/1CdWA3VIbQHfA7SF3qFBKafhULylHqSKndsOoD2nEdDs/view",
+          "https://docs.google.com/spreadsheets/d/14681Jqf7qx_KQG7-BrdQw9DAyOtDnwtGX3y34s__g80/view",
+          "https://kinescope.io/fjogmAqGHobTmdHJfVJAWi",
+          "https://help.wayforpay.com",
+          "https://drive.google.com/file/d/10yN7l0lmVloNNNhvWPYuI1nyJltolJV9/view",
+          "https://docs.google.com/spreadsheets/d/1_UbPIJg2D_eYO_2URDJ7ypNcTpeesLJq9ZQUdjGG5co/view"
+        ],
+        images: [
+          "https://cdn-files.kwigacdn.com/cabinet-446/9rl9RoNyh0xH/3.11.png",
+          "https://cdn-files.kwigacdn.com/cabinet-446/GtkJo0J4Ohpu/%D0%9М%D0%BE%D0%B4%D1%83%D0%BB%D1%8C%201.1%20%D1%83%D1%80%D0%BE%D0%BA%2010.jpg"
+        ]
+      },
+      {
+        id: 29,
+        title: "МОДУЛЬ 2. КОНТЕНТ",
+        isModule: true,
+        description: ["Стратегії створення вірального та продаючого контенту."],
+        videos: [],
+        links: [],
+        images: []
+      },
+      {
+        id: 30,
+        title: "Урок 1. Безкоштовний набір аудиторії. Тексти.",
+        description: [
+          "Формати каруселей та постів, що приносять підписників.",
+          "База написання тексту."
+        ],
+        videos: ["https://www.youtube.com/watch?v=D_JenskC9Oc"],
+        links: ["https://drive.google.com/file/d/12veJ4rpPwsmc9xByTLGEl-UN9xN1LNJq/view"],
+        images: []
+      },
+      {
+        id: 31,
+        title: "Урок 2. Прогріви, тригери, сторітелінги.",
+        description: [
+          "Формула сторітелінгу та робота з болями.",
+          "Приклади інфоприводів та ажіотажу."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=UJAb72db_co",
+          "https://www.youtube.com/watch?v=mJ66dpJEIpg",
+          "https://www.youtube.com/watch?v=dxAESUMPc1c",
+          "https://www.youtube.com/watch?v=xnp9o2GCGOM",
+          "https://www.youtube.com/watch?v=Ttug_GuE3aU"
+        ],
+        links: [
+          "https://docs.google.com/presentation/d/1-U1piXfzA6xdkysrDmk5ie-ZenAu3qvbN9zJx867aPc/view",
+          "https://www.instagram.com/p/CXajDneqXc8/",
+          "https://www.instagram.com/p/CODxz4VHMJk/",
+          "https://www.instagram.com/p/CMwRaydnx7r/",
+          "https://www.instagram.com/p/CJ1YXq4H-Qm/",
+          "https://www.instagram.com/p/CGLIAtcHi3v/",
+          "https://drive.google.com/file/d/10qaES9WdT39tzioXOYxZSXmMPFGy9gvh/view",
+          "https://drive.google.com/file/d/1H-vL0lsE3ZnAJLXt9LPGUuCjq80S-0T1/view",
+          "https://drive.google.com/file/d/15JdeZ7QHYqgtaIQNjLtX16pa5barl3XC/view",
+          "https://drive.google.com/file/d/15YP0S7aPXBH3narY4mnWlYOWxW-7fWOc/view",
+          "https://docs.google.com/spreadsheets/d/1xR9sD2Wd292NvFi9weHRaueaSVJ7wzPcJOsdAsM9HiA/view"
+        ],
+        images: []
+      },
+      {
+        id: 32,
+        title: "Урок 3. Моделі продажів через сторіс 2026.",
+        description: [
+          "4 авторські моделі прогрівів.",
+          "Приклади для ніш: психологія, фотограф, репетитор, товарка."
+        ],
+        videos: ["https://www.youtube.com/watch?v=rU3ctIWnB3Y"],
+        links: [
+          "https://drive.google.com/file/d/1lxNF3w_xce1h3LqJClGqAttQKw6wErZ1/view",
+          "https://docs.google.com/presentation/d/1FmTtlVmQJEDkP1G-czXdi_QKYGMH61K_aIKSkBL4iTw/view",
+          "https://docs.google.com/presentation/d/1Mx4yKlOrZFZjYckhMVap9i8mWD5BJdXIVOWCfSaPlQs/view",
+          "https://docs.google.com/presentation/d/16d9ZFK9p4eTiBWQrH3hmrHrZkixUkq9dSfZE7v4BRqg/view",
+          "https://docs.google.com/presentation/d/1sl_4R74wb0Z9QXPdEyVE2Pt9Vc0N-HeJxQgf9egspAE/view",
+          "https://docs.google.com/presentation/d/1OC7T73vJi-vyhZ749gBRvnSQIN2EkHSqW47dekoe1xs/view",
+          "https://docs.google.com/presentation/d/1_2hZsJ7lVClJcWXEV581CuDKIcN9mlvUzJrNiSZjMmM/view",
+          "https://docs.google.com/presentation/d/1gwb0YL3LiKgW3b4oJEm12Ri89j9BOR4W-1L78AvDiDw/view",
+          "https://docs.google.com/presentation/d/1KMXqRceSbOm-24frgTwDUeDblogAmY7nzqi90lOoLJM/view",
+          "https://docs.google.com/presentation/d/1jpsOu7cOTeE3TTIetos80LDYqLERiert0JopcXJJzJY/view",
+          "https://t.me/orlovapodvodki"
+        ],
+        images: []
+      },
+      {
+        id: 33,
+        title: "Урок 4. Як піднімати охоплення в блозі?",
+        description: [
+          "Алгоритми залучення аудиторії.",
+          "Прийоми вірального контенту."
+        ],
+        videos: ["https://www.youtube.com/watch?v=RK19WK4Kxxg"],
+        links: ["https://drive.google.com/file/d/15qfrSYO5KFokW5tlkm_u1Q_z-vRc6M2p/view"],
+        images: []
+      },
+      {
+        id: 34,
+        title: "Урок 5. Якісний візуал на телефон. Монтаж.",
+        description: [
+          "Помилки оформлення сторіс.",
+          "Відновлення видалених матеріалів та базовий монтаж."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=zH-npcU067E",
+          "https://media.kwigacdn.com/cabinet-446/MclHRH4vTXBu/iak_vidnoviti_vidaleni_storiz__TPL_.mp4"
+        ],
+        links: ["https://drive.google.com/file/d/1hgfqPRaYHEGDrNTdEGiFzkz0UMURAKIM/view"],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/PRDSsZwrA0p5/2.8%20%D0%91%D0%BE%D0%BD%D1%83%D1%81.png"]
+      },
+      {
+        id: 35,
+        title: "🎁 Бонусні уроки від Влади Гармаш.",
+        description: [
+          "Монтаж рілс через додаток Garmash app.",
+          "Промокод для безкоштовної підписки."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=WiNWzaWRNAw",
+          "https://www.youtube.com/watch?v=c3960vit6m0",
+          "https://www.youtube.com/watch?v=0UylJI489aA",
+          "https://media.kwigacdn.com/cabinet-446/tx1jXgSMpWnY/1756829896__TPL_.mp4",
+          "https://www.youtube.com/watch?v=UFnEY5N0o90",
+          "https://www.youtube.com/watch?v=3iBAxaClQj4",
+          "https://www.youtube.com/watch?v=TTTtEa1wnEA",
+          "https://www.youtube.com/watch?v=_mAlX80dzDo"
+        ],
+        links: ["https://www.instagram.com/gaarmash_/"],
+        images: [
+          "https://cdn-files.kwigacdn.com/cabinet-446/4EqRsYaVYpTm/5.8%20%D0%91%D0%BE%D0%BD%D1%83%D1%81.jpg",
+          "https://cdn-files.kwigacdn.com/cabinet-446/v7C3g8Vl8lfs/5.8%20%D0%91%D0%BE%D0%BD%D1%83%D1%81.jpg",
+          "https://cdn-files.kwigacdn.com/cabinet-446/yKc9RLPcuMJB/5.8%20%D0%91%D0%BE%D0%BD%D1%83%D1%81.jpg",
+          "https://cdn-files.kwigacdn.com/cabinet-446/ZaIRybhBdMZy/5.8%20%D0%91%D0%BE%D0%BD%D1%83%D1%81.jpg"
+        ]
+      },
+      {
+        id: 36,
+        title: "МОДУЛЬ 3. ТРАФІК. АВТОВОРОНКИ.",
+        isModule: true,
+        description: ["Методи залучення холодного трафіку."],
+        videos: [],
+        links: [],
+        images: []
+      },
+      {
+        id: 37,
+        title: "Урок 1. Автоворонки 2026. Manychat.",
+        description: [
+          "Шаблони воронок: \"Голка\", \"Адвент\", \"Тест\".",
+          "Інструкції по Manychat."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=m0UTZVrrPeQ",
+          "https://www.youtube.com/watch?v=y4nP3dA0Uw4",
+          "https://www.youtube.com/watch?v=vHu9O_7LSx8",
+          "https://www.youtube.com/watch?v=scWt6PILscc",
+          "https://www.youtube.com/watch?v=1WDf3r0d0EA",
+          "https://www.youtube.com/watch?v=thPalnukhCU",
+          "https://www.youtube.com/watch?v=dvu2Ljrc_ek",
+          "https://www.youtube.com/watch?v=S9LrookGQS0",
+          "https://www.youtube.com/watch?v=PrtkPglFHx4",
+          "https://www.youtube.com/watch?v=IvvMfBjjDlE"
+        ],
+        links: [
+          "https://app.manychat.com/flowPlayerPage?share_hash=1638094_d24c70368be2d687a094a67c2c8a3f1cea61cc15",
+          "https://manychat.com/flowPlayerPage?share_hash=109057375302757_92d3e63aa9677c206c7260d98f99ee908ee96527",
+          "https://manychat.com/flowPlayerPage?share_hash=109057375302757_b2e198f6fcc6e225539a2db8c8e96f8208382b71",
+          "https://manychat.com/flowPlayerPage?share_hash=1638094_0bb4aaf8fea9e1ae533a6fc5ac8c3ebff42b944c",
+          "https://app.manychat.com/flowPlayerPage?share_hash=1638094_f975b5c961a446acb0fb8d9f04c7bcd13baf0621",
+          "https://manychat.com/flowPlayerPage?share_hash=109057375302757_89e00a931a8cd46c549100dc90e2b86b3d38b3b8",
+          "https://manychat.com/flowPlayerPage?share_hash=109057375302757_b95605594cfdd186f5d5fcc83aff38e05cf2b938",
+          "https://manychat.com/flowPlayerPage?share_hash=1638094_8996e8fd51a7c909da8c6f590ed3f9624485d4f7",
+          "https://manychat.com/flowPlayerPage?share_hash=109057375302757_cac05f26b07545746febadeba4a7ba8b011d559f",
+          "https://manychat.com/flowPlayerPage?share_hash=1638094_71ec3b0f47da283b60c430739285da0267a4d937",
+          "https://app.manychat.com/flowPlayerPage?share_hash=1638094_fd8057f55a5d6eacf478f9910b260e4341551122",
+          "https://manychat.com/flowPlayerPage?share_hash=1638094_0612ecf9bf97f0c666659516e7bcfce8b1dac901",
+          "https://manychat.com/flowPlayerPage?share_hash=1638094_7f64a252fe00127cc504e15fba8bc3e5ff939e2f"
+        ],
+        images: []
+      },
+      {
+        id: 38,
+        title: "Урок 2. Таргет. Кнопка \"Просувати\" та ADS Manager.",
+        description: [
+          "Технічне налаштування та створення макетів.",
+          "Як обійти податок Apple 30%.",
+          "Аналітика та таблиці результатів."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=N2HUPuLePQU",
+          "https://media.kwigacdn.com/cabinet-446/SYjFjvP1U7kW/kak_oboiti_nalog_30__TPL_.mp4",
+          "https://www.youtube.com/watch?v=uWk7cC1RidM",
+          "https://www.youtube.com/watch?v=DaKzR-nQkl8",
+          "https://www.youtube.com/watch?v=sFnLjqQ67ZY"
+        ],
+        links: [
+          "https://drive.google.com/file/d/13WJZ-ISzSL2CvdAJGiS5NcBun9ERAsMo/view",
+          "https://www.instagram.com/lesya_demonenko/",
+          "https://t.me/Lesya_demon",
+          "https://docs.google.com/spreadsheets/d/1g_-SU_qz7skhpN7wIFTNpFeCDJIp3d_GbtOeAmHJ3iM/view",
+          "https://docs.google.com/spreadsheets/d/1Tr9LHYsh5IEU-SpbYaV2gJXb2-XQjMZIDoptaIjbDjA/view",
+          "https://docs.google.com/presentation/d/14ayzaFTEKMUY_IOeEciWmyMZSURjW-RT_1MTc0Fz_Mg/view",
+          "https://t.me/+kxMNpCP46YAzMTYy",
+          "https://www.instagram.com/reel/DBrfkggN50-/",
+          "https://docs.google.com/spreadsheets/d/1r9wLmbyUAR8fh6NyG4xXNuaLh0PmJAVaCzQ7bTjLYI8/view"
+        ],
+        images: []
+      },
+      {
+        id: 39,
+        title: "🎁 Бонусний урок про ADS manager.",
+        description: [
+          "Створення Бізнес-менеджера.",
+          "Налаштування цілей: трафік, взаємодія, ліди."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=nG_q6hH8jL8",
+          "https://www.youtube.com/watch?v=QtEqt0XvwYc",
+          "https://www.youtube.com/watch?v=mPYbVOmD3Z4",
+          "https://www.youtube.com/watch?v=TPfYe9PxNjY",
+          "https://www.youtube.com/watch?v=IPKD1YDf0-M",
+          "https://www.youtube.com/watch?v=dONQxNlBR5s"
+        ],
+        links: [
+          "https://www.instagram.com/lesya_demonenko/",
+          "https://t.me/Lesya_demon"
+        ],
+        images: []
+      },
+      {
+        id: 40,
+        title: "Урок 3. Youtube, Telegram, TikTok.",
+        description: [
+          "Мультиканальність як стратегія росту.",
+          "Формати відео для кожної платформи."
+        ],
+        videos: ["https://www.youtube.com/watch?v=DI_K7x2hfN8"],
+        links: ["https://drive.google.com/file/d/1BkZLK9d_MM_Te0fhy__1GXCKZ50E-I_Q/view"],
+        images: []
+      },
+      {
+        id: 41,
+        title: "🎁 Бонусний ефір від Олі Клімової.",
+        description: ["Reels, після яких підписуються."],
+        videos: ["https://www.youtube.com/watch?v=41qsE8n8SgM"],
+        links: ["https://www.instagram.com/klimova_boost/"],
+        images: []
+      },
+      {
+        id: 42,
+        title: "Урок 5. Безкоштовні способи просування 2026.",
+        description: [
+          "Взаємний піар, бартер та офлайн-виступи.",
+          "Публікації в журналах та ТБ."
+        ],
+        videos: ["https://www.youtube.com/watch?v=RAEPs_R_aKM"],
+        links: [
+          "https://drive.google.com/file/d/12Gv4XPAFR-cNUohpQnqmAZnbti-SDmMk/view",
+          "https://docs.google.com/spreadsheets/d/1r9wLmbyUAR8fh6NyG4xXNuaLh0PmJAVaCzQ7bTjLYI8/view"
+        ],
+        images: []
+      },
+      {
+        id: 43,
+        title: "Урок 6. Робота з блогерами та UGC.",
+        description: [
+          "Пошук та аналіз блогерів.",
+          "Технічне завдання (ТЗ), що дає результат."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=_wSSItpqUiI",
+          "https://www.youtube.com/watch?v=sPEaj-qqB2o"
+        ],
+        links: [
+          "https://drive.google.com/file/d/1h6UwPMjKqmmCU-GMARiWjUX8EaiUEX9C/view",
+          "https://docs.google.com/spreadsheets/d/1ayWO9KEceIXurAygzUYMOxUzT02jaZhtin9J36m9uvo/view",
+          "https://docs.google.com/document/d/17O3Z21mLyCUBQMgbSW9jfEk-dtRYcZ8EVSqXRBSVA0Y/view",
+          "https://docs.google.com/spreadsheets/d/1NItYDr3XUBGuH82bi_Bb6Z4HEjmUVRLbriRCnpWGPrU/view"
+        ],
+        images: []
+      },
+      {
+        id: 44,
+        title: "МОДУЛЬ 4. ПРОДАЖІ.",
+        isModule: true,
+        description: ["Фіналізація угод та робота з базою."],
+        videos: [],
+        links: [],
+        images: []
+      },
+      {
+        id: 45,
+        title: "Урок 1. Робота з базою клієнтів. Повторні продажі.",
+        description: [
+          "Скрипти та етапи переписки.",
+          "Правила розсилок та дотиск клієнтів."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=0ZC3g8kVY_o",
+          "https://www.youtube.com/watch?v=1jH3zLOBiXs",
+          "https://www.youtube.com/watch?v=ja5BsxM8jdU"
+        ],
+        links: [
+          "https://drive.google.com/file/d/1lWpvxhX4Zl2Ml38Vy9APoZ8iBeNSkvZC/view",
+          "https://docs.google.com/document/d/1-olj-ZIqH6JyNDUvVOshEYYSuzNrIgE-EnuD-1n6_Rc/view",
+          "https://docs.google.com/document/d/1L0U3H53_5yZz4azdNKCA2H5-A-jSzATT-pOoyb4FAgk/view",
+          "https://docs.google.com/spreadsheets/d/1r9wLmbyUAR8fh6NyG4xXNuaLh0PmJAVaCzQ7bTjLYI8/view"
+        ],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/aMxwocMAod96/4.1.png"]
+      },
+      {
+        id: 46,
+        title: "Урок 2. Робота з новими клієнтами.",
+        description: [
+          "Продажі через Дірект.",
+          "Відбір та робота з менеджерами (МПП)."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=Tf492bQPX4I",
+          "https://www.youtube.com/watch?v=Is4_PfH1NHM"
+        ],
+        links: [
+          "https://drive.google.com/file/d/1c62P6AXG5XqQinbaRmcyB0ecbP2rhgv4/view",
+          "https://forms.gle/abVPzGRzBehfYgJf7",
+          "https://docs.google.com/document/d/1lzAu_eQ4xob7Ai_jXdQA-qOimzG5XTJ_odQ_iXVa8JU/view"
+        ],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/4VpiYHyAOUPI/4.2.png"]
+      },
+      {
+        id: 47,
+        title: "Урок 3. Скрипти та обробка заперечень.",
+        description: [
+          "Техніка діагностичної карти від Сергія Фалова.",
+          "Конверсія до 50% у продажах."
+        ],
+        videos: [
+          "https://www.youtube.com/watch?v=toucgOFqb6Y",
+          "https://www.youtube.com/watch?v=J8wifaJFi3Y",
+          "https://www.youtube.com/watch?v=w-xXjxE1T64"
+        ],
+        links: [
+          "https://docs.google.com/spreadsheets/d/1oxoU4wEZP7coDbkR3JTpmJXatYJl0h3JGDloS1YkrGs/view",
+          "https://www.instagram.com/falev_sergey"
+        ],
+        images: []
+      },
+      {
+        id: 48,
+        title: "Урок 4. Нові ефективні фішки в продажах 2026.",
+        description: ["Тренди та інструменти продажів майбутнього."],
+        videos: [],
+        links: [],
+        images: []
+      },
+      {
+        id: 49,
+        title: "МОДУЛЬ 5. БОНУСНИЙ.",
+        isModule: true,
+        description: ["Додаткові стратегії від топ-експертів."],
+        videos: [],
+        links: [],
+        images: []
+      },
+      {
+        id: 50,
+        title: "🎁 Бонусний урок від Васі Тимошенко.",
+        description: [
+          "Вихід на 40-50К$ на місяць.",
+          "Побудова медійності та конвертуючого контенту."
+        ],
+        videos: ["https://www.youtube.com/watch?v=3Fxg8FkZjPg"],
+        links: ["https://www.instagram.com/tymoshenko1/"],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/a9eyr0aOCQ7f/2.5%20%D0%91%D0%BE%D0%BD%D1%83%D1%81.png"]
+      },
+      {
+        id: 51,
+        title: "Екскурсія бізнесу Олександри Орлової + розбори.",
+        description: [
+          "Внутрішня кухня бізнесу Саші.",
+          "Фінплани, кейси та стратегії росту."
+        ],
+        videos: ["https://www.youtube.com/watch?v=goQ77V8pEBA"],
+        links: [],
+        images: []
+      },
+      {
+        id: 52,
+        title: "Екскурсія бізнесу Каті Цегельної.",
+        description: [
+          "Кейс переходу з нутриціології в маркетинг.",
+          "Команда та обов'язки в маркетинговій ніші."
+        ],
+        videos: ["https://www.youtube.com/watch?v=VNpVSkp3N-w"],
+        links: ["https://www.instagram.com/tsehelna.k/"],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/2ddttFgFwt3Q/%D0%95%D0%BA%D1%81%D0%BA%D1%83%D1%80%D1%81%D1%96%D1%8F%202.png"]
+      },
+      {
+        id: 53,
+        title: "Екскурсія бізнесу Жені Кісліченко.",
+        description: [
+          "Побудова клубу та робота фітнес-тренера.",
+          "Делегування та прибуток від онлайн-продуктів."
+        ],
+        videos: ["https://www.youtube.com/watch?v=UoAgYNLKeAI"],
+        links: ["https://www.instagram.com/evgeniia_kislichenko/"],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/ARzyMHziPTJa/%D0%95%D0%BA%D1%81%D0%BA%D1%83%D1%80%D1%81%D1%96%D1%8F%201.png"]
+      },
+      {
+        id: 54,
+        title: "Екскурсія бізнесу Олени Вакулюк.",
+        description: [
+          "Бізнес юриста в Instagram.",
+          "Звільнення з найму та ріст доходу."
+        ],
+        videos: ["https://www.youtube.com/watch?v=lftJGMv55bg"],
+        links: ["https://www.instagram.com/olena.vakuliuk/"],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/Dq2LCg0AKQn2/%D0%95%D0%BA%D1%81%D0%BA%D1%83%D1%80%D1%81%D1%96%D1%8F%203.png"]
+      },
+      {
+        id: 55,
+        title: "Урок. Як підняти середній чек?",
+        description: [
+          "Інструменти: тарифи, передзапис, ОТО.",
+          "Акції та знижки, що не знецінюють продукт."
+        ],
+        videos: ["https://www.youtube.com/watch?v=7kZnExWSE9k"],
+        links: ["https://drive.google.com/file/d/1v3gS5ywulZPTTuKGtyFyPkE4c-pGtydy/view"],
+        images: ["https://cdn-files.kwigacdn.com/cabinet-446/i61Hzh9uq4vc/2.4.png"]
+      },
+      {
+        id: 56,
+        title: "Урок. Лоти.",
+        description: [
+          "Правила проведення унікальних розпродажів.",
+          "Приклади лотів та прогрівів."
+        ],
+        videos: ["https://www.youtube.com/watch?v=wWh-rXe3mog"],
+        links: [
+          "https://drive.google.com/file/d/1NOIL4bx0Q04MArUofgM4U4guLU-mEUso/view",
+          "https://docs.google.com/presentation/d/1jpsOu7cOTeE3TTIetos80LDYqLERiert0JopcXJJzJY/view"
+        ],
+        images: []
+      },
+      {
+        id: 57,
+        title: "Урок про ФОП від Олени Вакулюк.",
+        description: [
+          "Організація діяльності ФОП без ризиків.",
+          "Податки, групи та секрети роботи."
+        ],
+        videos: ["https://www.youtube.com/watch?v=Zgdm8eBYzqQ"],
+        links: [
+          "https://drive.google.com/file/d/1Xyelv1vXfUnT7NCx8ZfBL8qhZB1VkQLo/view",
+          "https://www.instagram.com/olena.vakuliuk/"
+        ],
+        images: []
+      }
+    ];
+
+    // --- СТАН ДОДАТКУ ---
+    let activeLessonId = 3;
+    let isSidebarOpen = false;
+    let currentVideoIndex = 0;
+
+    // --- ДОПОМІЖНІ ФУНКЦІЇ ---
+    const getEmbedUrl = (url) => {
+      if (!url) return null;
+      const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+      if (ytMatch && ytMatch[1]) {
+        return `https://www.youtube.com/embed/${ytMatch[1]}?rel=0`;
+      }
+      return url;
+    };
+
+    const isMp4 = (url) => url && url.toLowerCase().endsWith('.mp4');
+
+    const getDomain = (url) => {
+      try {
+        const urlObj = new URL(url);
+        return urlObj.hostname.replace('www.', '');
+      } catch(e) {
+        return "Посилання";
+      }
+    };
+
+    // --- ФУНКЦІЇ ВІДОБРАЖЕННЯ (РЕНДЕРУ) ---
+    
+    function toggleSidebar() {
+      isSidebarOpen = !isSidebarOpen;
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      const menuIcon = document.getElementById('mobile-menu-icon');
+      
+      if (isSidebarOpen) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        menuIcon.setAttribute('data-lucide', 'x');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+        menuIcon.setAttribute('data-lucide', 'menu');
+      }
+      lucide.createIcons();
+    }
+
+    function selectLesson(id) {
+      activeLessonId = id;
+      currentVideoIndex = 0;
+      if (isSidebarOpen) toggleSidebar();
+      renderApp();
+    }
+
+    function selectVideo(index) {
+      currentVideoIndex = index;
+      renderApp(); // Перемальовуємо, щоб оновити відео та активну вкладку
+    }
+
+    function goPrev() {
+      const currentIndex = courseData.findIndex(l => l.id === activeLessonId);
+      if (currentIndex > 0) selectLesson(courseData[currentIndex - 1].id);
+    }
+
+    function goNext() {
+      const currentIndex = courseData.findIndex(l => l.id === activeLessonId);
+      if (currentIndex < courseData.length - 1) selectLesson(courseData[currentIndex + 1].id);
+    }
+
+    function renderSidebar() {
+      const navContainer = document.getElementById('sidebar-nav');
+      let html = '';
+
+      courseData.forEach(item => {
+        if (item.isModule) {
+          html += `
+            <div class="mt-6 mb-2 first:mt-2">
+              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider px-3">${item.title}</h3>
+            </div>
+          `;
+        } else {
+          const isActive = activeLessonId === item.id;
+          const bgClass = isActive ? 'bg-blue-50 text-blue-700 shadow-sm border-blue-100' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 border-transparent';
+          const icon = isActive ? 'play-circle' : 'check-circle-2';
+          const iconClass = isActive ? 'text-blue-600' : 'text-gray-300';
+          
+          html += `
+            <button onclick="selectLesson(${item.id})" class="w-full text-left flex items-start gap-3 px-3 py-3 rounded-xl transition-all border ${bgClass}">
+              <div class="mt-0.5 shrink-0">
+                <i data-lucide="${icon}" class="w-[18px] h-[18px] ${iconClass}"></i>
+              </div>
+              <span class="text-sm font-medium leading-snug">${item.title}</span>
+            </button>
+          `;
+        }
+      });
+
+      navContainer.innerHTML = html;
+    }
+
+    function renderContent() {
+      const contentContainer = document.getElementById('main-content');
+      const activeLesson = courseData.find(l => l.id === activeLessonId);
+      const currentIndex = courseData.findIndex(l => l.id === activeLessonId);
+      
+      if (!activeLesson) return;
+
+      let html = `
+        <!-- Хлібні крихти -->
+        <div class="flex items-center text-sm text-gray-500 mb-6 font-medium">
+          <span>Програма</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 mx-2"></i>
+          <span class="text-gray-900 truncate">Урок ${activeLesson.id}</span>
+        </div>
+
+        <!-- Заголовок уроку -->
+        <h1 class="text-2xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight">
+          ${activeLesson.title}
+        </h1>
+      `;
+
+      // ВІДЕОПЛЕЄР
+      if (activeLesson.videos && activeLesson.videos.length > 0) {
+        const currentVideo = activeLesson.videos[currentVideoIndex];
+        
+        html += `
+          <div class="mb-8">
+            <div class="aspect-video bg-black rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative">
+        `;
+        
+        if (isMp4(currentVideo)) {
+          html += `<video controls class="w-full h-full object-contain" src="${currentVideo}" controlsList="nodownload">Ваш браузер не підтримує відео.</video>`;
+        } else {
+          html += `<iframe class="w-full h-full absolute top-0 left-0" src="${getEmbedUrl(currentVideo)}" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        }
+        
+        html += `</div>`;
+
+        // Вкладки для відео (якщо більше 1)
+        if (activeLesson.videos.length > 1) {
+          html += `
+            <div class="mt-4 p-4 bg-white rounded-xl shadow-sm border border-gray-200">
+              <h4 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                <i data-lucide="play-circle" class="w-4 h-4"></i> Частини уроку (${activeLesson.videos.length})
+              </h4>
+              <div class="flex flex-wrap gap-2">
+          `;
+          activeLesson.videos.forEach((_, idx) => {
+            const btnClass = currentVideoIndex === idx ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border-gray-200';
+            html += `<button onclick="selectVideo(${idx})" class="px-4 py-2 text-sm font-semibold rounded-lg transition-colors border ${btnClass}">Частина ${idx + 1}</button>`;
+          });
+          html += `</div></div>`;
+        }
+        html += `</div>`;
+      } else {
+        // Якщо відео немає
+        html += `
+          <div class="aspect-video bg-gray-100 rounded-2xl flex flex-col items-center justify-center text-gray-400 mb-8 border-2 border-dashed border-gray-200">
+            <i data-lucide="lock" class="w-12 h-12 mb-4 opacity-50"></i>
+            <p class="font-medium">Відеоматеріали відсутні для цього розділу</p>
+          </div>
+        `;
+      }
+
+      // ОСНОВНА СІТКА (ОПИС ТА МАТЕРІАЛИ)
+      html += `<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">`;
+
+      // ЛІВА КОЛОНКА: ОПИС
+      html += `
+        <div class="lg:col-span-2 space-y-8">
+          <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-5 h-5 text-blue-500"></i> Що ви дізнаєтесь:
+            </h2>
+      `;
+      
+      if (activeLesson.description && activeLesson.description.length > 0) {
+        html += `<ul class="space-y-3">`;
+        activeLesson.description.forEach((item, idx) => {
+          html += `
+            <li class="flex items-start text-gray-700 leading-relaxed">
+              <span class="h-6 w-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mr-3 mt-0.5 text-xs font-bold">${idx + 1}</span>
+              ${item}
+            </li>
+          `;
+        });
+        html += `</ul>`;
+      } else {
+        html += `<p class="text-gray-500 italic">Опис відсутній.</p>`;
+      }
+      html += `</section></div>`;
+
+      // ПРАВА КОЛОНКА: МАТЕРІАЛИ
+      html += `<div class="space-y-6">`;
+      
+      let hasMaterials = false;
+
+      // Посилання
+      if (activeLesson.links && activeLesson.links.length > 0) {
+        hasMaterials = true;
+        html += `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <i data-lucide="file-text" class="w-4 h-4 text-blue-500"></i> Додаткові матеріали
+            </h3>
+            <div class="space-y-3">
+        `;
+        activeLesson.links.forEach((link, idx) => {
+          html += `
+            <a href="${link}" target="_blank" rel="noopener noreferrer" class="group flex items-start gap-3 p-3 rounded-xl hover:bg-blue-50 border border-gray-100 hover:border-blue-100 transition-all">
+              <div class="bg-gray-100 p-2 rounded-lg group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
+                <i data-lucide="link" class="w-4 h-4"></i>
+              </div>
+              <div class="overflow-hidden">
+                <p class="text-sm font-semibold text-gray-800 group-hover:text-blue-700 truncate">${getDomain(link)}</p>
+                <p class="text-xs text-gray-500 truncate mt-0.5">${link}</p>
+              </div>
+            </a>
+          `;
+        });
+        html += `</div></div>`;
+      }
+
+      // Зображення
+      if (activeLesson.images && activeLesson.images.length > 0) {
+        hasMaterials = true;
+        html += `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <i data-lucide="image" class="w-4 h-4 text-blue-500"></i> Скріншоти / Схеми
+            </h3>
+            <div class="grid grid-cols-2 gap-3">
+        `;
+        activeLesson.images.forEach((img, idx) => {
+          html += `
+            <a href="${img}" target="_blank" rel="noopener noreferrer" class="block rounded-lg overflow-hidden border border-gray-200 hover:opacity-80 transition-opacity">
+              <img src="${img}" alt="Матеріал ${idx + 1}" class="w-full h-24 object-cover" />
+            </a>
+          `;
+        });
+        html += `</div></div>`;
+      }
+
+      // Заглушка, якщо матеріалів немає
+      if (!hasMaterials) {
+        html += `
+          <div class="bg-gray-50 rounded-2xl p-6 border border-gray-200 text-center text-gray-500">
+            <p class="text-sm">Додаткові файли для цього уроку відсутні.</p>
+          </div>
+        `;
+      }
+      
+      html += `</div></div>`; // Закриваємо праву колонку і grid
+
+      // НАВІГАЦІЯ
+      const isFirst = currentIndex === 0;
+      const isLast = currentIndex === courseData.length - 1;
+
+      html += `
+        <div class="mt-12 flex items-center justify-between pt-6 border-t border-gray-200">
+          <button onclick="goPrev()" ${isFirst ? 'disabled' : ''} class="px-5 py-2.5 rounded-xl font-medium transition-all ${isFirst ? 'text-gray-400 opacity-50 cursor-not-allowed' : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent hover:border-gray-200 hover:shadow-sm'}">
+            ← Попередній
+          </button>
+          
+          <button onclick="goNext()" ${isLast ? 'disabled' : ''} class="px-5 py-2.5 rounded-xl font-semibold transition-all shadow-sm ${isLast ? 'bg-blue-300 text-white cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}">
+            Наступний крок →
+          </button>
+        </div>
+      `;
+
+      contentContainer.innerHTML = html;
+    }
+
+    // Головна функція ініціалізації
+    function renderApp() {
+      renderSidebar();
+      renderContent();
+      
+      // Ініціалізуємо іконки Lucide після кожного оновлення DOM
+      lucide.createIcons();
+    }
+
+    // Запуск після завантаження сторінки
+    document.addEventListener('DOMContentLoaded', () => {
+      renderApp();
+    });
+
+  </script>
+</body>
+</html>
