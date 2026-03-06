@@ -981,8 +981,10 @@
 
     // --- СТАН ДОДАТКУ ---
     let activeLessonId = 'home';
+    let lastActiveLessonId = null;
     let isSidebarOpen = false;
     let currentVideoIndex = 0;
+    let completedLessons = JSON.parse(localStorage.getItem('completedLessons')) || [];
 
     // --- ДОПОМІЖНІ ФУНКЦІЇ ---
     const getModules = () => {
@@ -1022,6 +1024,16 @@
       }
     };
 
+    function toggleLessonCompletion(id) {
+      if (completedLessons.includes(id)) {
+        completedLessons = completedLessons.filter(lessonId => lessonId !== id);
+      } else {
+        completedLessons.push(id);
+      }
+      localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
+      renderApp();
+    }
+
     // --- ФУНКЦІЇ ВІДОБРАЖЕННЯ (РЕНДЕРУ) ---
     
     function toggleSidebar() {
@@ -1043,6 +1055,9 @@
     }
 
     function selectLesson(id) {
+      if (id !== 'home') {
+        lastActiveLessonId = id;
+      }
       activeLessonId = id;
       currentVideoIndex = 0;
       if (isSidebarOpen) toggleSidebar();
@@ -1089,9 +1104,19 @@
           `;
         } else {
           const isActive = activeLessonId === item.id;
+          const isCompleted = completedLessons.includes(item.id);
           const bgClass = isActive ? 'bg-blue-50 text-blue-700 shadow-sm border-blue-100' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 border-transparent';
-          const icon = isActive ? 'play-circle' : 'check-circle-2';
-          const iconClass = isActive ? 'text-blue-600' : 'text-gray-300';
+          
+          let icon = 'circle';
+          let iconClass = 'text-gray-300';
+          
+          if (isActive) {
+            icon = 'play-circle';
+            iconClass = 'text-blue-600';
+          } else if (isCompleted) {
+            icon = 'check-circle-2';
+            iconClass = 'text-green-500';
+          }
           
           html += `
             <button onclick="selectLesson(${item.id})" class="w-full text-left flex items-start gap-3 px-3 py-3 rounded-xl transition-all border ${bgClass}">
@@ -1127,8 +1152,15 @@
 
         modules.forEach((mod, index) => {
           const lessonCount = mod.lessons.length;
-          // Робимо перший модуль відкритим за замовчуванням
-          const isOpen = index === 0 ? 'open' : '';
+          
+          // Відкриваємо модуль, якщо в ньому є останній активний урок, інакше відкриваємо перший за замовчуванням
+          let isOpen = '';
+          if (lastActiveLessonId) {
+            const hasLastLesson = mod.lessons.some(l => l.id === lastActiveLessonId);
+            if (hasLastLesson) isOpen = 'open';
+          } else if (index === 0) {
+            isOpen = 'open';
+          }
 
           html += `
             <details class="group bg-white border border-gray-200 rounded-xl shadow-sm [&_summary::-webkit-details-marker]:hidden" ${isOpen}>
@@ -1152,12 +1184,18 @@
                 
                 ${lessonCount > 0 ? `
                   <div class="space-y-1">
-                    ${mod.lessons.map(l => `
+                    ${mod.lessons.map(l => {
+                      const isCompleted = completedLessons.includes(l.id);
+                      const icon = isCompleted ? 'check-circle-2' : 'play-circle';
+                      const iconClass = isCompleted ? 'text-green-500' : 'text-gray-300 group-hover/btn:text-blue-500';
+                      
+                      return `
                       <button onclick="selectLesson(${l.id})" class="w-full text-left flex items-start gap-3 p-3 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-blue-700 transition-colors border border-transparent hover:border-blue-100 group/btn">
-                        <i data-lucide="play-circle" class="w-5 h-5 text-gray-300 group-hover/btn:text-blue-500 shrink-0 mt-0.5 transition-colors"></i>
+                        <i data-lucide="${icon}" class="w-5 h-5 ${iconClass} shrink-0 mt-0.5 transition-colors"></i>
                         <span class="text-sm font-medium leading-snug">${l.title}</span>
                       </button>
-                    `).join('')}
+                      `;
+                    }).join('')}
                   </div>
                 ` : `
                   <div class="p-4 text-center text-sm text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200">
@@ -1331,12 +1369,23 @@
       
       html += `</div></div>`; // Закриваємо праву колонку і grid
 
+      // Кнопка ПРОЙДЕНО
+      const isCompleted = completedLessons.includes(activeLesson.id);
+      html += `
+        <div class="mt-10 flex justify-center">
+          <button onclick="toggleLessonCompletion(${activeLesson.id})" class="flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all border-2 ${isCompleted ? 'bg-green-50 border-green-500 text-green-700 hover:bg-green-100 shadow-sm' : 'bg-white border-gray-200 text-gray-600 hover:border-green-500 hover:text-green-600 hover:shadow-sm'}">
+            <i data-lucide="${isCompleted ? 'check-circle-2' : 'circle'}" class="w-5 h-5"></i>
+            ${isCompleted ? 'Урок пройдено' : 'Позначити як пройдений'}
+          </button>
+        </div>
+      `;
+
       // НАВІГАЦІЯ
       const isFirst = currentIndex === 0;
       const isLast = currentIndex === courseData.length - 1;
 
       html += `
-        <div class="mt-12 flex items-center justify-between pt-6 border-t border-gray-200">
+        <div class="mt-8 flex items-center justify-between pt-6 border-t border-gray-200">
           <button onclick="goPrev()" ${isFirst ? 'disabled' : ''} class="px-5 py-2.5 rounded-xl font-medium transition-all ${isFirst ? 'text-gray-400 opacity-50 cursor-not-allowed' : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent hover:border-gray-200 hover:shadow-sm'}">
             ← Попередній
           </button>
