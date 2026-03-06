@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Learning Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom Styles & Utilities */
+        html { scroll-behavior: smooth; }
+        
+        /* Hide default accordion marker */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        
+        /* Accordion icon rotation */
+        details[open] summary .accordion-icon { transform: rotate(180deg); }
+        .accordion-icon { transition: transform 0.3s ease; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f9fafb; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+        .sidebar-transition { transition: transform 0.3s ease-in-out; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased flex h-screen overflow-hidden selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-gray-900/50 z-20 hidden md:hidden backdrop-blur-sm transition-opacity" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="bg-white border-r border-gray-200 w-72 flex-shrink-0 z-30 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 sidebar-transition flex flex-col h-full shadow-xl md:shadow-none">
+        <!-- Logo Area -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors" onclick="goHome()">
+            <div class="bg-blue-600 text-white p-1.5 rounded-lg mr-3 shadow-sm">
+                <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+            </div>
+            <h1 class="text-lg font-bold text-gray-900 tracking-tight">LearnSpace</h1>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Your Progress</span>
+                <span id="progress-text" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md">0%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav id="sidebar-nav" class="flex-1 overflow-y-auto p-4 space-y-1">
+            <!-- Dynamically populated via JS -->
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col h-screen relative w-full min-w-0">
+        <!-- Top Header -->
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center px-4 md:px-8 justify-between flex-shrink-0 sticky top-0 z-10">
+            <div class="flex items-center">
+                <button onclick="toggleSidebar()" class="md:hidden p-2 -ml-2 mr-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <div id="breadcrumb" class="text-sm font-medium text-gray-500 flex items-center">
+                    <span class="cursor-pointer hover:text-blue-600 transition-colors flex items-center" onclick="goHome()">
+                        <i data-lucide="home" class="w-4 h-4 mr-1"></i> Dashboard
+                    </span>
+                    <!-- Breadcrumbs injected dynamically -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Main View -->
+        <main id="main-content" class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 relative">
+            <!-- Content injected dynamically -->
+        </main>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // --- 1. DATA SCHEMA & CONTENT ---
+        // As requested, standardizing the Wordwall embeds within the 'videos' array 
+        // to utilize the media player capabilities.
+        const courseData = [
+            {
+                id: 1,
+                title: "MODULE 1: Interactive Learning Tasks",
+                isModule: true,
+                description: ["Welcome to the first module. Complete the following interactive exercises to test your knowledge."],
+                videos: [],
+                links: [],
+                images: []
+            },
+            {
+                id: 2,
+                title: "Task 1: Matching Exercise",
+                isModule: false,
+                description: ["Please complete the interactive matching task below.", "Pay attention to the timer and try to beat your high score."],
+                videos: ["https://wordwall.net/embed/bc52544c9f5e42149b578955040758de?themeId=1&templateId=5&fontStackId=0"],
+                links: [],
+                images: []
+            },
+            {
+                id: 3,
+                title: "Task 2: Vocabulary Practice",
+                isModule: false,
+                description: ["Review the vocabulary terms in this second exercise.", "Make sure to review any incorrect answers at the end of the session."],
+                videos: ["https://wordwall.net/embed/bc52544c9f5e42149b578955040758de?themeId=1&templateId=5&fontStackId=0"],
+                links: [],
+                images: []
+            },
+            {
+                id: 4,
+                title: "Task 3: Concept Reinforcement",
+                isModule: false,
+                description: ["Apply what you've learned in this reinforcement task."],
+                videos: ["https://wordwall.net/embed/bc52544c9f5e42149b578955040758de?themeId=1&templateId=5&fontStackId=0"],
+                links: ["https://wordwall.net/"],
+                images: []
+            },
+            {
+                id: 5,
+                title: "Task 4: Final Assessment",
+                isModule: false,
+                description: ["This is the final task for this module.", "Take your time and apply all the concepts discussed previously."],
+                videos: ["https://wordwall.net/embed/bc52544c9f5e42149b578955040758de?themeId=1&templateId=5&fontStackId=0"],
+                links: [],
+                images: []
+            }
+        ];
+
+        // --- 2. STATE MANAGEMENT ---
+        let state = {
+            completedLessons: JSON.parse(localStorage.getItem('completedLessons')) || [],
+            lastActiveLessonId: localStorage.getItem('lastActiveLessonId') ? parseInt(localStorage.getItem('lastActiveLessonId')) : null,
+            currentLessonId: null
+        };
+
+        function saveState() {
+            localStorage.setItem('completedLessons', JSON.stringify(state.completedLessons));
+            if (state.lastActiveLessonId) {
+                localStorage.setItem('lastActiveLessonId', state.lastActiveLessonId.toString());
+            } else {
+                localStorage.removeItem('lastActiveLessonId');
+            }
+            updateProgressUI();
+        }
+
+        function toggleCompletion(lessonId) {
+            if (state.completedLessons.includes(lessonId)) {
+                state.completedLessons = state.completedLessons.filter(id => id !== lessonId);
+            } else {
+                state.completedLessons.push(lessonId);
+            }
+            saveState();
+            renderSidebar();
+            if (state.currentLessonId === lessonId) {
+                renderLesson(lessonId); // Re-render to update button state
+            }
+        }
+
+        // --- 3. UTILITIES & HELPERS ---
+        function getLessons() {
+            return courseData.filter(item => !item.isModule);
+        }
+
+        function getModuleForLesson(lessonId) {
+            let currentModule = null;
+            for (const item of courseData) {
+                if (item.isModule) {
+                    currentModule = item;
+                } else if (item.id === lessonId) {
+                    return currentModule;
+                }
+            }
+            return null;
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function goHome() {
+            state.currentLessonId = null;
+            renderSidebar();
+            renderHome();
+            updateBreadcrumbs();
+            
+            // Close mobile sidebar if open
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+                document.getElementById('mobile-overlay').classList.add('hidden');
+            }
+        }
+
+        function loadLesson(id) {
+            state.currentLessonId = id;
+            state.lastActiveLessonId = id;
+            saveState();
+            renderSidebar();
+            renderLesson(id);
+            updateBreadcrumbs();
+
+            // Close mobile sidebar if open
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+                document.getElementById('mobile-overlay').classList.add('hidden');
+            }
+        }
+
+        function updateProgressUI() {
+            const totalLessons = getLessons().length;
+            const completed = state.completedLessons.length;
+            const percentage = totalLessons === 0 ? 0 : Math.round((completed / totalLessons) * 100);
+            
+            document.getElementById('progress-text').innerText = `${percentage}%`;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+        }
+
+        function updateBreadcrumbs() {
+            const breadcrumbEl = document.getElementById('breadcrumb');
+            let html = `<span class="cursor-pointer hover:text-blue-600 transition-colors flex items-center" onclick="goHome()">
+                            <i data-lucide="layout-dashboard" class="w-4 h-4 mr-1"></i> Dashboard
+                        </span>`;
+            
+            if (state.currentLessonId) {
+                const lesson = courseData.find(item => item.id === state.currentLessonId);
+                const mod = getModuleForLesson(state.currentLessonId);
+                html += `
+                    <i data-lucide="chevron-right" class="w-4 h-4 mx-2 text-gray-300"></i>
+                    <span class="truncate max-w-[100px] md:max-w-xs text-gray-400" title="${mod ? mod.title : ''}">${mod ? mod.title.split(':')[0] : 'Lesson'}</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 mx-2 text-gray-300"></i>
+                    <span class="font-semibold text-gray-800 truncate max-w-[150px] md:max-w-sm" title="${lesson.title}">${lesson.title}</span>
+                `;
+            }
+            breadcrumbEl.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function parseMediaLink(url) {
+            if (url.endsWith('.mp4')) {
+                return `<video controls src="${url}" class="w-full md:rounded-xl bg-black shadow-sm h-auto max-h-[80vh]"></video>`;
+            } 
+            else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                let videoId = '';
+                if (url.includes('youtu.be')) {
+                    videoId = url.split('youtu.be/')[1].split('?')[0];
+                } else {
+                    const urlParams = new URLSearchParams(new URL(url).search);
+                    videoId = urlParams.get('v');
+                }
+                return `<iframe class="w-full aspect-video md:rounded-xl shadow-sm" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            }
+            else {
+                // Generic Iframe / Wordwall fallback - expanded height for mobile view
+                return `<iframe class="w-full md:rounded-xl shadow-sm border-0 md:border border-gray-100 h-[calc(100vh-4rem)] md:h-[600px]" src="${url}" frameborder="0" allowfullscreen></iframe>`;
+            }
+        }
+
+        // --- 4. RENDER FUNCTIONS ---
+        function renderSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            let html = '';
+
+            courseData.forEach(item => {
+                if (item.isModule) {
+                    html += `
+                        <div class="mt-6 mb-2 px-3">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">${item.title}</h3>
+                        </div>
+                    `;
+                } else {
+                    const isCompleted = state.completedLessons.includes(item.id);
+                    const isActive = state.currentLessonId === item.id;
+                    
+                    let baseClasses = "flex items-center w-full px-3 py-2.5 mb-1 text-sm font-medium rounded-xl transition-all duration-200 group cursor-pointer border ";
+                    let activeClasses = isActive 
+                        ? "bg-blue-50 text-blue-700 border-blue-200 shadow-sm" 
+                        : "text-gray-600 hover:bg-gray-50 border-transparent hover:border-gray-200";
+                    
+                    let icon = isCompleted 
+                        ? `<i data-lucide="check-circle-2" class="w-5 h-5 mr-3 text-green-500 flex-shrink-0"></i>`
+                        : (isActive 
+                            ? `<i data-lucide="play-circle" class="w-5 h-5 mr-3 text-blue-500 flex-shrink-0"></i>`
+                            : `<i data-lucide="circle" class="w-5 h-5 mr-3 text-gray-300 group-hover:text-gray-400 flex-shrink-0"></i>` );
+
+                    html += `
+                        <button onclick="loadLesson(${item.id})" class="${baseClasses} ${activeClasses} text-left">
+                            ${icon}
+                            <span class="truncate leading-tight">${item.title}</span>
+                        </button>
+                    `;
+                }
+            });
+
+            nav.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function renderHome() {
+            const main = document.getElementById('main-content');
+            
+            let html = `
+                <div class="max-w-4xl mx-auto pb-20">
+                    <div class="mb-10 text-center md:text-left">
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Program Overview</h1>
+                        <p class="text-gray-500 text-lg">Select a module below to view lessons and track your progress.</p>
+                    </div>
+                    <div class="space-y-4">
+            `;
+
+            let currentModuleHtml = '';
+            let moduleContainsActiveLesson = false;
+            let moduleCount = 0;
+
+            courseData.forEach((item, index) => {
+                if (item.isModule) {
+                    moduleCount++;
+                    if (currentModuleHtml !== '') {
+                        // Close previous module
+                        html += `
+                            <div class="p-2 md:p-4 border-t border-gray-100 bg-gray-50/30">
+                                <div class="grid grid-cols-1 gap-2">
+                                    ${currentModuleHtml}
+                                </div>
+                            </div>
+                        </details>`;
+                    }
+                    
+                    moduleContainsActiveLesson = false;
+                    // Pre-check if this module should be open
+                    let isModuleOpen = false;
+                    for (let i = index + 1; i < courseData.length; i++) {
+                        if (courseData[i].isModule) break;
+                        if (courseData[i].id === state.lastActiveLessonId) {
+                            isModuleOpen = true;
+                            break;
+                        }
+                    }
+                    // Default open first module if no active lesson
+                    if (!state.lastActiveLessonId && moduleCount === 1) isModuleOpen = true;
+
+                    html += `
+                        <details class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden group transition-all duration-300" ${isModuleOpen ? 'open' : ''}>
+                            <summary class="cursor-pointer p-5 md:p-6 font-semibold text-lg md:text-xl hover:bg-gray-50 flex justify-between items-center outline-none select-none">
+                                <div class="flex items-center">
+                                    <div class="bg-blue-100 text-blue-600 p-2 rounded-lg mr-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                        <i data-lucide="folder-open" class="w-5 h-5"></i>
+                                    </div>
+                                    ${item.title}
+                                </div>
+                                <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 accordion-icon"></i>
+                            </summary>
+                    `;
+                    currentModuleHtml = '';
+                } else {
+                    const isCompleted = state.completedLessons.includes(item.id);
+                    const isActive = state.lastActiveLessonId === item.id;
+                    
+                    let bgClass = isActive ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-100 hover:border-blue-300 hover:shadow-md';
+                    let titleColor = isCompleted ? 'text-gray-500 line-through' : 'text-gray-800';
+                    let icon = isCompleted 
+                        ? `<i data-lucide="check-circle-2" class="w-6 h-6 text-green-500 mr-4"></i>`
+                        : `<div class="w-6 h-6 rounded-full border-2 border-gray-300 mr-4 flex-shrink-0 group-hover/card:border-blue-400 transition-colors"></div>`;
+
+                    currentModuleHtml += `
+                        <div onclick="loadLesson(${item.id})" class="flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all duration-200 group/card ${bgClass}">
+                            <div class="flex items-center flex-1 min-w-0">
+                                ${icon}
+                                <div class="flex-1 min-w-0 pr-4">
+                                    <h4 class="font-medium truncate ${titleColor}">${item.title}</h4>
+                                </div>
+                            </div>
+                            <button class="flex-shrink-0 text-sm font-medium text-blue-600 opacity-0 group-hover/card:opacity-100 transition-opacity bg-blue-100 px-3 py-1.5 rounded-lg flex items-center">
+                                Start <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+            });
+
+            // Close the very last module
+            if (currentModuleHtml !== '') {
+                html += `
+                            <div class="p-2 md:p-4 border-t border-gray-100 bg-gray-50/30">
+                                <div class="grid grid-cols-1 gap-2">
+                                    ${currentModuleHtml}
+                                </div>
+                            </div>
+                        </details>`;
+            }
+
+            html += `</div></div>`;
+            main.innerHTML = html;
+            lucide.createIcons();
+            
+            // Re-bind details transition logic for smooth accordion
+            document.querySelectorAll('details').forEach((el) => {
+                const summary = el.querySelector('summary');
+                summary.addEventListener('click', (e) => {
+                    // Vanilla JS doesn't animate details easily, but CSS rotation on icon works well
+                    // Could add complex height animation here, but keeping it standard for stability
+                });
+            });
+        }
+
+        function renderLesson(id) {
+            const main = document.getElementById('main-content');
+            const lesson = courseData.find(item => item.id === id);
+            if (!lesson) return;
+
+            const isCompleted = state.completedLessons.includes(lesson.id);
+
+            // Description Parsing
+            let descHtml = '';
+            if (lesson.description && lesson.description.length > 0) {
+                descHtml = lesson.description.map(p => `<p class="mb-3 text-gray-600 text-lg leading-relaxed">${p}</p>`).join('');
+            }
+
+            // Media / Video / Iframes Processing with Tabs
+            let mediaHtml = '';
+            if (lesson.videos && lesson.videos.length > 0) {
+                if (lesson.videos.length === 1) {
+                    // Single Media
+                    mediaHtml = `
+                        <div class="bg-white md:p-3 md:rounded-2xl shadow-sm border-y md:border border-gray-200 mb-6 md:mb-8 -mx-4 md:mx-0">
+                            ${parseMediaLink(lesson.videos[0])}
+                        </div>
+                    `;
+                } else {
+                    // Multiple Media - Generate Tabs
+                    let tabs = `<div class="flex space-x-2 mb-4 overflow-x-auto pb-2 px-4 md:px-0">`;
+                    let content = `<div>`;
+                    
+                    lesson.videos.forEach((vid, idx) => {
+                        const activeTabCls = idx === 0 ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200';
+                        const hiddenCls = idx === 0 ? 'block' : 'hidden';
+                        
+                        tabs += `<button onclick="switchTab(this, 'media-${idx}')" class="tab-btn whitespace-nowrap px-4 py-2 rounded-lg font-medium transition-all ${activeTabCls}">Part ${idx + 1}</button>`;
+                        content += `<div id="media-${idx}" class="tab-content bg-white md:p-3 md:rounded-2xl shadow-sm border-y md:border border-gray-200 ${hiddenCls}">${parseMediaLink(vid)}</div>`;
+                    });
+                    
+                    tabs += `</div>`;
+                    content += `</div>`;
+                    mediaHtml = `<div class="mb-8 -mx-4 md:mx-0">${tabs}${content}</div>`;
+                }
+            }
+
+            // Additional Links
+            let linksHtml = '';
+            if (lesson.links && lesson.links.length > 0) {
+                const linkItems = lesson.links.map(link => {
+                    try {
+                        const domain = new URL(link).hostname.replace('www.', '');
+                        return `
+                            <a href="${link}" target="_blank" rel="noopener noreferrer" class="flex items-center p-4 bg-white border border-gray-200 rounded-xl hover:border-blue-400 hover:shadow-md transition-all group">
+                                <div class="bg-blue-50 p-3 rounded-lg mr-4 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                    <i data-lucide="external-link" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1 overflow-hidden">
+                                    <h5 class="font-semibold text-gray-800 text-base truncate">External Resource</h5>
+                                    <p class="text-sm text-gray-500 truncate">${domain}</p>
+                                </div>
+                            </a>
+                        `;
+                    } catch (e) { return ''; } // Invalid URL fallback
+                }).join('');
+                
+                if(linkItems) {
+                    linksHtml = `
+                        <div class="mb-8">
+                            <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                                <i data-lucide="paperclip" class="w-5 h-5 mr-2 text-gray-400"></i> Additional Materials
+                            </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                ${linkItems}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Images
+            let imagesHtml = '';
+            if (lesson.images && lesson.images.length > 0) {
+                const imgItems = lesson.images.map(img => `
+                    <div class="relative rounded-xl overflow-hidden shadow-sm border border-gray-200 group">
+                        <img src="${img}" alt="Lesson visual" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                    </div>
+                `).join('');
+                
+                imagesHtml = `
+                    <div class="mb-8">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                            <i data-lucide="image" class="w-5 h-5 mr-2 text-gray-400"></i> Visuals
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            ${imgItems}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Render Output
+            main.innerHTML = `
+                <div class="max-w-4xl mx-auto pb-24 animate-fade-in">
+                    
+                    <header class="mb-6 md:mb-8">
+                        <div class="inline-block bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full mb-3 md:mb-4 uppercase tracking-wide">
+                            Lesson
+                        </div>
+                        <h1 class="text-2xl md:text-4xl font-extrabold text-gray-900 leading-tight tracking-tight mb-2 md:mb-4">${lesson.title}</h1>
+                    </header>
+
+                    ${mediaHtml}
+
+                    <div class="prose max-w-none mb-8">
+                        ${descHtml}
+                    </div>
+
+                    ${linksHtml}
+                    ${imagesHtml}
+
+                    <hr class="border-gray-200 my-10">
+
+                    <!-- Actions -->
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <div class="text-center sm:text-left">
+                            <h4 class="font-bold text-gray-900 mb-1">Finished with this task?</h4>
+                            <p class="text-sm text-gray-500">Mark it as completed to track your progress.</p>
+                        </div>
+                        
+                        <button onclick="toggleCompletion(${lesson.id})" class="w-full sm:w-auto flex items-center justify-center px-8 py-3.5 rounded-xl font-bold text-lg transition-all duration-300 transform active:scale-95 ${
+                            isCompleted 
+                            ? 'bg-green-100 text-green-700 hover:bg-green-200 border-2 border-green-200 shadow-inner' 
+                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-blue-500/30'
+                        }">
+                            ${isCompleted 
+                                ? '<i data-lucide="check-circle-2" class="w-6 h-6 mr-2"></i> Completed' 
+                                : '<i data-lucide="circle" class="w-6 h-6 mr-2"></i> Mark as Completed'
+                            }
+                        </button>
+                    </div>
+                    
+                </div>
+            `;
+            lucide.createIcons();
+            
+            // Scroll to top upon lesson load
+            main.scrollTo(0, 0);
+        }
+
+        // --- 5. TAB LOGIC ---
+        // Expose function globally for the inline onclick handlers generated above
+        window.switchTab = function(btnElement, targetId) {
+            // Reset all buttons
+            const container = btnElement.parentElement;
+            const buttons = container.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.className = 'tab-btn whitespace-nowrap px-4 py-2 rounded-lg font-medium transition-all bg-gray-100 text-gray-600 hover:bg-gray-200';
+            });
+            
+            // Set active button
+            btnElement.className = 'tab-btn whitespace-nowrap px-4 py-2 rounded-lg font-medium transition-all bg-blue-600 text-white shadow-md';
+
+            // Hide all content
+            const contentContainer = container.nextElementSibling;
+            const contents = contentContainer.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+
+            // Show target content
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('block');
+            }
+        };
+
+        // --- 6. INITIALIZATION ---
+        function init() {
+            updateProgressUI();
+            
+            if (state.lastActiveLessonId) {
+                state.currentLessonId = state.lastActiveLessonId;
+                renderSidebar();
+                renderLesson(state.lastActiveLessonId);
+                updateBreadcrumbs();
+            } else {
+                goHome();
+            }
+        }
+
+        // Add simple fade-in animation to document
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+            .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        `;
+        document.head.appendChild(style);
+
+        // Start Application
+        document.addEventListener('DOMContentLoaded', init);
+
+    </script>
+</body>
+</html>
