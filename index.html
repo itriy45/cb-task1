@@ -12,7 +12,7 @@
 
   <!-- Мобільний хедер -->
   <div class="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-50 flex items-center justify-between px-4 shadow-sm">
-    <h1 class="font-bold text-xl text-blue-600 truncate max-w-[80%]">LMS Платформа</h1>
+    <h1 class="font-bold text-xl text-blue-600 truncate max-w-[80%] cursor-pointer hover:text-blue-700 transition-colors" onclick="selectLesson('home')">LMS Платформа</h1>
     <button onclick="toggleSidebar()" class="p-2 bg-gray-100 rounded-md text-gray-600 hover:bg-gray-200">
       <i id="mobile-menu-icon" data-lucide="menu" class="w-6 h-6"></i>
     </button>
@@ -23,8 +23,8 @@
 
   <!-- БОКОВА ПАНЕЛЬ (SIDEBAR) -->
   <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-80 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 mt-16 lg:mt-0">
-    <div class="p-6 border-b border-gray-100 hidden lg:block">
-      <h1 class="font-extrabold text-2xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Академія</h1>
+    <div class="p-6 border-b border-gray-100 hidden lg:block cursor-pointer group" onclick="selectLesson('home')">
+      <h1 class="font-extrabold text-2xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">Академія</h1>
       <p class="text-sm text-gray-500 mt-1">Програма навчання</p>
     </div>
     
@@ -980,11 +980,28 @@
     ];
 
     // --- СТАН ДОДАТКУ ---
-    let activeLessonId = 3;
+    let activeLessonId = 'home';
     let isSidebarOpen = false;
     let currentVideoIndex = 0;
 
     // --- ДОПОМІЖНІ ФУНКЦІЇ ---
+    const getModules = () => {
+      const modules = [];
+      let currentModule = null;
+      courseData.forEach(item => {
+        if (item.isModule) {
+          currentModule = { ...item, lessons: [] };
+          modules.push(currentModule);
+        } else if (currentModule) {
+          currentModule.lessons.push(item);
+        } else {
+          currentModule = { id: 'intro', title: 'Вступні матеріали', isModule: true, description: [], lessons: [item] };
+          modules.push(currentModule);
+        }
+      });
+      return modules;
+    };
+
     const getEmbedUrl = (url) => {
       if (!url) return null;
       const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
@@ -1030,6 +1047,7 @@
       currentVideoIndex = 0;
       if (isSidebarOpen) toggleSidebar();
       renderApp();
+      document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function selectVideo(index) {
@@ -1050,6 +1068,17 @@
     function renderSidebar() {
       const navContainer = document.getElementById('sidebar-nav');
       let html = '';
+
+      // Кнопка Головної сторінки в сайдбарі
+      const isHomeActive = activeLessonId === 'home';
+      html += `
+        <button onclick="selectLesson('home')" class="w-full text-left flex items-start gap-3 px-3 py-3 rounded-xl transition-all border mb-4 ${isHomeActive ? 'bg-blue-50 text-blue-700 shadow-sm border-blue-100' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 border-transparent'}">
+          <div class="mt-0.5 shrink-0">
+            <i data-lucide="home" class="w-[18px] h-[18px] ${isHomeActive ? 'text-blue-600' : 'text-gray-400'}"></i>
+          </div>
+          <span class="text-sm font-bold leading-snug">Головна сторінка</span>
+        </button>
+      `;
 
       courseData.forEach(item => {
         if (item.isModule) {
@@ -1080,6 +1109,74 @@
 
     function renderContent() {
       const contentContainer = document.getElementById('main-content');
+      
+      // РЕНДЕР ГОЛОВНОЇ СТОРІНКИ (DASHBOARD)
+      if (activeLessonId === 'home') {
+        const modules = getModules();
+        let html = `
+          <div class="max-w-3xl mx-auto animate-in fade-in duration-300">
+            <!-- Компактний заголовок -->
+            <div class="mb-8 border-b border-gray-200 pb-5">
+              <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Програма курсу</h1>
+              <p class="text-gray-500 text-sm">Оберіть розділ та урок для перегляду матеріалів.</p>
+            </div>
+            
+            <!-- Мінімалістичний Акордеон Модулів -->
+            <div class="space-y-3">
+        `;
+
+        modules.forEach((mod, index) => {
+          const lessonCount = mod.lessons.length;
+          // Робимо перший модуль відкритим за замовчуванням
+          const isOpen = index === 0 ? 'open' : '';
+
+          html += `
+            <details class="group bg-white border border-gray-200 rounded-xl shadow-sm [&_summary::-webkit-details-marker]:hidden" ${isOpen}>
+              <summary class="flex items-center justify-between p-4 font-bold text-gray-900 cursor-pointer hover:bg-gray-50 rounded-xl transition-colors select-none">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                    <i data-lucide="${lessonCount > 0 ? 'folder' : 'folder-lock'}" class="w-5 h-5 ${lessonCount > 0 ? 'text-blue-600' : 'text-gray-400'}"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-base leading-tight">${mod.title}</h3>
+                    <p class="text-xs text-gray-400 font-normal mt-1">${lessonCount} уроків</p>
+                  </div>
+                </div>
+                <div class="w-8 h-8 flex items-center justify-center rounded-full group-hover:bg-white border border-transparent group-hover:border-gray-200 transition-colors">
+                  <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform duration-300"></i>
+                </div>
+              </summary>
+              
+              <div class="px-4 pb-4 pt-2 border-t border-gray-100">
+                ${mod.description[0] ? `<p class="text-sm text-gray-500 mb-4 px-2 italic">${mod.description[0]}</p>` : ''}
+                
+                ${lessonCount > 0 ? `
+                  <div class="space-y-1">
+                    ${mod.lessons.map(l => `
+                      <button onclick="selectLesson(${l.id})" class="w-full text-left flex items-start gap-3 p-3 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-blue-700 transition-colors border border-transparent hover:border-blue-100 group/btn">
+                        <i data-lucide="play-circle" class="w-5 h-5 text-gray-300 group-hover/btn:text-blue-500 shrink-0 mt-0.5 transition-colors"></i>
+                        <span class="text-sm font-medium leading-snug">${l.title}</span>
+                      </button>
+                    `).join('')}
+                  </div>
+                ` : `
+                  <div class="p-4 text-center text-sm text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+                    Матеріали відсутні
+                  </div>
+                `}
+              </div>
+            </details>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+        contentContainer.innerHTML = html;
+        return;
+      }
+
       const activeLesson = courseData.find(l => l.id === activeLessonId);
       const currentIndex = courseData.findIndex(l => l.id === activeLessonId);
       
@@ -1088,7 +1185,9 @@
       let html = `
         <!-- Хлібні крихти -->
         <div class="flex items-center text-sm text-gray-500 mb-6 font-medium">
-          <span>Програма</span>
+          <button onclick="selectLesson('home')" class="hover:text-blue-600 flex items-center gap-1 transition-colors">
+            <i data-lucide="home" class="w-4 h-4"></i> Головна
+          </button>
           <i data-lucide="chevron-right" class="w-4 h-4 mx-2"></i>
           <span class="text-gray-900 truncate">Урок ${activeLesson.id}</span>
         </div>
