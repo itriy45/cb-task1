@@ -2,670 +2,725 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dental Instruments - Interactive Lesson</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dental Instruments - Code Black Academy</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .catalog-bg {
-            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+        /* Base Colors & Typography */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f5f4f0; /* Warm off-white from screenshot */
+            color: #1c1917; 
+            -webkit-tap-highlight-color: transparent; 
         }
-        /* Custom Select Styling */
-        select {
+        
+        /* Custom Pill Radio Buttons */
+        .option-label {
+            display: block;
+            position: relative;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+        .option-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .option-body {
+            border: 1.5px solid #1c1917;
+            border-radius: 9999px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s ease-in-out;
+            background-color: transparent;
+        }
+        .option-circle {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 1.5px solid #1c1917;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .option-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            background-color: #7e22ce; /* Brand Purple */
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.2s ease;
+        }
+        .option-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        /* Selected State */
+        .option-input:checked ~ .option-body {
+            border-color: #7e22ce;
+            background-color: #faf5ff; /* Light purple tint */
+        }
+        .option-input:checked ~ .option-body .option-circle {
+            border-color: #7e22ce;
+        }
+        .option-input:checked ~ .option-body .option-dot {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .option-input:checked ~ .option-body .option-text {
+            color: #6b21a8;
+        }
+
+        /* Validation States */
+        .option-body.is-correct {
+            border-color: #16a34a !important;
+            background-color: #f0fdf4 !important;
+        }
+        .option-body.is-correct .option-circle { border-color: #16a34a !important; }
+        .option-body.is-correct .option-dot { background-color: #16a34a !important; opacity: 1 !important; transform: scale(1) !important; }
+        .option-body.is-incorrect {
+            border-color: #ea580c !important;
+            background-color: #fff7ed !important;
+        }
+        .option-body.is-incorrect .option-circle { border-color: #ea580c !important; }
+        .option-body.is-incorrect .option-dot { background-color: #ea580c !important; opacity: 1 !important; transform: scale(1) !important; }
+
+        /* Pill Text Inputs & Selects */
+        .pill-input {
+            border: 1.5px solid #1c1917;
+            border-radius: 9999px;
+            padding: 0.875rem 1.5rem;
+            background-color: transparent;
+            font-weight: 500;
+            color: #1c1917;
+            width: 100%;
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+        .pill-input:focus {
+            outline: none;
+            border-color: #7e22ce;
+            background-color: #faf5ff;
+        }
+        select.pill-input {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231c1917' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
-            background-position: right 0.5rem center;
-            background-size: 1em;
-            padding-right: 2rem !important;
+            background-position: right 1.25rem center;
+            background-size: 1.2em;
+            padding-right: 3rem;
+            cursor: pointer;
         }
-        .step-container {
-            animation: fadeIn 0.4s ease-in-out;
+        select.pill-input:focus {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237e22ce' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
         }
+        .pill-input.is-correct { border-color: #16a34a; background-color: #f0fdf4; color: #15803d; }
+        .pill-input.is-incorrect { border-color: #ea580c; background-color: #fff7ed; color: #c2410c; }
+
+        /* Pill Tags (Word Bank) */
+        .pill-tag {
+            border: 1.5px solid #1c1917;
+            border-radius: 9999px;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            background: transparent;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .ukr-text {
+            color: #7e22ce;
+            font-size: 0.8em;
+            font-weight: 600;
+            display: block;
+            text-transform: none;
+            margin-top: 0.15rem;
+        }
+
+        /* Submit Button */
+        .action-btn {
+            background-color: #1c1917;
+            color: white;
+            border-radius: 9999px;
+            padding: 1.125rem 2rem;
+            font-weight: 500;
+            font-size: 1.05rem;
+            width: 100%;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .action-btn:hover { background-color: #7e22ce; }
+        .action-btn:active { transform: scale(0.98); }
+
+        /* Animations & Layout */
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .ukr-text {
-            color: #0284c7; /* Tailwind light blue */
-            font-size: 0.9em;
-            font-weight: 500;
-        }
+        .step-container { display: none; }
+        .step-container.active { display: block; }
+        
+        .catalog-scroll::-webkit-scrollbar { width: 4px; }
+        .catalog-scroll::-webkit-scrollbar-track { background: transparent; }
+        .catalog-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
 
     <!-- Toast Notifications Container -->
-    <div id="toast-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center w-full px-4 sm:w-auto"></div>
+    <div id="toast-container" class="fixed top-20 left-0 right-0 z-50 flex flex-col items-center px-4 pointer-events-none"></div>
 
-    <!-- Header & Progress Bar -->
-    <header class="bg-teal-700 text-white shadow-md sticky top-0 z-40">
-        <div class="max-w-4xl mx-auto px-4 py-4 sm:py-6 text-center">
-            <h1 class="text-2xl sm:text-3xl font-bold mb-2">Dental Instruments</h1>
-            
-            <!-- Progress Indicators -->
-            <div class="flex justify-center items-center mt-4 gap-2 sm:gap-4">
-                <div id="prog-1" class="w-8 h-8 rounded-full flex items-center justify-center font-bold bg-white text-teal-700 shadow ring-4 ring-teal-500/30">1</div>
-                <div class="w-8 sm:w-16 h-1 bg-teal-500 rounded"></div>
-                <div id="prog-2" class="w-8 h-8 rounded-full flex items-center justify-center font-bold bg-teal-800 text-teal-300">2</div>
-                <div class="w-8 sm:w-16 h-1 bg-teal-500 rounded"></div>
-                <div id="prog-3" class="w-8 h-8 rounded-full flex items-center justify-center font-bold bg-teal-800 text-teal-300">3</div>
-                <div class="w-8 sm:w-16 h-1 bg-teal-500 rounded"></div>
-                <div id="prog-4" class="w-8 h-8 rounded-full flex items-center justify-center font-bold bg-teal-800 text-teal-300">4</div>
-            </div>
+    <!-- Sticky Header (Text Progress style from screenshot) -->
+    <nav class="sticky top-0 z-40 bg-[#f5f4f0]/95 backdrop-blur-sm flex justify-between items-center py-5 px-5 sm:px-8 border-b border-slate-200">
+        <span class="text-slate-500 font-medium text-sm w-1/4" id="progress-text">Task 1 of 4</span>
+        <span class="text-slate-900 font-bold uppercase tracking-widest text-[11px] sm:text-sm text-center w-2/4">Code Black Academy</span>
+        <div class="w-1/4 flex justify-end">
+            <button onclick="location.reload()" class="text-slate-800 hover:text-purple-700 transition-colors p-1" aria-label="Close">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
         </div>
-    </header>
+    </nav>
 
-    <!-- Main Content Area -->
-    <main class="flex-grow max-w-4xl mx-auto w-full px-4 py-6 sm:py-10">
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-2xl mx-auto px-5 py-8 pb-20">
         
-        <!-- ================= STEP 1 ================= -->
-        <div id="step-1" class="step-container block">
-            <div class="bg-white p-5 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b pb-3">
-                    <span class="bg-blue-100 text-blue-700 p-2 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                    </span>
-                    Task 1: Catalog Reading
+        <!-- ================= TASK 1 ================= -->
+        <div id="step-1" class="step-container active fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl sm:text-3xl font-medium text-slate-900 leading-tight mb-3">
+                    Read the catalog and answer the questions below.
                 </h2>
-                
-                <div class="catalog-bg p-4 sm:p-6 rounded-xl border border-slate-200 mb-8">
-                    <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-4 border-b-2 border-teal-600 pb-2">
-                        <h3 class="text-2xl font-extrabold text-teal-800">Denti-Quick</h3>
-                        <span class="text-sm font-semibold bg-green-500 text-white px-3 py-1 rounded-full mt-2 sm:mt-0 self-start">for all your Dental Supplies</span>
-                    </div>
-                    
-                    <ul class="space-y-4 text-sm sm:text-base text-slate-700">
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Mouth_mirror.jpg/320px-Mouth_mirror.jpg" alt="Dental mirror" class="w-16 h-16 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div>
-                                <strong class="text-slate-900">Dental mirrors</strong> <span class="ukr-text">(Стоматологічні дзеркала)</span> - simple stem. $7 or $22.50 for pack of six
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Dental_probe_01.jpg/320px-Dental_probe_01.jpg" alt="Dental probe" class="w-16 h-16 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div>
-                                <strong class="text-slate-900">C probes</strong> <span class="ukr-text">(С-подібні зонди)</span> - single-ended. $8.
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cheek_retractor.jpg/320px-Cheek_retractor.jpg" alt="Retractor" class="w-16 h-16 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div>
-                                <strong class="text-slate-900">Retractors</strong> <span class="ukr-text">(Ретрактори)</span> - sharp points $47.00; blunt points $44. Two sizes available
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Dental_syringe.jpg/320px-Dental_syringe.jpg" alt="Syringe" class="w-16 h-16 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div>
-                                <strong class="text-slate-900">Aspirating syringe</strong> <span class="ukr-text">(Аспіраційний шприц)</span>, type CW - 1.8cc. $14.50
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Dental_burs.jpg/320px-Dental_burs.jpg" alt="Burs" class="w-16 h-16 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div>
-                                <strong class="text-slate-900">Burs</strong> <span class="ukr-text">(Бори)</span> - 6 pack. Rounded or Egg-shaped. Various sizes. From $20.00
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Dental_excavator.jpg/320px-Dental_excavator.jpg" alt="Excavator" class="w-16 h-16 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div>
-                                <strong class="text-slate-900">Double-ended excavators</strong> <span class="ukr-text">(Двосторонні екскаватори)</span>. Various sizes. $8 each or $7 for orders over 12.
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <div>
-                                <strong class="text-slate-900">Double-ended burnishers</strong> <span class="ukr-text">(Двосторонні гладилки)</span>: No 21/22 and 27/29. $10 each
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <div>
-                                <strong class="text-slate-900">Pluggers</strong> <span class="ukr-text">(Штопфери / Плагери)</span> - double-ended, round tips. $9
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <div>
-                                <strong class="text-slate-900">Stainless steel curettes</strong> <span class="ukr-text">(Кюрети з нержавіючої сталі)</span> - double-ended $9
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Dental_forceps_01.jpg/320px-Dental_forceps_01.jpg" alt="Forceps" class="w-16 h-16 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div>
-                                <strong class="text-slate-900">Extraction forceps</strong> <span class="ukr-text">(Екстракційні щипці)</span> - different models for molars, incisors and anteriors $25
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <div>
-                                <strong class="text-slate-900">Elevators</strong> <span class="ukr-text">(Елеватори)</span> - various sizes - $12
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <div>
-                                <strong class="text-slate-900">Stainless steel chisel</strong> <span class="ukr-text">(Долото з нержавіючої сталі)</span> - 7 inch $15.50
-                            </div>
-                        </li>
-                        <li class="bg-white/50 p-3 rounded flex items-center gap-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Dental_drill.jpg/320px-Dental_drill.jpg" alt="Dental Drill" class="w-16 h-16 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div>
-                                <strong class="text-slate-900">Dental handpieces (drills)</strong> <span class="ukr-text">(Наконечники / Бормашини)</span> - Various speeds and sizes.
-                            </div>
-                        </li>
-                    </ul>
+                <p class="text-slate-400 font-medium text-lg">[ choose one answer per question ]</p>
+            </div>
+            
+            <!-- Minimalist Catalog Area -->
+            <div class="border-[1.5px] border-slate-800 rounded-3xl mb-10 max-h-72 overflow-y-auto catalog-scroll bg-transparent">
+                <div class="bg-slate-100 border-b-[1.5px] border-slate-800 p-4 sticky top-0 z-10">
+                    <h3 class="text-lg font-bold tracking-wide uppercase">Denti-Quick Catalog</h3>
+                </div>
+                <ul class="p-4 space-y-5 text-sm sm:text-base text-slate-800 divide-y divide-slate-200/60">
+                    <li class="flex gap-4 pt-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Mouth_mirror.jpg/320px-Mouth_mirror.jpg" alt="Mirror" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
+                        <div><strong class="font-semibold text-base block">Dental mirrors</strong> <span class="ukr-text">Стоматологічні дзеркала</span> <p class="text-slate-600 mt-1">simple stem. $7 or $22.50 for pack of six</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Dental_probe_01.jpg/320px-Dental_probe_01.jpg" alt="Probe" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
+                        <div><strong class="font-semibold text-base block">C probes</strong> <span class="ukr-text">С-подібні зонди</span> <p class="text-slate-600 mt-1">single-ended. $8.</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cheek_retractor.jpg/320px-Cheek_retractor.jpg" alt="Retractor" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
+                        <div><strong class="font-semibold text-base block">Retractors</strong> <span class="ukr-text">Ретрактори</span> <p class="text-slate-600 mt-1">sharp points $47.00; blunt points $44. Two sizes</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Dental_syringe.jpg/320px-Dental_syringe.jpg" alt="Syringe" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
+                        <div><strong class="font-semibold text-base block">Aspirating syringe</strong> <span class="ukr-text">Аспіраційний шприц</span> <p class="text-slate-600 mt-1">type CW - 1.8cc. $14.50</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Dental_burs.jpg/320px-Dental_burs.jpg" alt="Burs" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
+                        <div><strong class="font-semibold text-base block">Burs</strong> <span class="ukr-text">Бори</span> <p class="text-slate-600 mt-1">6 pack. Rounded or Egg-shaped. From $20</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Dental_excavator.jpg/320px-Dental_excavator.jpg" alt="Excavator" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
+                        <div><strong class="font-semibold text-base block">Double-ended excavators</strong> <span class="ukr-text">Двосторонні екскаватори</span> <p class="text-slate-600 mt-1">$8 each or $7 for orders over 12.</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <div><strong class="font-semibold text-base block">Double-ended burnishers</strong> <span class="ukr-text">Двосторонні гладилки</span> <p class="text-slate-600 mt-1">No 21/22 and 27/29. $10 each</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <div><strong class="font-semibold text-base block">Pluggers</strong> <span class="ukr-text">Штопфери / Плагери</span> <p class="text-slate-600 mt-1">double-ended, round tips. $9</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <div><strong class="font-semibold text-base block">Stainless steel curettes</strong> <span class="ukr-text">Кюрети з нержавіючої сталі</span> <p class="text-slate-600 mt-1">double-ended $9</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Dental_forceps_01.jpg/320px-Dental_forceps_01.jpg" alt="Forceps" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
+                        <div><strong class="font-semibold text-base block">Extraction forceps</strong> <span class="ukr-text">Екстракційні щипці</span> <p class="text-slate-600 mt-1">molars, incisors and anteriors $25</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <div><strong class="font-semibold text-base block">Elevators</strong> <span class="ukr-text">Елеватори</span> <p class="text-slate-600 mt-1">various sizes - $12</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <div><strong class="font-semibold text-base block">Stainless steel chisel</strong> <span class="ukr-text">Долото з нержавіючої сталі</span> <p class="text-slate-600 mt-1">7 inch $15.50</p></div>
+                    </li>
+                    <li class="flex gap-4 pt-4">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Dental_drill.jpg/320px-Dental_drill.jpg" alt="Drill" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
+                        <div><strong class="font-semibold text-base block">Dental handpieces (drills)</strong> <span class="ukr-text">Наконечники</span> <p class="text-slate-600 mt-1">Various speeds and sizes.</p></div>
+                    </li>
+                </ul>
+            </div>
+
+            <form id="form-step-1">
+                <div class="mb-10">
+                    <h3 class="text-xl font-medium mb-4">1. What is similar about dental mirrors and burs?</h3>
+                    <label class="option-label">
+                        <input type="radio" name="q1" value="A" class="option-input">
+                        <div class="option-body" id="opt-q1-A">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">They both come in different shapes.</span>
+                        </div>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q1" value="B" class="option-input">
+                        <div class="option-body" id="opt-q1-B">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">They both come in packs of six.</span>
+                        </div>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q1" value="C" class="option-input">
+                        <div class="option-body" id="opt-q1-C">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">They are the same price.</span>
+                        </div>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q1" value="D" class="option-input">
+                        <div class="option-body" id="opt-q1-D">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">They both come in various sizes.</span>
+                        </div>
+                    </label>
                 </div>
 
-                <form id="form-step-1" class="space-y-6">
-                    <div class="bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200">
-                        <p class="font-semibold text-lg mb-4 text-slate-800">1. What is similar about dental mirrors and burs?</p>
-                        <div class="space-y-3">
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q1" value="A" class="w-5 h-5 text-blue-600 accent-blue-600"> <span class="flex-1">They both come in different shapes.</span></label>
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q1" value="B" class="w-5 h-5 text-blue-600 accent-blue-600"> <span class="flex-1">They both come in packs of six.</span></label>
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q1" value="C" class="w-5 h-5 text-blue-600 accent-blue-600"> <span class="flex-1">They are the same price.</span></label>
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q1" value="D" class="w-5 h-5 text-blue-600 accent-blue-600"> <span class="flex-1">They both come in various sizes.</span></label>
+                <div class="mb-10">
+                    <h3 class="text-xl font-medium mb-4">2. Which of the following does NOT come in different sizes?</h3>
+                    <label class="option-label">
+                        <input type="radio" name="q2" value="A" class="option-input">
+                        <div class="option-body" id="opt-q2-A">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">C probes</span>
                         </div>
-                    </div>
-                    <div class="bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200">
-                        <p class="font-semibold text-lg mb-4 text-slate-800">2. Which of the following does NOT come in different sizes?</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q2" value="A" class="w-5 h-5 text-blue-600 accent-blue-600"> C probes</label>
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q2" value="C" class="w-5 h-5 text-blue-600 accent-blue-600"> excavators</label>
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q2" value="B" class="w-5 h-5 text-blue-600 accent-blue-600"> retractors</label>
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q2" value="D" class="w-5 h-5 text-blue-600 accent-blue-600"> elevators</label>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q2" value="C" class="option-input">
+                        <div class="option-body" id="opt-q2-C">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">Excavators</span>
                         </div>
-                    </div>
-                    <div class="bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200">
-                        <p class="font-semibold text-lg mb-4 text-slate-800">3. What can be inferred about the forceps?</p>
-                        <div class="space-y-3">
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q3" value="A" class="w-5 h-5 text-blue-600 accent-blue-600"> <span class="flex-1">Dentists need several different types.</span></label>
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q3" value="B" class="w-5 h-5 text-blue-600 accent-blue-600"> <span class="flex-1">They are cheaper when buying several together.</span></label>
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q3" value="C" class="w-5 h-5 text-blue-600 accent-blue-600"> <span class="flex-1">They are made of stainless steel.</span></label>
-                            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border hover:border-blue-400 cursor-pointer transition-colors"><input type="radio" name="q3" value="D" class="w-5 h-5 text-blue-600 accent-blue-600"> <span class="flex-1">They are available in packs of 6.</span></label>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q2" value="B" class="option-input">
+                        <div class="option-body" id="opt-q2-B">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">Retractors</span>
                         </div>
-                    </div>
-                    
-                    <div class="pt-4 flex justify-end">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all w-full sm:w-auto text-lg flex justify-center items-center gap-2">
-                            Check Answers & Continue
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- ================= STEP 2 ================= -->
-        <div id="step-2" class="step-container hidden">
-            <div class="bg-white p-5 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2 border-b pb-3">
-                    <span class="bg-indigo-100 text-indigo-700 p-2 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
-                    </span>
-                    Task 2: Vocabulary Match
-                </h2>
-                <p class="text-slate-600 mb-6 text-lg">Select the correct instrument for each definition below.</p>
-                
-                <form id="form-step-2" class="space-y-6">
-                    <!-- Dynamic select boxes injected via JS -->
-                    <div id="vocab-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-                    
-                    <div class="pt-4 flex justify-between items-center flex-col sm:flex-row gap-4">
-                        <button type="button" onclick="goToStep(1)" class="text-slate-500 hover:text-slate-800 font-medium py-2 px-4 w-full sm:w-auto order-2 sm:order-1 border sm:border-transparent rounded-lg">← Back to Reading</button>
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all w-full sm:w-auto text-lg flex justify-center items-center gap-2 order-1 sm:order-2">
-                            Verify Matches
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- ================= STEP 3 ================= -->
-        <div id="step-3" class="step-container hidden">
-            <div class="bg-white p-5 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2 border-b pb-3">
-                    <span class="bg-emerald-100 text-emerald-700 p-2 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                    </span>
-                    Task 3: Clinical Application
-                </h2>
-                <p class="text-slate-600 mb-6 text-lg">Complete the sentences using the correct words from the bank.</p>
-                
-                <!-- Word Bank -->
-                <div class="flex flex-wrap gap-2 sm:gap-3 mb-8 bg-emerald-50 p-4 sm:p-5 rounded-xl border border-emerald-100 shadow-inner">
-                    <div class="flex flex-col items-center bg-white px-3 py-2 rounded-lg shadow-sm border border-emerald-200 min-w-[100px]">
-                        <span class="font-bold text-emerald-800">drill</span>
-                        <span class="text-xs text-slate-500">бормашина</span>
-                    </div>
-                    <div class="flex flex-col items-center bg-white px-3 py-2 rounded-lg shadow-sm border border-emerald-200 min-w-[100px]">
-                        <span class="font-bold text-emerald-800">probe</span>
-                        <span class="text-xs text-slate-500">зонд</span>
-                    </div>
-                    <div class="flex flex-col items-center bg-white px-3 py-2 rounded-lg shadow-sm border border-emerald-200 min-w-[100px]">
-                        <span class="font-bold text-emerald-800">bur</span>
-                        <span class="text-xs text-slate-500">бор</span>
-                    </div>
-                    <div class="flex flex-col items-center bg-white px-3 py-2 rounded-lg shadow-sm border border-emerald-200 min-w-[100px]">
-                        <span class="font-bold text-emerald-800">excavator</span>
-                        <span class="text-xs text-slate-500">екскаватор</span>
-                    </div>
-                    <div class="flex flex-col items-center bg-white px-3 py-2 rounded-lg shadow-sm border border-emerald-200 min-w-[100px]">
-                        <span class="font-bold text-emerald-800">burnisher</span>
-                        <span class="text-xs text-slate-500">гладилка</span>
-                    </div>
-                    <div class="flex flex-col items-center bg-white px-3 py-2 rounded-lg shadow-sm border border-emerald-200 min-w-[100px]">
-                        <span class="font-bold text-emerald-800">chisel</span>
-                        <span class="text-xs text-slate-500">долото</span>
-                    </div>
-                </div>
-                
-                <form id="form-step-3" class="space-y-4 text-base sm:text-lg">
-                    <div class="leading-loose bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 flex flex-col sm:block gap-2">
-                        <span>1. The dentist used the</span>
-                        <select id="s3-1" class="border border-slate-300 rounded-lg px-3 py-1.5 mx-0 sm:mx-2 text-emerald-700 bg-white font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm w-full sm:w-40"><option value=""></option></select> 
-                        <span>to make the surface smooth.</span>
-                    </div>
-                    
-                    <div class="leading-loose bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 flex flex-col sm:block gap-2">
-                        <span>2. An egg-shaped</span>
-                        <select id="s3-2" class="border border-slate-300 rounded-lg px-3 py-1.5 mx-0 sm:mx-2 text-emerald-700 bg-white font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm w-full sm:w-40"><option value=""></option></select>
-                        <span>was fitted into the handpiece.</span>
-                    </div>
-                    
-                    <div class="leading-loose bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 flex flex-col sm:block gap-2">
-                        <span>3. Dr. Robinson used a(n)</span>
-                        <select id="s3-3" class="border border-slate-300 rounded-lg px-3 py-1.5 mx-0 sm:mx-2 text-emerald-700 bg-white font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm w-full sm:w-40"><option value=""></option></select>
-                        <span>to separate the enamel from the tooth.</span>
-                    </div>
-                    
-                    <div class="leading-loose bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 flex flex-col sm:block gap-2">
-                        <span>4. A(n)</span>
-                        <select id="s3-4" class="border border-slate-300 rounded-lg px-3 py-1.5 mx-0 sm:mx-2 text-emerald-700 bg-white font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm w-full sm:w-40"><option value=""></option></select>
-                        <span>was used to remove the soft tissue and decay.</span>
-                    </div>
-                    
-                    <div class="leading-loose bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 flex flex-col sm:block gap-2">
-                        <span>5. The dentist used the</span>
-                        <select id="s3-5" class="border border-slate-300 rounded-lg px-3 py-1.5 mx-0 sm:mx-2 text-emerald-700 bg-white font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm w-full sm:w-40"><option value=""></option></select>
-                        <span>to feel around in the patient's mouth.</span>
-                    </div>
-                    
-                    <div class="leading-loose bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 flex flex-col sm:block gap-2">
-                        <span>6. Many patients hate the sound and the vibrations of the</span>
-                        <select id="s3-6" class="border border-slate-300 rounded-lg px-3 py-1.5 mx-0 sm:mx-2 text-emerald-700 bg-white font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm w-full sm:w-40"><option value=""></option></select><span>.</span>
-                    </div>
-                    
-                    <div class="pt-6 flex justify-between items-center flex-col sm:flex-row gap-4">
-                        <button type="button" onclick="goToStep(2)" class="text-slate-500 hover:text-slate-800 font-medium py-2 px-4 w-full sm:w-auto order-2 sm:order-1 border sm:border-transparent rounded-lg">← Back to Vocabulary</button>
-                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all w-full sm:w-auto text-lg flex justify-center items-center gap-2 order-1 sm:order-2">
-                            Check Answers
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- ================= STEP 4 ================= -->
-        <div id="step-4" class="step-container hidden">
-            <div class="bg-white p-5 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2 border-b pb-3">
-                    <span class="bg-purple-100 text-purple-700 p-2 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                    </span>
-                    Task 4: Process the Order
-                </h2>
-                <p class="text-slate-600 mb-6 text-lg">Read the phone transcript and complete the order form.</p>
-                
-                <div class="bg-purple-50 p-5 rounded-xl border-l-4 border-purple-500 mb-8 font-medium text-slate-700 space-y-3 shadow-inner">
-                    <p><span class="text-purple-700 font-bold uppercase text-xs tracking-wider">Supplier:</span> "Denti-Quick, how can I help you?"</p>
-                    <p><span class="text-teal-700 font-bold uppercase text-xs tracking-wider">Customer:</span> "Hi, I'd like to order some tools please. I need them for tomorrow."</p>
-                    <p><span class="text-purple-700 font-bold uppercase text-xs tracking-wider">Supplier:</span> "Sure. Do you have an account with us?"</p>
-                    <p><span class="text-teal-700 font-bold uppercase text-xs tracking-wider">Customer:</span> "Yes, it's Garden Practice, Lakeland. Account number 241."</p>
-                    <p><span class="text-purple-700 font-bold uppercase text-xs tracking-wider">Supplier:</span> "Okay. So, what do you need?"</p>
-                    <p><span class="text-teal-700 font-bold uppercase text-xs tracking-wider">Customer:</span> "Twelve excavators and three probes please."</p>
-                    <p><span class="text-purple-700 font-bold uppercase text-xs tracking-wider">Supplier:</span> "Three probes. Anything else?"</p>
-                    <p><span class="text-teal-700 font-bold uppercase text-xs tracking-wider">Customer:</span> "No, that's right."</p>
-                    <p><span class="text-purple-700 font-bold uppercase text-xs tracking-wider">Supplier:</span> "No problem. We'll send them out to you today."</p>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q2" value="D" class="option-input">
+                        <div class="option-body" id="opt-q2-D">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">Elevators</span>
+                        </div>
+                    </label>
                 </div>
 
-                <form id="form-step-4" class="space-y-8">
-                    <!-- Part A: True/False -->
-                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
-                        <h3 class="font-bold text-lg mb-4 text-slate-800">Part A: True or False</h3>
-                        <div class="space-y-3">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-4 rounded-lg border hover:border-slate-300 transition-colors">
-                                <span class="font-medium">1. The woman's account number is 39AT7.</span>
-                                <div class="flex gap-4 mt-3 sm:mt-0 w-full sm:w-auto">
-                                    <label class="flex-1 sm:flex-none flex items-center justify-center gap-2 cursor-pointer bg-slate-100 p-2 rounded border border-slate-200"><input type="radio" name="tf1" value="T" class="w-5 h-5 accent-purple-600"> True</label>
-                                    <label class="flex-1 sm:flex-none flex items-center justify-center gap-2 cursor-pointer bg-slate-100 p-2 rounded border border-slate-200"><input type="radio" name="tf1" value="F" class="w-5 h-5 accent-purple-600"> False</label>
-                                </div>
-                            </div>
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-4 rounded-lg border hover:border-slate-300 transition-colors">
-                                <span class="font-medium">2. The woman buys twelve probes.</span>
-                                <div class="flex gap-4 mt-3 sm:mt-0 w-full sm:w-auto">
-                                    <label class="flex-1 sm:flex-none flex items-center justify-center gap-2 cursor-pointer bg-slate-100 p-2 rounded border border-slate-200"><input type="radio" name="tf2" value="T" class="w-5 h-5 accent-purple-600"> True</label>
-                                    <label class="flex-1 sm:flex-none flex items-center justify-center gap-2 cursor-pointer bg-slate-100 p-2 rounded border border-slate-200"><input type="radio" name="tf2" value="F" class="w-5 h-5 accent-purple-600"> False</label>
-                                </div>
-                            </div>
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-4 rounded-lg border hover:border-slate-300 transition-colors">
-                                <span class="font-medium">3. The company will send the tools today.</span>
-                                <div class="flex gap-4 mt-3 sm:mt-0 w-full sm:w-auto">
-                                    <label class="flex-1 sm:flex-none flex items-center justify-center gap-2 cursor-pointer bg-slate-100 p-2 rounded border border-slate-200"><input type="radio" name="tf3" value="T" class="w-5 h-5 accent-purple-600"> True</label>
-                                    <label class="flex-1 sm:flex-none flex items-center justify-center gap-2 cursor-pointer bg-slate-100 p-2 rounded border border-slate-200"><input type="radio" name="tf3" value="F" class="w-5 h-5 accent-purple-600"> False</label>
-                                </div>
-                            </div>
+                <div class="mb-10">
+                    <h3 class="text-xl font-medium mb-4">3. What can be inferred about the forceps?</h3>
+                    <label class="option-label">
+                        <input type="radio" name="q3" value="A" class="option-input">
+                        <div class="option-body" id="opt-q3-A">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">Dentists need several different types.</span>
                         </div>
-                    </div>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q3" value="B" class="option-input">
+                        <div class="option-body" id="opt-q3-B">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">Cheaper when buying several together.</span>
+                        </div>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q3" value="C" class="option-input">
+                        <div class="option-body" id="opt-q3-C">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">They are made of stainless steel.</span>
+                        </div>
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q3" value="D" class="option-input">
+                        <div class="option-body" id="opt-q3-D">
+                            <div class="option-circle"><div class="option-dot"></div></div>
+                            <span class="option-text">They are available in packs of 6.</span>
+                        </div>
+                    </label>
+                </div>
+                
+                <div id="action-container-1" class="mt-8">
+                    <button type="submit" class="action-btn">Check Answers</button>
+                </div>
+            </form>
+        </div>
 
-                    <!-- Part B: Form -->
-                    <div class="bg-white p-6 sm:p-8 rounded-xl border-2 border-slate-200 relative shadow-md">
-                        <div class="absolute -top-4 right-4 bg-purple-100 p-2 rounded-full border border-purple-200">
-                            <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                        </div>
-                        <h3 class="font-bold text-xl text-center text-teal-800 mb-1">Denti-Quick</h3>
-                        <h4 class="font-light text-2xl text-center text-slate-700 mb-6 uppercase tracking-widest border-b border-slate-200 pb-3">Order Form</h4>
-                        
-                        <div class="space-y-5">
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                <label class="font-semibold text-slate-600 w-full sm:w-32 uppercase text-sm tracking-wide">Customer:</label>
-                                <input type="text" id="order-customer" placeholder="e.g. Garden Practice" class="flex-grow border-b-2 border-slate-300 bg-slate-50 p-2 focus:outline-none focus:border-purple-500 focus:bg-white transition-colors rounded-t">
-                            </div>
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                <label class="font-semibold text-slate-600 w-full sm:w-32 uppercase text-sm tracking-wide">Account No:</label>
-                                <input type="text" id="order-account" placeholder="e.g. 123" class="flex-grow border-b-2 border-slate-300 bg-slate-50 p-2 focus:outline-none focus:border-purple-500 focus:bg-white transition-colors rounded-t">
-                            </div>
-                            
-                            <div class="pt-6">
-                                <label class="font-semibold text-slate-600 block mb-3 uppercase text-sm tracking-wide">Order Items:</label>
-                                <div class="flex gap-3 mb-3">
-                                    <input type="number" id="order-qty1" placeholder="Qty" class="w-24 border border-slate-300 rounded-lg p-3 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 bg-slate-50 focus:bg-white transition-colors">
-                                    <input type="text" id="order-item1" placeholder="Item Name (e.g., excavators)" class="flex-grow border border-slate-300 rounded-lg p-3 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 bg-slate-50 focus:bg-white transition-colors">
-                                </div>
-                                <div class="flex gap-3">
-                                    <input type="number" id="order-qty2" placeholder="Qty" class="w-24 border border-slate-300 rounded-lg p-3 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 bg-slate-50 focus:bg-white transition-colors">
-                                    <input type="text" id="order-item2" placeholder="Item Name (e.g., probes)" class="flex-grow border border-slate-300 rounded-lg p-3 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 bg-slate-50 focus:bg-white transition-colors">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-6 flex justify-between items-center flex-col sm:flex-row gap-4">
-                        <button type="button" onclick="goToStep(3)" class="text-slate-500 hover:text-slate-800 font-medium py-2 px-4 w-full sm:w-auto order-2 sm:order-1 border sm:border-transparent rounded-lg">← Back to Application</button>
-                        <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-transform transform hover:scale-105 w-full sm:w-auto text-lg flex justify-center items-center gap-2 order-1 sm:order-2">
-                            Submit Final Order
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        </button>
-                    </div>
-                </form>
+        <!-- ================= TASK 2 ================= -->
+        <div id="step-2" class="step-container">
+            <div class="mb-8">
+                <h2 class="text-2xl sm:text-3xl font-medium text-slate-900 leading-tight mb-3">
+                    Vocabulary Match. Select the correct instrument for each definition.
+                </h2>
+                <p class="text-slate-400 font-medium text-lg">[ choose an instrument from the dropdown ]</p>
             </div>
+            
+            <form id="form-step-2" class="space-y-6">
+                <div id="vocab-container" class="space-y-6"></div>
+                
+                <div id="action-container-2" class="pt-8">
+                    <button type="submit" class="action-btn">Verify Matches</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ================= TASK 3 ================= -->
+        <div id="step-3" class="step-container">
+            <div class="mb-8">
+                <h2 class="text-2xl sm:text-3xl font-medium text-slate-900 leading-tight mb-3">
+                    Clinical Application. Complete the sentences.
+                </h2>
+                <p class="text-slate-400 font-medium text-lg">[ use the word bank below ]</p>
+            </div>
+            
+            <div class="flex flex-wrap gap-3 mb-10">
+                <div class="pill-tag">DRILL <span class="ukr-text font-normal">бормашина</span></div>
+                <div class="pill-tag">PROBE <span class="ukr-text font-normal">зонд</span></div>
+                <div class="pill-tag">BUR <span class="ukr-text font-normal">бор</span></div>
+                <div class="pill-tag">EXCAVATOR <span class="ukr-text font-normal">екскаватор</span></div>
+                <div class="pill-tag">BURNISHER <span class="ukr-text font-normal">гладилка</span></div>
+                <div class="pill-tag">CHISEL <span class="ukr-text font-normal">долото</span></div>
+            </div>
+
+            <form id="form-step-3" class="space-y-8">
+                <div>
+                    <h3 class="text-lg font-medium mb-3">1. The dentist used the... to make the surface smooth.</h3>
+                    <select id="s3-1" class="pill-input"><option value="">-- Select option --</option></select> 
+                </div>
+                <div>
+                    <h3 class="text-lg font-medium mb-3">2. An egg-shaped... was fitted into the handpiece.</h3>
+                    <select id="s3-2" class="pill-input"><option value="">-- Select option --</option></select>
+                </div>
+                <div>
+                    <h3 class="text-lg font-medium mb-3">3. Dr. Robinson used a(n)... to separate the enamel.</h3>
+                    <select id="s3-3" class="pill-input"><option value="">-- Select option --</option></select>
+                </div>
+                <div>
+                    <h3 class="text-lg font-medium mb-3">4. A(n)... was used to remove the soft tissue and decay.</h3>
+                    <select id="s3-4" class="pill-input"><option value="">-- Select option --</option></select>
+                </div>
+                <div>
+                    <h3 class="text-lg font-medium mb-3">5. The dentist used the... to feel around in the mouth.</h3>
+                    <select id="s3-5" class="pill-input"><option value="">-- Select option --</option></select>
+                </div>
+                <div>
+                    <h3 class="text-lg font-medium mb-3">6. Many patients hate the sound and the vibrations of the...</h3>
+                    <select id="s3-6" class="pill-input"><option value="">-- Select option --</option></select>
+                </div>
+                
+                <div id="action-container-3" class="pt-8">
+                    <button type="submit" class="action-btn">Verify Sentences</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ================= TASK 4 ================= -->
+        <div id="step-4" class="step-container">
+            <div class="mb-8">
+                <h2 class="text-2xl sm:text-3xl font-medium text-slate-900 leading-tight mb-3">
+                    Process the Order. Read the transcript and fill the form.
+                </h2>
+                <p class="text-slate-400 font-medium text-lg">[ complete both parts ]</p>
+            </div>
+            
+            <div class="border-[1.5px] border-slate-800 rounded-3xl p-5 mb-10 text-base space-y-3 bg-transparent">
+                <p><span class="font-bold uppercase text-[11px] tracking-wider block mb-0.5 opacity-60">Supplier:</span> "Denti-Quick, how can I help you?"</p>
+                <p><span class="font-bold text-purple-700 uppercase text-[11px] tracking-wider block mb-0.5">Customer:</span> "Hi, I'd like to order some tools please. I need them for tomorrow."</p>
+                <p><span class="font-bold uppercase text-[11px] tracking-wider block mb-0.5 opacity-60">Supplier:</span> "Sure. Do you have an account with us?"</p>
+                <p><span class="font-bold text-purple-700 uppercase text-[11px] tracking-wider block mb-0.5">Customer:</span> "Yes, it's Garden Practice, Lakeland. Account number 241."</p>
+                <p><span class="font-bold uppercase text-[11px] tracking-wider block mb-0.5 opacity-60">Supplier:</span> "Okay. So, what do you need?"</p>
+                <p><span class="font-bold text-purple-700 uppercase text-[11px] tracking-wider block mb-0.5">Customer:</span> "Twelve excavators and three probes please."</p>
+                <p><span class="font-bold uppercase text-[11px] tracking-wider block mb-0.5 opacity-60">Supplier:</span> "Three probes. Anything else?"</p>
+                <p><span class="font-bold text-purple-700 uppercase text-[11px] tracking-wider block mb-0.5">Customer:</span> "No, that's right."</p>
+                <p><span class="font-bold uppercase text-[11px] tracking-wider block mb-0.5 opacity-60">Supplier:</span> "No problem. We'll send them out to you today."</p>
+            </div>
+
+            <form id="form-step-4">
+                <div class="mb-12">
+                    <h2 class="text-2xl font-medium mb-6">Part A: True or False</h2>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium mb-3">1. The account number is 39AT7.</h3>
+                        <label class="option-label">
+                            <input type="radio" name="tf1" value="T" class="option-input">
+                            <div class="option-body" id="opt-tf1-T"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">True</span></div>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="tf1" value="F" class="option-input">
+                            <div class="option-body" id="opt-tf1-F"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">False</span></div>
+                        </label>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium mb-3">2. The woman buys 12 probes.</h3>
+                        <label class="option-label">
+                            <input type="radio" name="tf2" value="T" class="option-input">
+                            <div class="option-body" id="opt-tf2-T"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">True</span></div>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="tf2" value="F" class="option-input">
+                            <div class="option-body" id="opt-tf2-F"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">False</span></div>
+                        </label>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium mb-3">3. Tools will be sent today.</h3>
+                        <label class="option-label">
+                            <input type="radio" name="tf3" value="T" class="option-input">
+                            <div class="option-body" id="opt-tf3-T"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">True</span></div>
+                        </label>
+                        <label class="option-label">
+                            <input type="radio" name="tf3" value="F" class="option-input">
+                            <div class="option-body" id="opt-tf3-F"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">False</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-medium mb-6">Part B: Order Form</h2>
+                    <div class="space-y-5">
+                        <input type="text" id="order-customer" placeholder="Customer Name (e.g. Garden Practice)" class="pill-input">
+                        <input type="text" id="order-account" placeholder="Account Number" class="pill-input">
+                        <div class="flex gap-3">
+                            <input type="number" id="order-qty1" placeholder="Qty" class="pill-input" style="width: 35%;">
+                            <input type="text" id="order-item1" placeholder="Item Name" class="pill-input" style="width: 65%;">
+                        </div>
+                        <div class="flex gap-3">
+                            <input type="number" id="order-qty2" placeholder="Qty" class="pill-input" style="width: 35%;">
+                            <input type="text" id="order-item2" placeholder="Item Name" class="pill-input" style="width: 65%;">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="action-container-4" class="pt-6">
+                    <button type="submit" class="action-btn">Submit Final Order</button>
+                </div>
+            </form>
         </div>
 
         <!-- ================= COMPLETION ================= -->
-        <div id="completion-state" class="step-container hidden">
-            <div class="text-center py-16 px-6 bg-white rounded-3xl shadow-xl border-4 border-green-400 relative overflow-hidden z-10 max-w-2xl mx-auto">
-                <div class="absolute -top-10 -left-10 w-32 h-32 bg-green-200 rounded-full opacity-50 blur-xl"></div>
-                <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-teal-200 rounded-full opacity-50 blur-xl"></div>
-                
-                <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 relative z-10">
-                    <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                </div>
-                
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-4 relative z-10">Module Complete!</h2>
-                <p class="text-lg text-slate-600 mb-8 relative z-10 max-w-lg mx-auto leading-relaxed">You have successfully mastered the Dental Instruments lesson. You now know the tools, their clinical uses, and how to process supplies.</p>
-                <button onclick="location.reload()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 relative z-10 text-lg">Start Over</button>
+        <div id="step-5" class="step-container text-center pt-10">
+            <div class="w-32 h-32 mx-auto border-[1.5px] border-slate-800 rounded-full flex items-center justify-center mb-8">
+                <svg class="w-16 h-16 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"></path></svg>
             </div>
+            <h2 class="text-4xl font-medium text-slate-900 mb-6">Module Complete!</h2>
+            <p class="text-slate-600 font-medium text-lg mb-12 max-w-sm mx-auto">You have successfully mastered the Dental Instruments lesson. Excellent work.</p>
+            <button onclick="location.reload()" class="action-btn" style="max-width: 300px; margin: 0 auto;">Restart Lesson</button>
         </div>
 
     </main>
 
     <script>
-        // Data for Vocab
+        // Data Configuration
         const vocabDefinitions = [
-            { id: 'v1', text: "A. a tool for extracting teeth", ukr: "інструмент для видалення зубів", answer: "forceps" },
-            { id: 'v2', text: "B. a tool for making holes in teeth", ukr: "інструмент для створення отворів у зубах", answer: "handpiece" },
-            { id: 'v3', text: "C. a tool that helps dentists see inside the mouth", ukr: "інструмент для огляду порожнини рота", answer: "mirror" },
-            { id: 'v4', text: "D. a tool for plugging nerve canals after extraction", ukr: "інструмент для пломбування кореневих каналів", answer: "plugger" },
-            { id: 'v5', text: "E. a tool for cleaning between teeth and under gum line", ukr: "інструмент для очищення між зубами та під яснами", answer: "curette" },
-            { id: 'v6', text: "F. a tool for loosening or separating teeth", ukr: "інструмент для розхитування або відокремлення зубів", answer: "elevator" },
-            { id: 'v7', text: "G. a tool fitted with a needle to push liquid into body", ukr: "інструмент з голкою для введення рідини", answer: "syringe" },
-            { id: 'v8', text: "H. a tool that pulls part of the mouth away for access", ukr: "інструмент для відтягування тканин для кращого доступу", answer: "retractor" }
+            { id: 'v1', text: "A tool for extracting teeth", ukr: "інструмент для видалення зубів", answer: "forceps" },
+            { id: 'v2', text: "A tool for making holes in teeth", ukr: "створення отворів у зубах", answer: "handpiece" },
+            { id: 'v3', text: "Helps dentists see inside the mouth", ukr: "огляд порожнини рота", answer: "mirror" },
+            { id: 'v4', text: "Plugs nerve canals", ukr: "пломбування кореневих каналів", answer: "plugger" },
+            { id: 'v5', text: "Cleans between teeth", ukr: "очищення між зубами", answer: "curette" },
+            { id: 'v6', text: "Loosens or separates teeth", ukr: "розхитування зубів", answer: "elevator" },
+            { id: 'v7', text: "Fitted with a needle to push liquid", ukr: "з голкою для рідини", answer: "syringe" },
+            { id: 'v8', text: "Pulls part of the mouth away", ukr: "відтягування тканин", answer: "retractor" }
         ];
         
         const toolOptions = [
-            {val: "curette", label: "curette (кюрета)"}, 
-            {val: "elevator", label: "elevator (елеватор)"}, 
-            {val: "forceps", label: "forceps (щипці)"}, 
-            {val: "handpiece", label: "handpiece (наконечник)"}, 
-            {val: "mirror", label: "mirror (дзеркало)"}, 
-            {val: "plugger", label: "plugger (плагер)"}, 
-            {val: "retractor", label: "retractor (ретрактор)"}, 
-            {val: "syringe", label: "syringe (шприц)"}
+            {val: "curette", label: "Curette"}, {val: "elevator", label: "Elevator"}, 
+            {val: "forceps", label: "Forceps"}, {val: "handpiece", label: "Handpiece"}, 
+            {val: "mirror", label: "Mirror"}, {val: "plugger", label: "Plugger"}, 
+            {val: "retractor", label: "Retractor"}, {val: "syringe", label: "Syringe"}
         ];
 
         const step3Words = ["drill", "probe", "bur", "excavator", "burnisher", "chisel"];
         const s3Answers = ["burnisher", "bur", "chisel", "excavator", "probe", "drill"];
 
-        // Init App Data
         document.addEventListener("DOMContentLoaded", () => {
-            // Vocab Step 2 Setup
+            // Setup Vocab
             const vocabContainer = document.getElementById('vocab-container');
-            vocabDefinitions.forEach(def => {
-                let optionsHTML = `<option value="" class="text-slate-400">Select instrument...</option>`;
-                toolOptions.forEach(tool => {
-                    optionsHTML += `<option value="${tool.val}">${tool.label}</option>`;
-                });
+            vocabDefinitions.forEach((def, index) => {
+                let optionsHTML = `<option value="">-- select instrument --</option>`;
+                toolOptions.forEach(tool => optionsHTML += `<option value="${tool.val}">${tool.label}</option>`);
 
                 vocabContainer.innerHTML += `
-                    <div class="bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 flex flex-col justify-between shadow-sm">
-                        <div class="mb-3">
-                            <p class="font-medium text-slate-800 text-base sm:text-lg leading-snug">${def.text}</p>
-                            <p class="ukr-text mt-1 text-sm">${def.ukr}</p>
-                        </div>
-                        <select id="${def.id}" class="w-full border border-slate-300 rounded-lg px-3 py-2.5 bg-white text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-semibold shadow-sm text-sm sm:text-base" data-answer="${def.answer}">
-                            ${optionsHTML}
-                        </select>
+                    <div>
+                        <h3 class="text-lg font-medium mb-3">${index + 1}. ${def.text} <span class="ukr-text">${def.ukr}</span></h3>
+                        <select id="${def.id}" data-answer="${def.answer}" class="pill-input">${optionsHTML}</select>
                     </div>
                 `;
             });
 
-            // Fill Blanks Step 3 Setup
+            // Setup Fill Blanks
             for(let i=1; i<=6; i++) {
                 const sel = document.getElementById(`s3-${i}`);
-                step3Words.forEach(w => sel.innerHTML += `<option value="${w}">${w}</option>`);
+                step3Words.forEach(w => sel.innerHTML += `<option value="${w}">${w.toUpperCase()}</option>`);
             }
         });
 
-        // Navigation & UI System
-        function goToStep(stepNumber) {
-            // Hide all
-            document.querySelectorAll('.step-container').forEach(el => el.classList.add('hidden'));
-            
-            if (stepNumber <= 4) {
-                document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
-                updateProgressUI(stepNumber);
-            } else {
-                document.getElementById('completion-state').classList.remove('hidden');
-                updateProgressUI(5); // Complete state
-                confettiEffect();
-            }
-            // Scroll to top on mobile for new "screen"
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function updateProgressUI(currentStep) {
-            for(let i=1; i<=4; i++) {
-                const progEl = document.getElementById(`prog-${i}`);
-                if (!progEl) continue;
-                
-                if (i < currentStep) {
-                    // Completed
-                    progEl.className = "w-8 h-8 rounded-full flex items-center justify-center font-bold bg-teal-500 text-white shadow-md transition-all";
-                    progEl.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
-                } else if (i === currentStep) {
-                    // Active
-                    progEl.className = "w-8 h-8 rounded-full flex items-center justify-center font-bold bg-white text-teal-700 shadow ring-4 ring-teal-500/30 transition-all";
-                    progEl.innerHTML = i;
-                } else {
-                    // Pending
-                    progEl.className = "w-8 h-8 rounded-full flex items-center justify-center font-bold bg-teal-800 text-teal-300 transition-all";
-                    progEl.innerHTML = i;
-                }
-            }
-        }
-
+        // Toast System
         function showToast(message, type = 'error') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             
-            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-500';
-            const icon = type === 'success' 
-                ? `<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`
-                : `<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
-
-            toast.className = `flex items-center gap-3 px-4 py-3 rounded-lg shadow-xl text-white font-medium text-sm transition-all duration-300 transform -translate-y-full opacity-0 ${bgColor} mb-2 w-full max-w-sm`;
-            toast.innerHTML = `${icon} <span class="flex-1">${message}</span>`;
+            const bgColor = type === 'success' ? 'bg-[#16a34a]' : (type === 'warning' ? 'bg-[#ea580c]' : 'bg-[#dc2626]');
+            
+            toast.className = `flex items-center justify-center text-center px-6 py-4 rounded-full shadow-lg text-white font-medium text-[15px] transition-all duration-300 transform -translate-y-full opacity-0 ${bgColor} mb-2 pointer-events-auto`;
+            toast.innerHTML = `<span>${message}</span>`;
             
             container.appendChild(toast);
+            void toast.offsetWidth; // Reflow
             
-            setTimeout(() => toast.classList.remove('-translate-y-full', 'opacity-0'), 10);
+            toast.classList.remove('-translate-y-full', 'opacity-0');
             setTimeout(() => {
                 toast.classList.add('-translate-y-full', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 
-        // STEP 1 Validation
+        function updateProgress(stepNumber) {
+            document.getElementById('progress-text').innerText = `Task ${stepNumber} of 4`;
+        }
+
+        function goToNextStep(nextStep) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            document.querySelectorAll('.step-container').forEach(el => {
+                el.classList.remove('active', 'fade-in');
+            });
+            
+            setTimeout(() => {
+                const nextEl = document.getElementById(`step-${nextStep}`);
+                nextEl.classList.add('active', 'fade-in');
+                if(nextStep <= 4) updateProgress(nextStep);
+            }, 100);
+        }
+
+        function transitionToNextButton(containerId, nextStepFn) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <button type="button" class="action-btn !bg-[#7e22ce] !text-white hover:!bg-[#6b21a8]">
+                    Continue to Next Task
+                    <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+            `;
+            container.querySelector('button').addEventListener('click', nextStepFn);
+        }
+
+        // TASK 1 Handler
         document.getElementById('form-step-1').addEventListener('submit', (e) => {
             e.preventDefault();
             const form = e.target;
-            
-            if (form.dataset.reviewed === 'true') {
-                goToStep(2);
-                return;
-            }
-
             const q1 = form.q1.value, q2 = form.q2.value, q3 = form.q3.value;
             if (!q1 || !q2 || !q3) return showToast("Please answer all 3 questions.", "error");
 
             const correctAnswers = { q1: 'B', q2: 'A', q3: 'A' };
-            if (q1 === correctAnswers.q1 && q2 === correctAnswers.q2 && q3 === correctAnswers.q3) {
-                showToast("Great reading comprehension! Proceeding to Task 2.", "success");
-                setTimeout(() => goToStep(2), 600);
-            } else {
-                ['q1', 'q2', 'q3'].forEach(q => {
-                    const userVal = form[q].value;
-                    const correctVal = correctAnswers[q];
-                    
-                    if (userVal !== correctVal) {
-                        document.querySelector(`input[name="${q}"][value="${userVal}"]`).parentElement.classList.add('bg-red-50', 'border-red-400');
-                    }
-                    const correctEl = document.querySelector(`input[name="${q}"][value="${correctVal}"]`);
-                    correctEl.checked = true;
-                    correctEl.parentElement.classList.add('bg-green-50', 'border-green-400');
-                });
+            let allCorrect = q1 === correctAnswers.q1 && q2 === correctAnswers.q2 && q3 === correctAnswers.q3;
 
-                showToast("Let's review! We've highlighted the correct answers for you. Please carry on.", "error");
+            ['q1', 'q2', 'q3'].forEach(q => {
+                const userVal = form[q].value;
+                form.querySelectorAll(`input[name="${q}"]`).forEach(inp => inp.disabled = true);
                 
-                const btn = form.querySelector('button[type="submit"]');
-                btn.innerHTML = `Continue to Next Task <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>`;
-                btn.classList.replace('bg-blue-600', 'bg-slate-800');
-                btn.classList.replace('hover:bg-blue-700', 'hover:bg-slate-900');
-                form.dataset.reviewed = 'true';
-            }
+                if (userVal !== correctAnswers[q]) {
+                    document.getElementById(`opt-${q}-${userVal}`).classList.add('is-incorrect');
+                }
+                const correctRadio = document.querySelector(`input[name="${q}"][value="${correctAnswers[q]}"]`);
+                correctRadio.checked = true;
+                document.getElementById(`opt-${q}-${correctAnswers[q]}`).classList.add('is-correct');
+            });
+
+            if (allCorrect) showToast("Perfect! Answers verified.", "success");
+            else showToast("Corrections applied. Please review.", "warning");
+            
+            transitionToNextButton('action-container-1', () => goToNextStep(2));
         });
 
-        // STEP 2 Validation
+        // TASK 2 Handler
         document.getElementById('form-step-2').addEventListener('submit', (e) => {
             e.preventDefault();
-            const form = e.target;
-            
-            if (form.dataset.reviewed === 'true') {
-                goToStep(3);
-                return;
-            }
-
             let allCorrect = true, allFilled = true;
 
             vocabDefinitions.forEach(def => {
                 const selectEl = document.getElementById(def.id);
-                const val = selectEl.value;
-                if (!val) allFilled = false;
+                if (!selectEl.value) allFilled = false;
+                selectEl.disabled = true;
                 
-                if (val !== selectEl.dataset.answer) {
+                if (selectEl.value !== selectEl.dataset.answer) {
                     allCorrect = false;
-                    selectEl.value = selectEl.dataset.answer; // Auto-correct
-                    selectEl.classList.remove('border-slate-300', 'text-indigo-700');
-                    selectEl.classList.add('border-orange-400', 'bg-orange-50', 'text-orange-800');
+                    selectEl.value = selectEl.dataset.answer;
+                    selectEl.classList.add('is-incorrect');
                 } else {
-                    selectEl.classList.remove('border-slate-300', 'text-indigo-700', 'border-orange-400', 'bg-orange-50', 'text-orange-800');
-                    selectEl.classList.add('border-green-500', 'bg-green-50', 'text-green-700');
+                    selectEl.classList.add('is-correct');
                 }
             });
 
-            if (!allFilled) return showToast("Please select an instrument for all definitions.", "error");
-            
-            if (!allCorrect) {
-                showToast("Some matches were incorrect. The correct answers have been filled in for you.", "error");
-                const btn = form.querySelector('button[type="submit"]');
-                btn.innerHTML = `Continue to Next Task <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>`;
-                btn.classList.replace('bg-indigo-600', 'bg-slate-800');
-                btn.classList.replace('hover:bg-indigo-700', 'hover:bg-slate-900');
-                form.dataset.reviewed = 'true';
-            } else {
-                showToast("Perfect vocabulary matches! Proceeding to Task 3.", "success");
-                setTimeout(() => goToStep(3), 600);
+            if (!allFilled) {
+                vocabDefinitions.forEach(def => document.getElementById(def.id).disabled = false);
+                return showToast("Please match all items.", "error");
             }
+            
+            if (allCorrect) showToast("Perfect vocabulary matches!", "success");
+            else showToast("Mistakes corrected. Review below.", "warning");
+
+            transitionToNextButton('action-container-2', () => goToNextStep(3));
         });
 
-        // STEP 3 Validation
+        // TASK 3 Handler
         document.getElementById('form-step-3').addEventListener('submit', (e) => {
             e.preventDefault();
-            const form = e.target;
-            
-            if (form.dataset.reviewed === 'true') {
-                goToStep(4);
-                return;
-            }
-
             let allCorrect = true, allFilled = true;
 
             for(let i=1; i<=6; i++) {
                 const sel = document.getElementById(`s3-${i}`);
                 if (!sel.value) allFilled = false;
+                sel.disabled = true;
+                
                 if (sel.value !== s3Answers[i-1]) {
                     allCorrect = false;
-                    sel.value = s3Answers[i-1]; // Auto-correct
-                    sel.classList.remove('border-slate-300', 'text-emerald-700');
-                    sel.classList.add('border-orange-400', 'bg-orange-50', 'text-orange-800');
+                    sel.value = s3Answers[i-1];
+                    sel.classList.add('is-incorrect');
                 } else {
-                    sel.classList.remove('border-slate-300', 'text-emerald-700', 'border-orange-400', 'bg-orange-50', 'text-orange-800');
-                    sel.classList.add('border-green-500', 'text-green-700', 'bg-green-50');
+                    sel.classList.add('is-correct');
                 }
             }
 
-            if (!allFilled) return showToast("Please fill in all the blanks.", "error");
-            
-            if (!allCorrect) {
-                showToast("Some words were incorrectly placed. We've corrected them for you to review.", "error");
-                const btn = form.querySelector('button[type="submit"]');
-                btn.innerHTML = `Continue to Next Task <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>`;
-                btn.classList.replace('bg-emerald-600', 'bg-slate-800');
-                btn.classList.replace('hover:bg-emerald-700', 'hover:bg-slate-900');
-                form.dataset.reviewed = 'true';
-            } else {
-                showToast("Excellent application! Moving to the final task.", "success");
-                setTimeout(() => goToStep(4), 600);
+            if (!allFilled) {
+                for(let i=1; i<=6; i++) document.getElementById(`s3-${i}`).disabled = false;
+                return showToast("Please fill in all blanks.", "error");
             }
+            
+            if (allCorrect) showToast("Excellent clinical application!", "success");
+            else showToast("Sentences corrected. Review below.", "warning");
+
+            transitionToNextButton('action-container-3', () => goToNextStep(4));
         });
 
-        // STEP 4 Validation
+        // TASK 4 Handler
         document.getElementById('form-step-4').addEventListener('submit', (e) => {
             e.preventDefault();
             const form = e.target;
-
-            if (form.dataset.reviewed === 'true') {
-                goToStep(5);
-                return;
-            }
             
             const tf1 = form.tf1.value, tf2 = form.tf2.value, tf3 = form.tf3.value;
             if (!tf1 || !tf2 || !tf3) return showToast("Please answer the True/False questions.", "error");
@@ -677,33 +732,29 @@
             const q2 = document.getElementById('order-qty2').value;
             const i2 = document.getElementById('order-item2').value.toLowerCase();
 
-            if(!customer || !account || !q1 || !i1 || !q2 || !i2) return showToast("Please fill out the entire order form.", "error");
+            if(!customer || !account || !q1 || !i1 || !q2 || !i2) return showToast("Please complete the entire form.", "error");
 
             let allCorrect = true;
 
             // Correct True/False
             const tfAnswers = { tf1: 'F', tf2: 'F', tf3: 'T' };
             ['tf1', 'tf2', 'tf3'].forEach(q => {
+                form.querySelectorAll(`input[name="${q}"]`).forEach(inp => inp.disabled = true);
                 if (form[q].value !== tfAnswers[q]) {
                     allCorrect = false;
-                    document.querySelector(`input[name="${q}"][value="${form[q].value}"]`).parentElement.classList.add('bg-red-100', 'border-red-300');
+                    document.getElementById(`opt-${q}-${form[q].value}`).classList.add('is-incorrect');
                 }
                 const correctEl = document.querySelector(`input[name="${q}"][value="${tfAnswers[q]}"]`);
                 correctEl.checked = true;
-                correctEl.parentElement.classList.add('bg-green-100', 'border-green-400');
+                document.getElementById(`opt-${q}-${tfAnswers[q]}`).classList.add('is-correct');
             });
 
-            // Correct Form
-            if (!customer.includes('garden')) {
-                allCorrect = false;
-                document.getElementById('order-customer').value = 'Garden Practice';
-                document.getElementById('order-customer').classList.add('bg-orange-50', 'text-orange-800', 'border-orange-400');
-            }
-            if (!account.includes('241')) {
-                allCorrect = false;
-                document.getElementById('order-account').value = '241';
-                document.getElementById('order-account').classList.add('bg-orange-50', 'text-orange-800', 'border-orange-400');
-            }
+            // Correct Form fields
+            const formFields = ['order-customer', 'order-account', 'order-qty1', 'order-item1', 'order-qty2', 'order-item2'];
+            formFields.forEach(id => document.getElementById(id).disabled = true);
+
+            if (!customer.includes('garden')) { allCorrect = false; document.getElementById('order-customer').value = 'Garden Practice'; }
+            if (!account.includes('241')) { allCorrect = false; document.getElementById('order-account').value = '241'; }
 
             const row1Valid = (q1 == '12' && i1.includes('excavator')) || (q1 == '3' && i1.includes('probe'));
             const row2Valid = (q2 == '12' && i2.includes('excavator')) || (q2 == '3' && i2.includes('probe'));
@@ -714,42 +765,45 @@
                 document.getElementById('order-item1').value = 'excavators';
                 document.getElementById('order-qty2').value = '3';
                 document.getElementById('order-item2').value = 'probes';
-                
-                ['order-qty1', 'order-item1', 'order-qty2', 'order-item2'].forEach(id => {
-                    document.getElementById(id).classList.add('bg-orange-50', 'text-orange-800', 'border-orange-400');
-                });
             }
 
             if (!allCorrect) {
-                showToast("Some order details were incorrect. We've corrected the form for you.", "error");
-                const btn = form.querySelector('button[type="submit"]');
-                btn.innerHTML = `Finish Module <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
-                btn.classList.replace('bg-purple-600', 'bg-slate-800');
-                btn.classList.replace('hover:bg-purple-700', 'hover:bg-slate-900');
-                form.dataset.reviewed = 'true';
+                formFields.forEach(id => document.getElementById(id).classList.add('is-incorrect'));
+                showToast("Order form corrected. Review below.", "warning");
             } else {
-                showToast("Order verified and submitted!", "success");
-                setTimeout(() => goToStep(5), 800);
+                formFields.forEach(id => document.getElementById(id).classList.add('is-correct'));
+                showToast("Order Processed successfully!", "success");
             }
+
+            const btnContainer = document.getElementById('action-container-4');
+            btnContainer.innerHTML = `
+                <button type="button" class="action-btn !bg-[#16a34a] !text-white hover:!bg-[#15803d]">
+                    Finish Module
+                </button>
+            `;
+            btnContainer.querySelector('button').addEventListener('click', () => {
+                goToNextStep(5);
+                confettiEffect();
+            });
         });
 
-        // Confetti logic
         function confettiEffect() {
-            const colors = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
+            const colors = ['#7e22ce', '#a855f7', '#d8b4fe', '#f3e8ff', '#1c1917', '#16a34a'];
             for(let i=0; i<60; i++) {
                 const conf = document.createElement('div');
                 conf.style.position = 'fixed';
-                conf.style.width = Math.random() * 8 + 6 + 'px';
+                conf.style.width = Math.random() * 10 + 6 + 'px';
                 conf.style.height = conf.style.width;
                 conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 conf.style.left = Math.random() * 100 + 'vw';
                 conf.style.top = '-20px';
-                conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '9999px';
                 conf.style.zIndex = '9999';
+                conf.style.pointerEvents = 'none';
                 document.body.appendChild(conf);
 
-                const speed = Math.random() * 3 + 3;
-                const angle = (Math.random() - 0.5) * 4;
+                const speed = Math.random() * 4 + 4;
+                const angle = (Math.random() - 0.5) * 5;
                 let top = -20;
                 let left = parseFloat(conf.style.left);
 
@@ -758,7 +812,7 @@
                     left += angle;
                     conf.style.top = top + 'px';
                     conf.style.left = left + 'vw';
-                    conf.style.transform = `rotate(${top * 4}deg)`;
+                    conf.style.transform = `rotate(${top * 5}deg)`;
 
                     if (top > window.innerHeight) {
                         clearInterval(fall);
