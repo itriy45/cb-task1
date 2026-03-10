@@ -3,975 +3,1343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dental Instruments - Code Black Academy</title>
+    <title>Code Black Academy - Night Shift Assessment</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Base Colors & Typography */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f5f4f0; 
-            color: #1c1917; 
-            -webkit-tap-highlight-color: transparent; 
+        :root {
+            --bg-color: #f5f4f0;
+            --text-color: #1c1917;
+            --brand-primary: #7e22ce;
+            --brand-light: #faf5ff;
+            --success-color: #16a34a;
+            --success-light: #f0fdf4;
+            --warning-color: #ea580c;
+            --warning-light: #fff7ed;
         }
-        
-        /* Custom Pill Radio Buttons */
-        .option-label {
-            display: block;
-            position: relative;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 0.75rem;
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
-        .option-input {
+
+        /* Step Containers */
+        .step-container {
+            display: none;
+            min-height: calc(100vh - 56px); /* Reduced from 64px */
+        }
+        .step-container.active {
+            display: flex;
+            flex-direction: column;
+            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
             position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
+            bottom: -1.5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: transparent;
+            z-index: 60;
         }
-        .option-body {
-            border: 1.5px solid #1c1917;
+        .progress-bar {
+            height: 100%;
+            background-color: var(--brand-primary);
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Header */
+        header {
+            height: 56px; /* Reduced from 64px to make top part smaller */
+            background-color: var(--bg-color);
+            border-bottom: 1.5px solid rgba(28, 25, 23, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        /* Story Block */
+        .story-block {
+            background-color: var(--brand-light);
+            border: 1.5px solid #d8b4fe; /* purple-300 */
+            border-radius: 1rem;
+            padding: 1rem; /* Reduced padding */
+            margin-bottom: 1rem; /* Reduced margin */
+            position: relative;
+            overflow: hidden;
+        }
+        .story-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--brand-primary);
+        }
+
+        /* Pill Components */
+        .radio-option {
+            border: 1.5px solid var(--text-color);
             border-radius: 9999px;
             padding: 1rem 1.25rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            transition: all 0.2s ease-in-out;
-            background-color: transparent;
-        }
-        .option-circle {
-            width: 1.5rem;
-            height: 1.5rem;
-            border: 1.5px solid #1c1917;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-        }
-        .option-dot {
-            width: 0.75rem;
-            height: 0.75rem;
-            background-color: #7e22ce; 
-            border-radius: 50%;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.2s ease;
-        }
-        .option-text {
-            font-size: 0.95rem;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-        
-        /* Selected State */
-        .option-input:checked ~ .option-body {
-            border-color: #7e22ce;
-            background-color: #faf5ff; 
-        }
-        .option-input:checked ~ .option-body .option-circle {
-            border-color: #7e22ce;
-        }
-        .option-input:checked ~ .option-body .option-dot {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .option-input:checked ~ .option-body .option-text {
-            color: #6b21a8;
-        }
-
-        /* Validation States */
-        .is-correct {
-            border-color: #16a34a !important;
-            background-color: #f0fdf4 !important;
-        }
-        .option-body.is-correct .option-circle { border-color: #16a34a !important; }
-        .option-body.is-correct .option-dot { background-color: #16a34a !important; opacity: 1 !important; transform: scale(1) !important; }
-        .is-incorrect {
-            border-color: #ea580c !important;
-            background-color: #fff7ed !important;
-        }
-        .option-body.is-incorrect .option-circle { border-color: #ea580c !important; }
-        .option-body.is-incorrect .option-dot { background-color: #ea580c !important; opacity: 1 !important; transform: scale(1) !important; }
-
-        /* Pill Text Inputs & Selects */
-        .pill-input {
-            border: 1.5px solid #1c1917;
-            border-radius: 9999px;
-            padding: 0.875rem 1.5rem;
-            background-color: transparent;
-            font-weight: 500;
-            color: #1c1917;
-            width: 100%;
-            appearance: none;
-            transition: all 0.2s ease;
-            font-size: 0.95rem;
-        }
-        .pill-input:focus {
-            outline: none;
-            border-color: #7e22ce;
-            background-color: #faf5ff;
-        }
-        select.pill-input {
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231c1917' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 1.25rem center;
-            background-size: 1.2em;
-            padding-right: 3rem;
             cursor: pointer;
-        }
-        select.pill-input:focus {
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237e22ce' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        }
-        .pill-input.is-correct { border-color: #16a34a !important; background-color: #f0fdf4 !important; color: #15803d !important; }
-        .pill-input.is-incorrect { border-color: #ea580c !important; background-color: #fff7ed !important; color: #c2410c !important; }
-
-        /* Pill Tags (Word Bank) */
-        .pill-tag {
-            border: 1.5px solid #1c1917;
-            border-radius: 9999px;
-            padding: 0.5rem 1.25rem;
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            background: transparent;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
-        }
-
-        .ukr-text {
-            color: #7e22ce;
-            font-size: 0.8em;
-            font-weight: 600;
-            display: block;
-            text-transform: none;
-            margin-top: 0.15rem;
-        }
-
-        /* Submit Button */
-        .action-btn {
-            background-color: #1c1917;
-            color: white;
-            border-radius: 9999px;
-            padding: 1.125rem 2rem;
-            font-weight: 500;
-            font-size: 1.05rem;
-            width: 100%;
             transition: all 0.2s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            background: white;
+            user-select: none;
+            opacity: 0;
+            animation: fadeInOption 0.4s ease-out forwards;
         }
-        .action-btn:hover:not(:disabled) { background-color: #7e22ce; }
-        .action-btn:active:not(:disabled) { transform: scale(0.98); }
-        .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* Animations & Layout */
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn {
+        .radio-option:nth-child(1) { animation-delay: 0.05s; }
+        .radio-option:nth-child(2) { animation-delay: 0.15s; }
+        .radio-option:nth-child(3) { animation-delay: 0.25s; }
+        .radio-option:nth-child(4) { animation-delay: 0.35s; }
+
+        @keyframes fadeInOption {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .step-container { display: none; }
-        .step-container.active { display: block; }
         
-        /* Catalog expand transition */
-        .catalog-scroll {
-            transition: max-height 0.5s ease-in-out;
+        .radio-option:active {
+            transform: scale(0.98);
         }
-        .catalog-scroll::-webkit-scrollbar { width: 4px; }
-        .catalog-scroll::-webkit-scrollbar-track { background: transparent; }
-        .catalog-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .radio-dot {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            border: 1.5px solid var(--text-color);
+            border-radius: 50%;
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        /* Selected State */
+        .radio-option.selected {
+            border-color: var(--brand-primary);
+            background-color: var(--brand-light);
+        }
+        .radio-option.selected .radio-dot {
+            border-color: var(--brand-primary);
+        }
+        .radio-option.selected .radio-dot::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background-color: var(--brand-primary);
+            border-radius: 50%;
+        }
+
+        /* Correct State */
+        .radio-option.correct {
+            border-color: var(--success-color) !important;
+            background-color: var(--success-light) !important;
+            pointer-events: none;
+        }
+        .radio-option.correct .radio-dot {
+            border-color: var(--success-color) !important;
+        }
+        .radio-option.correct .radio-dot::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background-color: var(--success-color) !important;
+            border-radius: 50%;
+        }
+
+        /* Incorrect State */
+        .radio-option.incorrect {
+            border-color: var(--warning-color) !important;
+            background-color: var(--warning-light) !important;
+        }
+        .radio-option.incorrect .radio-dot {
+            border-color: var(--warning-color) !important;
+        }
+        .radio-option.incorrect .radio-dot::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background-color: var(--warning-color) !important;
+            border-radius: 50%;
+        }
+
+        /* Disabled State */
+        .radio-option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* Buttons */
+        .btn-pill {
+            border-radius: 9999px;
+            background-color: var(--text-color);
+            color: white;
+            padding: 1.125rem 2rem;
+            font-weight: 600;
+            font-size: 1.125rem;
+            width: 100%;
+            transition: all 0.2s ease;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .btn-pill:active {
+            transform: scale(0.98);
+        }
+        .btn-pill:hover {
+            background-color: var(--brand-primary);
+        }
+        .btn-pill.btn-warning {
+            background-color: var(--warning-color) !important;
+        }
+        .btn-pill.btn-success {
+            background-color: var(--success-color) !important;
+        }
+
+        .pulse-btn {
+            animation: pulse-shadow 2s infinite;
+        }
+
+        @keyframes pulse-shadow {
+            0% { box-shadow: 0 0 0 0 rgba(126, 34, 206, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(126, 34, 206, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(126, 34, 206, 0); }
+        }
+
+        /* Audio Animation Styles */
+        .audio-bars {
+            display: none;
+            align-items: flex-end;
+            height: 12px;
+            gap: 2px;
+            margin-left: 6px;
+        }
+        .audio-bars .bar {
+            width: 3px;
+            background-color: #7e22ce;
+            border-radius: 2px;
+            animation: bounce 0.4s infinite alternate ease-in-out;
+        }
+        .audio-bars .bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+        .audio-bars .bar:nth-child(2) { height: 12px; animation-delay: 0.3s; }
+        .audio-bars .bar:nth-child(3) { height: 8px; animation-delay: 0.0s; }
+        
+        @keyframes bounce {
+            0% { height: 4px; }
+            100% { height: 12px; }
+        }
+
+        .listen-btn.is-playing .audio-bars {
+            display: flex;
+        }
+        .listen-btn.is-playing .listen-icon {
+            display: none;
+        }
+        .listen-btn.is-playing {
+            animation: pulse-shadow-small 1.5s infinite;
+        }
+        @keyframes pulse-shadow-small {
+            0% { box-shadow: 0 0 0 0 rgba(126, 34, 206, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(126, 34, 206, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(126, 34, 206, 0); }
+        }
+
+        /* Layout Helpers */
+        .task-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            max-width: 32rem;
+            margin: 0 auto;
+            width: 100%;
+            padding: 1rem; /* Reduced padding so content fills screen closer to edges */
+        }
+
+        .options-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Hide the action button wrappers initially to save space */
+        .task-form > div:last-child {
+            display: none;
+        }
+        .task-form > div:last-child.revealed {
+            display: block;
+            animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Toasts */
+        #toast-container {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 400px;
+            pointer-events: none;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            z-index: 1000;
+            top: -10px;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
-    <!-- Toast Notifications Container -->
-    <div id="toast-container" class="fixed top-20 left-0 right-0 z-50 flex flex-col items-center px-4 pointer-events-none"></div>
-
-    <!-- Sticky Header (Text Progress style from screenshot) -->
-    <nav class="sticky top-0 z-40 bg-[#f5f4f0]/95 backdrop-blur-sm flex justify-between items-center py-5 px-5 sm:px-8 border-b border-slate-200">
-        <span class="text-slate-500 font-medium text-sm w-1/4" id="progress-text">Task 1 of 4</span>
-        <span class="text-slate-900 font-bold uppercase tracking-widest text-[11px] sm:text-sm text-center w-2/4">Code Black Academy</span>
-        <div class="w-1/4 flex justify-end">
-            <button onclick="location.reload()" class="text-slate-800 hover:text-purple-700 transition-colors p-1" aria-label="Close">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
+    <!-- Header -->
+    <header class="flex justify-between items-center px-4 w-full relative">
+        <div class="w-24 text-sm font-semibold text-slate-500" id="progress-text">Shift: 0%</div>
+        <div class="font-bold text-lg tracking-tight">Code Black Academy</div>
+        <div class="w-24 flex justify-end">
+            <!-- Hidden close button for immersion -->
+            <button onclick="localStorage.removeItem('cba_med_test'); location.reload();" class="text-xs text-slate-400 hover:text-[#ea580c] transition-colors font-bold underline">Reset</button>
         </div>
-    </nav>
+        <!-- Progress Bar inside header -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </header>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
 
     <!-- Main Content -->
-    <main class="flex-grow w-full max-w-2xl mx-auto px-5 py-8 pb-20">
+    <main id="app-container">
         
-        <!-- ================= TASK 1 ================= -->
-        <div id="step-1" class="step-container active fade-in">
-            <div class="mb-8">
-                <h2 class="text-2xl sm:text-3xl font-medium text-slate-900 leading-tight mb-3">
-                    📖 Read the catalog and answer the questions below.
-                </h2>
-                <p class="text-slate-400 font-medium text-lg">[ choose one answer per question ]</p>
-            </div>
-            
-            <!-- Expandable Catalog Area -->
-            <div class="border-[1.5px] border-slate-800 rounded-3xl mb-10 overflow-hidden bg-white shadow-sm">
-                <div class="bg-slate-100 border-b-[1.5px] border-slate-800 p-4 sticky top-0 z-10 flex justify-between items-center">
-                    <h3 class="text-lg font-bold tracking-wide uppercase">📦 Denti-Quick</h3>
-                    <button type="button" onclick="toggleCatalog()" id="catalog-toggle-btn" class="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-purple-700 bg-purple-100 hover:bg-purple-200 px-3 py-1.5 rounded-full transition-colors border border-purple-200">
-                        ↕️ Expand
-                    </button>
+        <!-- Step 0: Narrative Intro -->
+        <div id="step-0" class="step-container active">
+            <div class="task-content justify-center">
+                <div class="text-center mb-10">
+                    <div class="text-7xl mb-6">🏥</div>
+                    <h1 class="text-4xl font-extrabold mb-4 text-[#1c1917] tracking-tight">The Night Shift</h1>
+                    <p class="text-lg text-slate-500 font-medium max-w-sm mx-auto">Welcome, Doctor. You've just clocked in for your first rotation at Code Black Memorial Hospital.</p>
                 </div>
-                
-                <div id="catalog-content-wrapper" class="max-h-72 overflow-y-auto catalog-scroll">
-                    <ul id="catalog-list" class="p-4 space-y-5 text-sm sm:text-base text-slate-800 divide-y divide-slate-200/60">
-                        <li class="flex gap-4 pt-2">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Mouth_mirror.jpg/320px-Mouth_mirror.jpg" alt="Mirror" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div><strong class="font-semibold text-base block">🔍 Dental mirrors</strong> <span class="ukr-text">Стоматологічні дзеркала</span> <p class="text-slate-600 mt-1">simple stem. $7 or $22.50 for pack of six</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Dental_probe_01.jpg/320px-Dental_probe_01.jpg" alt="Probe" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div><strong class="font-semibold text-base block">🦯 C probes</strong> <span class="ukr-text">С-подібні зонди</span> <p class="text-slate-600 mt-1">single-ended. $8.</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cheek_retractor.jpg/320px-Cheek_retractor.jpg" alt="Retractor" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div><strong class="font-semibold text-base block">👄 Retractors</strong> <span class="ukr-text">Ретрактори</span> <p class="text-slate-600 mt-1">sharp points $47.00; blunt points $44. Two sizes</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Dental_syringe.jpg/320px-Dental_syringe.jpg" alt="Syringe" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div><strong class="font-semibold text-base block">💉 Aspirating syringe</strong> <span class="ukr-text">Аспіраційний шприц</span> <p class="text-slate-600 mt-1">type CW - 1.8cc. $14.50</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Dental_burs.jpg/320px-Dental_burs.jpg" alt="Burs" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div><strong class="font-semibold text-base block">🔩 Burs</strong> <span class="ukr-text">Бори</span> <p class="text-slate-600 mt-1">6 pack. Rounded or Egg-shaped. From $20</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Dental_excavator.jpg/320px-Dental_excavator.jpg" alt="Excavator" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div><strong class="font-semibold text-base block">🥄 Double-ended excavators</strong> <span class="ukr-text">Двосторонні екскаватори</span> <p class="text-slate-600 mt-1">$8 each or $7 for orders over 12.</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <div><strong class="font-semibold text-base block">🪄 Double-ended burnishers</strong> <span class="ukr-text">Двосторонні гладилки</span> <p class="text-slate-600 mt-1">No 21/22 and 27/29. $10 each</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <div><strong class="font-semibold text-base block">🔨 Pluggers</strong> <span class="ukr-text">Штопфери / Плагери</span> <p class="text-slate-600 mt-1">double-ended, round tips. $9</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <div><strong class="font-semibold text-base block">🪥 Stainless steel curettes</strong> <span class="ukr-text">Кюрети з нержавіючої сталі</span> <p class="text-slate-600 mt-1">double-ended $9</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Dental_forceps_01.jpg/320px-Dental_forceps_01.jpg" alt="Forceps" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div><strong class="font-semibold text-base block">🗜️ Extraction forceps</strong> <span class="ukr-text">Екстракційні щипці</span> <p class="text-slate-600 mt-1">molars, incisors and anteriors $25</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <div><strong class="font-semibold text-base block">🕹️ Elevators</strong> <span class="ukr-text">Елеватори</span> <p class="text-slate-600 mt-1">various sizes - $12</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <div><strong class="font-semibold text-base block">🪛 Stainless steel chisel</strong> <span class="ukr-text">Долото з нержавіючої сталі</span> <p class="text-slate-600 mt-1">7 inch $15.50</p></div>
-                        </li>
-                        <li class="flex gap-4 pt-4">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Dental_drill.jpg/320px-Dental_drill.jpg" alt="Drill" class="w-14 h-14 object-cover rounded shadow-sm border border-slate-200" onerror="this.style.display='none'">
-                            <div><strong class="font-semibold text-base block">🔫 Dental handpieces (drills)</strong> <span class="ukr-text">Наконечники</span> <p class="text-slate-600 mt-1">Various speeds and sizes.</p></div>
-                        </li>
+
+                <div class="bg-white p-6 rounded-3xl border-2 border-[#1c1917] shadow-sm mb-8 relative">
+                    <div class="absolute -top-3 -left-3 bg-[#ea580c] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide transform rotate-[-5deg]">Urgent</div>
+                    <p class="text-[#1c1917] font-medium leading-relaxed mb-4">
+                        The ER is packed, the pagers are buzzing, and lives are on the line. Over the next 15 scenarios, we need to test how you handle medical English under pressure.
+                    </p>
+                    <p class="text-sm font-bold text-[#7e22ce] uppercase tracking-wider mb-2">Rules of the ward:</p>
+                    <ul class="text-sm text-slate-600 space-y-2">
+                        <li class="flex items-center">⏱️ <span class="ml-2">Make decisions quickly.</span></li>
+                        <li class="flex items-center">🎯 <span class="ml-2">You only get <strong>one attempt</strong> per patient.</span></li>
+                        <li class="flex items-center">💾 <span class="ml-2">Your progress auto-saves.</span></li>
                     </ul>
                 </div>
+
+                <button onclick="startShift()" class="btn-pill !bg-[#7e22ce] hover:!bg-purple-800 pulse-btn flex justify-center items-center">
+                    Clock In & Start Shift <span class="ml-2">🩺</span>
+                </button>
             </div>
-
-            <form id="form-step-1" data-attempts="0">
-                <div class="mb-10">
-                    <h3 class="text-xl font-medium mb-4">1. What is similar about dental mirrors and burs? 🧐</h3>
-                    <label class="option-label">
-                        <input type="radio" name="q1" value="A" class="option-input">
-                        <div class="option-body" id="opt-q1-A"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">They both come in different shapes.</span></div>
-                    </label>
-                    <label class="option-label">
-                        <input type="radio" name="q1" value="B" class="option-input">
-                        <div class="option-body" id="opt-q1-B"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">They both come in packs of six.</span></div>
-                    </label>
-                    <label class="option-label">
-                        <input type="radio" name="q1" value="C" class="option-input">
-                        <div class="option-body" id="opt-q1-C"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">They are the same price.</span></div>
-                    </label>
-                    <label class="option-label">
-                        <input type="radio" name="q1" value="D" class="option-input">
-                        <div class="option-body" id="opt-q1-D"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">They both come in various sizes.</span></div>
-                    </label>
-                </div>
-
-                <div class="mb-10">
-                    <h3 class="text-xl font-medium mb-4">2. Which of the following does NOT come in different sizes? 📏</h3>
-                    <label class="option-label">
-                        <input type="radio" name="q2" value="A" class="option-input">
-                        <div class="option-body" id="opt-q2-A"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">C probes</span></div>
-                    </label>
-                    <label class="option-label">
-                        <input type="radio" name="q2" value="C" class="option-input">
-                        <div class="option-body" id="opt-q2-C"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">Excavators</span></div>
-                    </label>
-                    <label class="option-label">
-                        <input type="radio" name="q2" value="B" class="option-input">
-                        <div class="option-body" id="opt-q2-B"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">Retractors</span></div>
-                    </label>
-                    <label class="option-label">
-                        <input type="radio" name="q2" value="D" class="option-input">
-                        <div class="option-body" id="opt-q2-D"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">Elevators</span></div>
-                    </label>
-                </div>
-
-                <div class="mb-10">
-                    <h3 class="text-xl font-medium mb-4">3. What can be inferred about the forceps? 🦷</h3>
-                    <label class="option-label">
-                        <input type="radio" name="q3" value="A" class="option-input">
-                        <div class="option-body" id="opt-q3-A"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">Dentists need several different types.</span></div>
-                    </label>
-                    <label class="option-label">
-                        <input type="radio" name="q3" value="B" class="option-input">
-                        <div class="option-body" id="opt-q3-B"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">Cheaper when buying several together.</span></div>
-                    </label>
-                    <label class="option-label">
-                        <input type="radio" name="q3" value="C" class="option-input">
-                        <div class="option-body" id="opt-q3-C"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">They are made of stainless steel.</span></div>
-                    </label>
-                    <label class="option-label">
-                        <input type="radio" name="q3" value="D" class="option-input">
-                        <div class="option-body" id="opt-q3-D"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">They are available in packs of 6.</span></div>
-                    </label>
-                </div>
-                
-                <div id="action-container-1" class="mt-8">
-                    <button type="submit" class="action-btn">Check Answers</button>
-                </div>
-            </form>
         </div>
 
-        <!-- ================= TASK 2 ================= -->
-        <div id="step-2" class="step-container">
-            <div class="mb-8">
-                <h2 class="text-2xl sm:text-3xl font-medium text-slate-900 leading-tight mb-3">
-                    🧩 Vocabulary Match. Select the correct instrument for each definition.
-                </h2>
-                <p class="text-slate-400 font-medium text-lg">[ choose an instrument from the dropdown ]</p>
-            </div>
-            
-            <form id="form-step-2" class="space-y-6" data-attempts="0">
-                <div id="vocab-container" class="space-y-6"></div>
-                
-                <div id="action-container-2" class="pt-8">
-                    <button type="submit" class="action-btn">Verify Matches</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- ================= TASK 3 ================= -->
-        <div id="step-3" class="step-container">
-            <div class="mb-8">
-                <h2 class="text-2xl sm:text-3xl font-medium text-slate-900 leading-tight mb-3">
-                    🏥 Clinical Application. Complete the sentences.
-                </h2>
-                <p class="text-slate-400 font-medium text-lg">[ use the word bank below ]</p>
-            </div>
-            
-            <div class="flex flex-wrap gap-3 mb-10">
-                <div class="pill-tag text-center">🔫 DRILL <span class="ukr-text font-normal">бормашина</span></div>
-                <div class="pill-tag text-center">🦯 PROBE <span class="ukr-text font-normal">зонд</span></div>
-                <div class="pill-tag text-center">🔩 BUR <span class="ukr-text font-normal">бор</span></div>
-                <div class="pill-tag text-center">🥄 EXCAVATOR <span class="ukr-text font-normal">екскаватор</span></div>
-                <div class="pill-tag text-center">🪄 BURNISHER <span class="ukr-text font-normal">гладилка</span></div>
-                <div class="pill-tag text-center">🪛 CHISEL <span class="ukr-text font-normal">долото</span></div>
-            </div>
-
-            <form id="form-step-3" class="space-y-8" data-attempts="0">
+        <!-- Step 1 -->
+        <div id="step-1" class="step-container">
+            <div class="task-content">
                 <div>
-                    <h3 class="text-lg font-medium mb-3">1. The dentist used the... to make the surface smooth.</h3>
-                    <select id="s3-1" class="pill-input"><option value="">-- Select option --</option></select> 
-                </div>
-                <div>
-                    <h3 class="text-lg font-medium mb-3">2. An egg-shaped... was fitted into the handpiece.</h3>
-                    <select id="s3-2" class="pill-input"><option value="">-- Select option --</option></select>
-                </div>
-                <div>
-                    <h3 class="text-lg font-medium mb-3">3. Dr. Robinson used a(n)... to separate the enamel.</h3>
-                    <select id="s3-3" class="pill-input"><option value="">-- Select option --</option></select>
-                </div>
-                <div>
-                    <h3 class="text-lg font-medium mb-3">4. A(n)... was used to remove the soft tissue and decay.</h3>
-                    <select id="s3-4" class="pill-input"><option value="">-- Select option --</option></select>
-                </div>
-                <div>
-                    <h3 class="text-lg font-medium mb-3">5. The dentist used the... to feel around in the mouth.</h3>
-                    <select id="s3-5" class="pill-input"><option value="">-- Select option --</option></select>
-                </div>
-                <div>
-                    <h3 class="text-lg font-medium mb-3">6. Many patients hate the sound and the vibrations of the...</h3>
-                    <select id="s3-6" class="pill-input"><option value="">-- Select option --</option></select>
-                </div>
-                
-                <div id="action-container-3" class="pt-8">
-                    <button type="submit" class="action-btn">Verify Sentences</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- ================= TASK 4 ================= -->
-        <div id="step-4" class="step-container">
-            <div class="mb-8">
-                <h2 class="text-2xl sm:text-3xl font-medium text-slate-900 leading-tight mb-3">
-                    📝 Process the Order. Read the transcript and fill the form.
-                </h2>
-                <p class="text-slate-400 font-medium text-lg">[ complete both parts ]</p>
-            </div>
-            
-            <div class="border-[1.5px] border-slate-800 rounded-3xl p-6 mb-10 text-base space-y-3 bg-white shadow-sm">
-                <p><span class="font-bold uppercase text-[11px] tracking-wider block mb-0.5 opacity-60">🏬 Supplier:</span> "Denti-Quick, how can I help you?"</p>
-                <p><span class="font-bold text-purple-700 uppercase text-[11px] tracking-wider block mb-0.5">👤 Customer:</span> "Hi, I'd like to order some tools please. I need them for tomorrow."</p>
-                <p><span class="font-bold uppercase text-[11px] tracking-wider block mb-0.5 opacity-60">🏬 Supplier:</span> "Sure. Do you have an account with us?"</p>
-                <p><span class="font-bold text-purple-700 uppercase text-[11px] tracking-wider block mb-0.5">👤 Customer:</span> "Yes, it's Garden Practice, Lakeland. Account number 241."</p>
-                <p><span class="font-bold uppercase text-[11px] tracking-wider block mb-0.5 opacity-60">🏬 Supplier:</span> "Okay. So, what do you need?"</p>
-                <p><span class="font-bold text-purple-700 uppercase text-[11px] tracking-wider block mb-0.5">👤 Customer:</span> "Twelve excavators and three probes please."</p>
-                <p><span class="font-bold uppercase text-[11px] tracking-wider block mb-0.5 opacity-60">🏬 Supplier:</span> "Three probes. Anything else?"</p>
-                <p><span class="font-bold text-purple-700 uppercase text-[11px] tracking-wider block mb-0.5">👤 Customer:</span> "No, that's right."</p>
-                <p><span class="font-bold uppercase text-[11px] tracking-wider block mb-0.5 opacity-60">🏬 Supplier:</span> "No problem. We'll send them out to you today."</p>
-            </div>
-
-            <form id="form-step-4" data-attempts="0">
-                <div class="mb-12">
-                    <h2 class="text-2xl font-medium mb-6">Part A: True or False 🎯</h2>
+                    <h2 class="text-2xl font-bold mb-3 text-slate-800 flex items-center">
+                        <span class="bg-slate-200 p-2 rounded-xl mr-3 text-xl">🚑</span> Trauma Bay 1
+                    </h2>
                     
-                    <div class="mb-6">
-                        <h3 class="text-lg font-medium mb-3">1. The account number is 39AT7.</h3>
-                        <label class="option-label">
-                            <input type="radio" name="tf1" value="T" class="option-input">
-                            <div class="option-body" id="opt-tf1-T"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">True</span></div>
-                        </label>
-                        <label class="option-label">
-                            <input type="radio" name="tf1" value="F" class="option-input">
-                            <div class="option-body" id="opt-tf1-F"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">False</span></div>
-                        </label>
-                    </div>
-
-                    <div class="mb-6">
-                        <h3 class="text-lg font-medium mb-3">2. The woman buys 12 probes.</h3>
-                        <label class="option-label">
-                            <input type="radio" name="tf2" value="T" class="option-input">
-                            <div class="option-body" id="opt-tf2-T"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">True</span></div>
-                        </label>
-                        <label class="option-label">
-                            <input type="radio" name="tf2" value="F" class="option-input">
-                            <div class="option-body" id="opt-tf2-F"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">False</span></div>
-                        </label>
-                    </div>
-
-                    <div class="mb-6">
-                        <h3 class="text-lg font-medium mb-3">3. Tools will be sent today.</h3>
-                        <label class="option-label">
-                            <input type="radio" name="tf3" value="T" class="option-input">
-                            <div class="option-body" id="opt-tf3-T"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">True</span></div>
-                        </label>
-                        <label class="option-label">
-                            <input type="radio" name="tf3" value="F" class="option-input">
-                            <div class="option-body" id="opt-tf3-F"><div class="option-circle"><div class="option-dot"></div></div><span class="option-text">False</span></div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="mb-8">
-                    <h2 class="text-2xl font-medium mb-6">Part B: Order Form 📋</h2>
-                    <div class="space-y-5">
-                        <input type="text" id="order-customer" placeholder="Customer Name (e.g. Garden Practice)" class="pill-input">
-                        <input type="text" id="order-account" placeholder="Account Number" class="pill-input">
-                        <div class="flex gap-3">
-                            <input type="number" id="order-qty1" placeholder="Qty" class="pill-input" style="width: 35%;">
-                            <input type="text" id="order-item1" placeholder="Item Name" class="pill-input" style="width: 65%;">
+                    <div class="story-block">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest">Scenario</p>
+                            <button id="step1-audio-btn" onclick="playStep1Audio()" type="button" class="listen-btn text-xs bg-[#e9d5ff] text-[#7e22ce] px-3 py-1.5 rounded-full font-bold hover:bg-[#d8b4fe] transition-all flex items-center shadow-sm">
+                                <span class="listen-icon mr-1">🔊</span>
+                                <span>Listen</span>
+                                <div class="audio-bars">
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                    <div class="bar"></div>
+                                </div>
+                            </button>
                         </div>
-                        <div class="flex gap-3">
-                            <input type="number" id="order-qty2" placeholder="Qty" class="pill-input" style="width: 35%;">
-                            <input type="text" id="order-item2" placeholder="Item Name" class="pill-input" style="width: 65%;">
-                        </div>
+                        <p class="text-[#1c1917] font-medium leading-snug">A 24-year-old cyclist was just brought in after a heavy crash. They are holding their shoulder in extreme pain. You review the incoming X-ray and spot a severe fracture in their collarbone.</p>
                     </div>
-                </div>
 
-                <div id="action-container-4" class="pt-6">
-                    <button type="submit" class="action-btn">Submit Final Order</button>
+                    <p class="text-xl font-bold mb-4 leading-snug">How do you formally document the broken "collarbone" in the medical chart?</p>
                 </div>
-            </form>
+                <form class="task-form options-container" data-attempts="0" data-step="1">
+                    <label class="radio-option">
+                        <input type="radio" name="q1" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Scapula</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q1" value="b" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Clavicle</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q1" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Sternum</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q1" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Femur</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Confirm Diagnosis</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <!-- ================= COMPLETION ================= -->
-        <div id="step-5" class="step-container text-center pt-10">
-            <div class="w-32 h-32 mx-auto border-[1.5px] border-slate-800 rounded-full flex items-center justify-center mb-8 bg-white shadow-sm">
-                <span style="font-size: 4rem;">🎉</span>
+        <!-- Step 2 -->
+        <div id="step-2" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-red-100 p-2 rounded-xl mr-3 text-xl">🚨</span> Code Blue
+                    </h2>
+                    
+                    <div class="story-block !border-red-300 !bg-red-50">
+                        <p class="font-bold text-xs text-red-600 uppercase tracking-widest mb-1">Incoming Patient</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">Paramedics rush through the doors. "Doctor, we have a 55-year-old male experiencing severe <strong>dyspnea</strong> since he collapsed at dinner!"</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">What exactly is the patient struggling with right now?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="2">
+                    <label class="radio-option">
+                        <input type="radio" name="q2" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Difficulty swallowing</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2" value="b" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Difficulty breathing</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Intense chest pain</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q2" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Loss of consciousness</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Confirm Diagnosis</button>
+                    </div>
+                </form>
             </div>
-            <h2 class="text-4xl font-medium text-slate-900 mb-6">Module Complete!</h2>
-            <p class="text-slate-600 font-medium text-lg mb-12 max-w-sm mx-auto">You have successfully mastered the Dental Instruments lesson. Excellent work.</p>
-            <button onclick="location.reload()" class="action-btn" style="max-width: 300px; margin: 0 auto;">🔄 Restart Lesson</button>
+        </div>
+
+        <!-- Step 3 -->
+        <div id="step-3" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-blue-100 p-2 rounded-xl mr-3 text-xl">💊</span> Pharmacy Call
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Scenario</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">You stabilize the patient, but notice extreme swelling and inflammation in their airways. You need to write a rapid prescription to bring the swelling down.</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">Which class of medication is typically prescribed to rapidly reduce <strong>inflammation</strong>?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="3">
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Antibiotic</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="b" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Analgesic</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="c" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Corticosteroid</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Antiviral</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Submit Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div id="step-4" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-green-100 p-2 rounded-xl mr-3 text-xl">📟</span> Surgical Consult
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Pager Message</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">"Dr., we need you to prep the patient in Room 402. General surgery is taking them up for an emergent <strong>cholecystectomy</strong> in 10 minutes."</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">You explain the procedure to the family. What organ is being removed?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="4">
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">The appendix</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="b" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">The gallbladder</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">A section of the colon</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">A hernia sack</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Explain to Family</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div id="step-5" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-yellow-100 p-2 rounded-xl mr-3 text-xl">📋</span> Charting
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Scenario</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">Because the patient in Room 402 is going into surgery, they cannot have any food or water to avoid aspiration risks. You pick up their medical chart.</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">Which standard abbreviation do you write on their chart to ensure the nurses enforce this rule?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="5">
+                    <label class="radio-option">
+                        <input type="radio" name="q5" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">NPO (New Patient Observation)</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q5" value="b" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">NPO (Nothing By Mouth)</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q5" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">NPO (Normal Pulse Oximetry)</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q5" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">NPO (Needs Post-op Order)</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Write in Chart</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div id="step-6" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-indigo-100 p-2 rounded-xl mr-3 text-xl">📈</span> Diagnostics
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Scenario</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">A 60-year-old woman walks into the ER clutching her chest and sweating profusely. You immediately order a STAT <strong>ECG (Electrocardiogram)</strong>.</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">What vital organ's electrical activity is this machine primarily used to evaluate?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="6">
+                    <label class="radio-option">
+                        <input type="radio" name="q6" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Brain</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q6" value="b" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Liver</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q6" value="c" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Heart</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q6" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Kidneys</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Check Results</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 7 -->
+        <div id="step-7" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-orange-100 p-2 rounded-xl mr-3 text-xl">🩺</span> Routine Check
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Scenario</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">While reviewing the ECG patient's past medical history, you notice she has been struggling with chronic <strong>hypertension</strong> for over a decade without medication.</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">What is the more common, everyday term for hypertension?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="7">
+                    <label class="radio-option">
+                        <input type="radio" name="q7" value="a" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">High blood pressure</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q7" value="b" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Low blood sugar</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q7" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">High cholesterol</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q7" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">A fast heart rate</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Confirm Details</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 8 -->
+        <div id="step-8" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-teal-100 p-2 rounded-xl mr-3 text-xl">🥼</span> Referrals
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Scenario</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">Your next patient complains of severe, unexplained abdominal pain and blood in their stool. You decide this is beyond the ER's scope and requires a specialist who deals with the <strong>digestive system</strong>.</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">Which specialist do you page for a consult?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="8">
+                    <label class="radio-option">
+                        <input type="radio" name="q8" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">An Endocrinologist</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q8" value="b" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">A Gastroenterologist</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q8" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">A Pulmonologist</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q8" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">A Nephrologist</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Page Specialist</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 9 -->
+        <div id="step-9" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-slate-200 p-2 rounded-xl mr-3 text-xl">⚡</span> Blackout!
+                    </h2>
+                    
+                    <div class="story-block !border-slate-800 !bg-slate-100">
+                        <p class="font-bold text-xs text-slate-600 uppercase tracking-widest mb-1">Emergency</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">The hospital generators stutter! All digital bedside monitors temporarily shut off. You grab an old-school, manual <strong>sphygmomanometer</strong> from the wall cabinet.</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">You wrap the cuff around the patient's arm. What vital sign are you measuring?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="9">
+                    <label class="radio-option">
+                        <input type="radio" name="q9" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Blood sugar</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q9" value="b" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Oxygen saturation</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q9" value="c" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Blood pressure</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q9" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Core body temperature</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Take Reading</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 10 -->
+        <div id="step-10" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-pink-100 p-2 rounded-xl mr-3 text-xl">🪡</span> The Kitchen Accident
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Scenario</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">Power is back. A local chef is rushed in with a deep, clean slice across their palm from a misplaced cleaver. You clean the wound thoroughly.</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">"Don't worry," you tell the chef. "I'm going to _____ the wound to prevent infection and promote healing."</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="10">
+                    <label class="radio-option">
+                        <input type="radio" name="q10" value="a" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">suture</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q10" value="b" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">fracture</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q10" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">palpate</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q10" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">auscultate</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Perform Procedure</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 11 -->
+        <div id="step-11" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-purple-100 p-2 rounded-xl mr-3 text-xl">💀</span> The Bar Fight
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Scenario</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">A college student is dropped off by police. He got into a fight downtown and took a massive punch to the face. The notes say "suspected fracture to the <strong>mandible</strong>."</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">Where exactly are you going to examine the patient for this fracture?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="11">
+                    <label class="radio-option">
+                        <input type="radio" name="q11" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Upper jaw</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q11" value="b" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Lower jaw</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q11" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Cheekbone</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q11" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Skull base</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Examine Patient</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 12 -->
+        <div id="step-12" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-yellow-100 p-2 rounded-xl mr-3 text-xl">🚦</span> Pileup
+                    </h2>
+                    
+                    <div class="story-block !border-yellow-400 !bg-yellow-50">
+                        <p class="font-bold text-xs text-yellow-700 uppercase tracking-widest mb-1">Mass Casualty Alert</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">A ten-car pileup just happened on the icy highway. Thirty patients are flooding into the lobby simultaneously. The Head Nurse takes the clipboard and yells, "I'm running <strong>triage</strong> at the doors!"</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">What is her primary, critical job right now?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="12">
+                    <label class="radio-option">
+                        <input type="radio" name="q12" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Administering pain medication</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q12" value="b" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Sorting patients by severity of injury</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q12" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Performing emergency surgeries</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q12" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Discharging healthy patients quickly</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Assist Nurse</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 13 -->
+        <div id="step-13" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-red-100 p-2 rounded-xl mr-3 text-xl">❤️‍🔥</span> Monitor Alarms
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Scenario</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">You are checking on a trauma victim when their bedside monitor suddenly turns red and starts beeping aggressively. The screen flashes: <strong>Tachycardia</strong>.</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">Based on medical terminology roots, what does the prefix "tachy-" tell you is happening to their heart?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="13">
+                    <label class="radio-option">
+                        <input type="radio" name="q13" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">It's beating too slowly</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q13" value="b" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">It's beating too fast</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q13" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">It's beating irregularly</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q13" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">It has stopped completely</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Check Monitor</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 14 -->
+        <div id="step-14" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-green-100 p-2 rounded-xl mr-3 text-xl">🦠</span> The ICU Round
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Scenario</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">It's 4:00 AM. You are doing rounds in the ICU. A patient who came in for a clean, routine knee surgery three days ago suddenly spikes a 103°F fever. You deduce they acquired this infection <em>during</em> their hospital stay.</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">What is the technical, medical term for a hospital-acquired infection?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="14">
+                    <label class="radio-option">
+                        <input type="radio" name="q14" value="a" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Nosocomial</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q14" value="b" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Idiopathic</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q14" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Congenital</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q14" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">Iatrogenic</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Document Finding</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 15 -->
+        <div id="step-15" class="step-container">
+            <div class="task-content">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800 flex items-center">
+                        <span class="bg-indigo-100 p-2 rounded-xl mr-3 text-xl">💬</span> Bedside Manner
+                    </h2>
+                    
+                    <div class="story-block">
+                        <p class="font-bold text-xs text-[#7e22ce] uppercase tracking-widest mb-1">Final Patient</p>
+                        <p class="text-[#1c1917] font-medium leading-snug">It's 6:45 AM. The shift is almost over. Your final patient is fully dressed in winter layers, but you need to examine their abdomen for a suspected hernia.</p>
+                    </div>
+
+                    <p class="text-xl font-bold mb-6 leading-snug">As an empathetic doctor, which is the most polite and professional way to ask them to prepare?</p>
+                </div>
+                <form class="task-form options-container" data-attempts="0" data-step="15">
+                    <label class="radio-option">
+                        <input type="radio" name="q15" value="a" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">"Take off your clothes now."</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q15" value="b" class="hidden" data-correct="true">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">"Please change into this gown."</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q15" value="c" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">"Strip down to your underwear."</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q15" value="d" class="hidden">
+                        <div class="radio-dot"></div>
+                        <span class="font-medium text-lg">"Remove everything immediately."</span>
+                    </label>
+                    <div class="mt-6 pt-2">
+                        <button type="submit" class="btn-pill submit-btn">Speak to Patient</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Final Step 16: Results -->
+        <div id="step-16" class="step-container">
+            <div class="task-content justify-center items-center text-center">
+                <div class="mb-8 w-full">
+                    <div class="text-6xl mb-4 animate-bounce">🌅</div>
+                    <h2 class="text-4xl font-extrabold mb-2 text-[#1c1917] tracking-tight">Shift Complete.</h2>
+                    <p class="text-slate-500 font-medium">The sun is rising. You survived the night shift.</p>
+                    
+                    <div class="bg-white p-6 rounded-3xl border-2 border-[#1c1917] shadow-sm mb-6 mt-6 transform transition-all hover:scale-105">
+                        <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mb-1">Lives Saved (Score)</p>
+                        <div class="text-5xl font-black text-[#7e22ce] mb-2" id="final-score">0 / 15</div>
+                        <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mb-1 mt-4">Clinical English Level</p>
+                        <div class="text-2xl font-bold text-[#16a34a]" id="final-level">Beginner</div>
+                    </div>
+
+                    <p class="text-lg text-slate-600 mb-6 max-w-sm mx-auto font-medium">
+                        <span class="text-[#ea580c] font-bold">Увага:</span> Будь ласка, вкажіть ваш результат (кількість балів) у формі нижче, щоб ми підібрали найкращий курс! 👇
+                    </p>
+                    
+                    <div class="bg-[#faf5ff] p-6 rounded-3xl border-2 border-[#7e22ce] shadow-sm mb-4">
+                        <h3 class="font-bold text-xl mb-2 text-[#7e22ce]">Ready to specialize?</h3>
+                        <p class="text-slate-700 mb-4 font-medium">Take our free diagnostic test and claim your free trial lesson!</p>
+                        <a href="https://tally.so/r/woZZEV" target="_blank" class="inline-block w-full py-4 px-6 bg-[#7e22ce] text-white font-bold rounded-full hover:bg-purple-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            Go to Form & Free Lesson 🚀
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </main>
 
     <script>
-        // Data Configuration
-        const vocabDefinitions = [
-            { id: 'v1', text: "A tool for extracting teeth", ukr: "інструмент для видалення зубів", answer: "forceps" },
-            { id: 'v2', text: "A tool for making holes in teeth", ukr: "створення отворів у зубах", answer: "handpiece" },
-            { id: 'v3', text: "Helps dentists see inside the mouth", ukr: "огляд порожнини рота", answer: "mirror" },
-            { id: 'v4', text: "Plugs nerve canals", ukr: "пломбування кореневих каналів", answer: "plugger" },
-            { id: 'v5', text: "Cleans between teeth", ukr: "очищення між зубами", answer: "curette" },
-            { id: 'v6', text: "Loosens or separates teeth", ukr: "розхитування зубів", answer: "elevator" },
-            { id: 'v7', text: "Fitted with a needle to push liquid", ukr: "з голкою для рідини", answer: "syringe" },
-            { id: 'v8', text: "Pulls part of the mouth away", ukr: "відтягування тканин", answer: "retractor" }
-        ];
-        
-        const toolOptions = [
-            {val: "curette", label: "Curette 🪥"}, {val: "elevator", label: "Elevator 🕹️"}, 
-            {val: "forceps", label: "Forceps 🗜️"}, {val: "handpiece", label: "Handpiece 🔫"}, 
-            {val: "mirror", label: "Mirror 🔍"}, {val: "plugger", label: "Plugger 🔨"}, 
-            {val: "retractor", label: "Retractor 👄"}, {val: "syringe", label: "Syringe 💉"}
-        ];
+        // Define outside DOMContentLoaded so the inline onclick="startShift()" works
+        let currentStep = 0;
+        const totalQuestions = 15;
+        let score = 0;
 
-        const step3Words = ["drill", "probe", "bur", "excavator", "burnisher", "chisel"];
-        const s3Answers = ["burnisher", "bur", "chisel", "excavator", "probe", "drill"];
+        // Audio for Step 1
+        const step1Audio = new Audio('https://spk-cb.b-cdn.net/test-for-stud/1firs.mp3');
 
-        // Init App Data
-        document.addEventListener("DOMContentLoaded", () => {
-            const vocabContainer = document.getElementById('vocab-container');
-            vocabDefinitions.forEach((def, index) => {
-                let optionsHTML = `<option value="">-- select instrument --</option>`;
-                toolOptions.forEach(tool => optionsHTML += `<option value="${tool.val}">${tool.label}</option>`);
-                vocabContainer.innerHTML += `
-                    <div>
-                        <h3 class="text-lg font-medium mb-3">${index + 1}. ${def.text} <span class="ukr-text">${def.ukr}</span></h3>
-                        <select id="${def.id}" data-answer="${def.answer}" class="pill-input">${optionsHTML}</select>
-                    </div>
-                `;
-            });
-
-            for(let i=1; i<=6; i++) {
-                const sel = document.getElementById(`s3-${i}`);
-                step3Words.forEach(w => sel.innerHTML += `<option value="${w}">${w.toUpperCase()}</option>`);
+        function playStep1Audio() {
+            if (step1Audio.paused) {
+                step1Audio.play().catch(err => console.log('Autoplay blocked by browser. User must interact first.', err));
+            } else {
+                step1Audio.pause();
+                step1Audio.currentTime = 0;
             }
+        }
 
-            // Global UX: Remove incorrect classes when user changes input to help "Try Again"
-            document.querySelectorAll('input, select').forEach(el => {
-                el.addEventListener('input', (e) => {
-                    e.target.classList.remove('is-incorrect', 'is-correct');
-                    if (e.target.type === 'radio') {
-                        e.target.closest('.option-body').classList.remove('is-incorrect', 'is-correct');
-                    }
-                });
-            });
+        // Add event listeners to trigger animations during playback
+        step1Audio.addEventListener('play', () => {
+            const btn = document.getElementById('step1-audio-btn');
+            if (btn) btn.classList.add('is-playing');
         });
 
-        // Toggle Expand Feature
-        function toggleCatalog() {
-            const cat = document.getElementById('catalog-content-wrapper');
-            const btn = document.getElementById('catalog-toggle-btn');
-            
-            if (cat.classList.contains('max-h-72')) {
-                cat.classList.remove('max-h-72');
-                cat.classList.add('max-h-[3000px]'); 
-                btn.innerHTML = '↕️ Collapse';
-            } else {
-                cat.classList.add('max-h-72');
-                cat.classList.remove('max-h-[3000px]');
-                btn.innerHTML = '↕️ Expand';
-            }
-        }
-
-        // Toast System
-        function showToast(message, type = 'error') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            const bgColor = type === 'success' ? 'bg-[#16a34a]' : (type === 'warning' ? 'bg-[#ea580c]' : 'bg-[#dc2626]');
-            
-            toast.className = `flex items-center justify-center text-center px-6 py-4 rounded-full shadow-lg text-white font-medium text-[15px] transition-all duration-300 transform -translate-y-full opacity-0 ${bgColor} mb-2 pointer-events-auto max-w-sm`;
-            toast.innerHTML = `<span>${message}</span>`;
-            
-            container.appendChild(toast);
-            void toast.offsetWidth; 
-            
-            toast.classList.remove('-translate-y-full', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('-translate-y-full', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
-        }
-
-        // Roadmap Navigation
-        function updateProgress(stepNumber) {
-            document.getElementById('progress-text').innerText = `Task ${stepNumber} of 4`;
-        }
-
-        function goToNextStep(nextStep) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active', 'fade-in'));
-            
-            setTimeout(() => {
-                document.getElementById(`step-${nextStep}`).classList.add('active', 'fade-in');
-                if(nextStep <= 4) updateProgress(nextStep);
-            }, 100);
-        }
-
-        function transitionToNextButton(containerId, nextStepFn, customText = null) {
-            const container = document.getElementById(containerId);
-            const text = customText || "Continue to Next Task";
-            
-            container.innerHTML = `
-                <button type="button" class="action-btn !bg-[#16a34a] hover:!bg-[#15803d] !text-white mt-2">
-                    ${text}
-                    <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </button>
-            `;
-            container.querySelector('button').addEventListener('click', nextStepFn);
-        }
-
-        function setButtonWarning(form, text) {
-            const btn = form.querySelector('button[type="submit"]');
-            btn.innerText = text;
-            btn.style.backgroundColor = '#ea580c';
-            btn.style.borderColor = '#ea580c';
-        }
-
-        // TASK 1 Handler
-        document.getElementById('form-step-1').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const form = e.target;
-            if(form.dataset.completed === 'true') return;
-
-            const q1 = form.q1.value, q2 = form.q2.value, q3 = form.q3.value;
-            if (!q1 || !q2 || !q3) return showToast("Please answer all 3 questions.", "error");
-
-            let attempts = Number(form.dataset.attempts || 0);
-            attempts++;
-            form.dataset.attempts = attempts;
-
-            const correctAnswers = { q1: 'B', q2: 'A', q3: 'A' };
-            let allCorrect = q1 === correctAnswers.q1 && q2 === correctAnswers.q2 && q3 === correctAnswers.q3;
-
-            // Clear visual errors first
-            form.querySelectorAll('.option-body').forEach(el => el.classList.remove('is-incorrect', 'is-correct'));
-
-            if (allCorrect) {
-                ['q1', 'q2', 'q3'].forEach(q => {
-                    document.getElementById(`opt-${q}-${form[q].value}`).classList.add('is-correct');
-                    form.querySelectorAll(`input[name="${q}"]`).forEach(inp => inp.disabled = true);
-                });
-                showToast("Perfect! Answers verified. 🎉", "success");
-                form.dataset.completed = 'true';
-                transitionToNextButton('action-container-1', () => goToNextStep(2));
-            } else if (attempts === 1) {
-                // First Try Failure
-                ['q1', 'q2', 'q3'].forEach(q => {
-                    const userVal = form[q].value;
-                    if (userVal !== correctAnswers[q]) {
-                        document.getElementById(`opt-${q}-${userVal}`).classList.add('is-incorrect');
-                    } else {
-                        document.getElementById(`opt-${q}-${userVal}`).classList.add('is-correct');
-                    }
-                });
-                showToast("Some answers are incorrect. You have 1 attempt left! 🔄", "warning");
-                setButtonWarning(form, "Try Again (1 attempt left)");
-            } else {
-                // Second Try Failure
-                ['q1', 'q2', 'q3'].forEach(q => {
-                    form.querySelectorAll(`input[name="${q}"]`).forEach(inp => inp.disabled = true);
-                    const userVal = form[q].value;
-                    if (userVal !== correctAnswers[q]) {
-                        if(userVal) document.getElementById(`opt-${q}-${userVal}`).classList.add('is-incorrect');
-                        const correctRadio = document.querySelector(`input[name="${q}"][value="${correctAnswers[q]}"]`);
-                        correctRadio.checked = true;
-                    }
-                    document.getElementById(`opt-${q}-${correctAnswers[q]}`).classList.add('is-correct');
-                });
-                showToast("Corrections applied. Please review. 👀", "warning");
-                form.dataset.completed = 'true';
-                transitionToNextButton('action-container-1', () => goToNextStep(2));
-            }
+        step1Audio.addEventListener('pause', () => {
+            const btn = document.getElementById('step1-audio-btn');
+            if (btn) btn.classList.remove('is-playing');
         });
 
-        // TASK 2 Handler
-        document.getElementById('form-step-2').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const form = e.target;
-            if(form.dataset.completed === 'true') return;
+        step1Audio.addEventListener('ended', () => {
+            const btn = document.getElementById('step1-audio-btn');
+            if (btn) btn.classList.remove('is-playing');
+        });
 
-            let allCorrect = true, allFilled = true;
-            let attempts = Number(form.dataset.attempts || 0);
-            attempts++;
-            form.dataset.attempts = attempts;
+        function stopAllAudio() {
+            step1Audio.pause();
+            step1Audio.currentTime = 0;
+        }
 
-            vocabDefinitions.forEach(def => {
-                const selectEl = document.getElementById(def.id);
-                selectEl.classList.remove('is-incorrect', 'is-correct');
-                if (!selectEl.value) allFilled = false;
+        function startShift() {
+            const currentEl = document.getElementById(`step-0`);
+            const nextEl = document.getElementById(`step-1`);
+            
+            if (currentEl && nextEl) {
+                currentEl.classList.remove('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
                 
-                if (selectEl.value !== selectEl.dataset.answer) {
-                    allCorrect = false;
-                }
-            });
+                currentStep = 1;
+                saveState();
 
-            if (!allFilled) {
-                form.dataset.attempts = attempts - 1; 
-                return showToast("Please select an instrument for all items.", "error");
-            }
-            
-            if (allCorrect) {
-                vocabDefinitions.forEach(def => {
-                    document.getElementById(def.id).disabled = true;
-                    document.getElementById(def.id).classList.add('is-correct');
-                });
-                showToast("Perfect vocabulary matches! 🎉", "success");
-                form.dataset.completed = 'true';
-                transitionToNextButton('action-container-2', () => goToNextStep(3));
-            } else if (attempts === 1) {
-                // First Try Failure
-                vocabDefinitions.forEach(def => {
-                    const selectEl = document.getElementById(def.id);
-                    if (selectEl.value !== selectEl.dataset.answer) {
-                        selectEl.classList.add('is-incorrect');
-                    } else {
-                        selectEl.classList.add('is-correct');
-                    }
-                });
-                showToast("Some matches are incorrect. You have 1 attempt left! 🔄", "warning");
-                setButtonWarning(form, "Try Again (1 attempt left)");
-            } else {
-                // Second Try Failure
-                vocabDefinitions.forEach(def => {
-                    const selectEl = document.getElementById(def.id);
-                    selectEl.disabled = true;
-                    if (selectEl.value !== selectEl.dataset.answer) {
-                        selectEl.value = selectEl.dataset.answer;
-                        selectEl.classList.add('is-incorrect'); // Highlight auto-correction
-                    } else {
-                        selectEl.classList.add('is-correct');
-                    }
-                });
-                showToast("Mistakes corrected. Review below. 👀", "warning");
-                form.dataset.completed = 'true';
-                transitionToNextButton('action-container-2', () => goToNextStep(3));
-            }
-        });
+                // Trigger audio automatically since this function fires from a user click
+                playStep1Audio();
 
-        // TASK 3 Handler
-        document.getElementById('form-step-3').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const form = e.target;
-            if(form.dataset.completed === 'true') return;
-
-            let allCorrect = true, allFilled = true;
-            let attempts = Number(form.dataset.attempts || 0);
-            attempts++;
-            form.dataset.attempts = attempts;
-
-            for(let i=1; i<=6; i++) {
-                const sel = document.getElementById(`s3-${i}`);
-                sel.classList.remove('is-incorrect', 'is-correct');
-                if (!sel.value) allFilled = false;
-                if (sel.value !== s3Answers[i-1]) allCorrect = false;
-            }
-
-            if (!allFilled) {
-                form.dataset.attempts = attempts - 1;
-                return showToast("Please fill in all blanks.", "error");
-            }
-            
-            if (allCorrect) {
-                for(let i=1; i<=6; i++) {
-                    const sel = document.getElementById(`s3-${i}`);
-                    sel.disabled = true;
-                    sel.classList.add('is-correct');
-                }
-                showToast("Excellent clinical application! 🎉", "success");
-                form.dataset.completed = 'true';
-                transitionToNextButton('action-container-3', () => goToNextStep(4));
-            } else if (attempts === 1) {
-                // First try failure
-                for(let i=1; i<=6; i++) {
-                    const sel = document.getElementById(`s3-${i}`);
-                    if (sel.value !== s3Answers[i-1]) {
-                        sel.classList.add('is-incorrect');
-                    } else {
-                        sel.classList.add('is-correct');
-                    }
-                }
-                showToast("Sentences are incorrect. You have 1 attempt left! 🔄", "warning");
-                setButtonWarning(form, "Try Again (1 attempt left)");
-            } else {
-                // Second try failure
-                for(let i=1; i<=6; i++) {
-                    const sel = document.getElementById(`s3-${i}`);
-                    sel.disabled = true;
-                    if (sel.value !== s3Answers[i-1]) {
-                        sel.value = s3Answers[i-1];
-                        sel.classList.add('is-incorrect');
-                    } else {
-                        sel.classList.add('is-correct');
-                    }
-                }
-                showToast("Sentences corrected. Review below. 👀", "warning");
-                form.dataset.completed = 'true';
-                transitionToNextButton('action-container-3', () => goToNextStep(4));
-            }
-        });
-
-        // TASK 4 Handler
-        document.getElementById('form-step-4').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const form = e.target;
-            if(form.dataset.completed === 'true') return;
-            
-            const tf1 = form.tf1.value, tf2 = form.tf2.value, tf3 = form.tf3.value;
-            if (!tf1 || !tf2 || !tf3) return showToast("Please answer the True/False questions.", "error");
-
-            const customer = document.getElementById('order-customer').value.toLowerCase();
-            const account = document.getElementById('order-account').value;
-            const q1 = document.getElementById('order-qty1').value;
-            const i1 = document.getElementById('order-item1').value.toLowerCase();
-            const q2 = document.getElementById('order-qty2').value;
-            const i2 = document.getElementById('order-item2').value.toLowerCase();
-
-            if(!customer || !account || !q1 || !i1 || !q2 || !i2) return showToast("Please complete the entire form.", "error");
-
-            let allCorrect = true;
-            let attempts = Number(form.dataset.attempts || 0);
-            attempts++;
-            form.dataset.attempts = attempts;
-
-            // Clear visual errors
-            ['tf1', 'tf2', 'tf3'].forEach(q => {
-                document.getElementById(`opt-${q}-T`).classList.remove('is-incorrect', 'is-correct');
-                document.getElementById(`opt-${q}-F`).classList.remove('is-incorrect', 'is-correct');
-            });
-            const formFields = ['order-customer', 'order-account', 'order-qty1', 'order-item1', 'order-qty2', 'order-item2'];
-            formFields.forEach(id => document.getElementById(id).classList.remove('is-incorrect', 'is-correct'));
-
-            const tfAnswers = { tf1: 'F', tf2: 'F', tf3: 'T' };
-            ['tf1', 'tf2', 'tf3'].forEach(q => {
-                if (form[q].value !== tfAnswers[q]) allCorrect = false;
-            });
-
-            let customerCorrect = customer.includes('garden');
-            let accountCorrect = account.includes('241');
-            const row1Valid = (q1 == '12' && i1.includes('excavator')) || (q1 == '3' && i1.includes('probe'));
-            const row2Valid = (q2 == '12' && i2.includes('excavator')) || (q2 == '3' && i2.includes('probe'));
-            let rowsCorrect = !(q1 === q2 && i1 === i2) && row1Valid && row2Valid;
-
-            if (!customerCorrect || !accountCorrect || !rowsCorrect) allCorrect = false;
-
-            if (allCorrect) {
-                ['tf1', 'tf2', 'tf3'].forEach(q => {
-                    form.querySelectorAll(`input[name="${q}"]`).forEach(inp => inp.disabled = true);
-                    document.getElementById(`opt-${q}-${tfAnswers[q]}`).classList.add('is-correct');
-                });
-                formFields.forEach(id => {
-                    const el = document.getElementById(id);
-                    el.disabled = true;
-                    el.classList.add('is-correct');
-                });
-                showToast("Order Processed successfully! 🎉", "success");
-                form.dataset.completed = 'true';
-                transitionToNextButton('action-container-4', () => { goToNextStep(5); confettiEffect(); }, 'Finish Module');
-            } else if (attempts === 1) {
-                // First Try failure
-                ['tf1', 'tf2', 'tf3'].forEach(q => {
-                    if (form[q].value !== tfAnswers[q]) {
-                        document.getElementById(`opt-${q}-${form[q].value}`).classList.add('is-incorrect');
-                    } else {
-                        document.getElementById(`opt-${q}-${form[q].value}`).classList.add('is-correct');
-                    }
-                });
-                if(!customerCorrect) document.getElementById('order-customer').classList.add('is-incorrect');
-                else document.getElementById('order-customer').classList.add('is-correct');
-
-                if(!accountCorrect) document.getElementById('order-account').classList.add('is-incorrect');
-                else document.getElementById('order-account').classList.add('is-correct');
-
-                if(!rowsCorrect) {
-                    ['order-qty1', 'order-item1', 'order-qty2', 'order-item2'].forEach(id => document.getElementById(id).classList.add('is-incorrect'));
-                } else {
-                    ['order-qty1', 'order-item1', 'order-qty2', 'order-item2'].forEach(id => document.getElementById(id).classList.add('is-correct'));
-                }
-                showToast("Some entries are incorrect. You have 1 attempt left! 🔄", "warning");
-                setButtonWarning(form, "Try Again (1 attempt left)");
-            } else {
-                // Second Try failure -> correct it
-                ['tf1', 'tf2', 'tf3'].forEach(q => {
-                    form.querySelectorAll(`input[name="${q}"]`).forEach(inp => inp.disabled = true);
-                    if (form[q].value !== tfAnswers[q]) {
-                        document.getElementById(`opt-${q}-${form[q].value}`).classList.add('is-incorrect');
-                        const correctEl = document.querySelector(`input[name="${q}"][value="${tfAnswers[q]}"]`);
-                        correctEl.checked = true;
-                        document.getElementById(`opt-${q}-${tfAnswers[q]}`).classList.add('is-correct');
-                    } else {
-                        document.getElementById(`opt-${q}-${tfAnswers[q]}`).classList.add('is-correct');
-                    }
-                });
-
-                formFields.forEach(id => document.getElementById(id).disabled = true);
-
-                if(!customerCorrect) {
-                    document.getElementById('order-customer').value = 'Garden Practice';
-                    document.getElementById('order-customer').classList.add('is-incorrect');
-                } else document.getElementById('order-customer').classList.add('is-correct');
-                
-                if(!accountCorrect) {
-                    document.getElementById('order-account').value = '241';
-                    document.getElementById('order-account').classList.add('is-incorrect');
-                } else document.getElementById('order-account').classList.add('is-correct');
-
-                if(!rowsCorrect) {
-                    document.getElementById('order-qty1').value = '12';
-                    document.getElementById('order-item1').value = 'excavators';
-                    document.getElementById('order-qty2').value = '3';
-                    document.getElementById('order-item2').value = 'probes';
-                    ['order-qty1', 'order-item1', 'order-qty2', 'order-item2'].forEach(id => document.getElementById(id).classList.add('is-incorrect'));
-                } else {
-                    ['order-qty1', 'order-item1', 'order-qty2', 'order-item2'].forEach(id => document.getElementById(id).classList.add('is-correct'));
-                }
-
-                showToast("Order form corrected. Review below. 👀", "warning");
-                form.dataset.completed = 'true';
-                transitionToNextButton('action-container-4', () => { goToNextStep(5); confettiEffect(); }, 'Finish Module');
-            }
-        });
-
-        function confettiEffect() {
-            const colors = ['#7e22ce', '#a855f7', '#d8b4fe', '#f3e8ff', '#1c1917', '#16a34a'];
-            for(let i=0; i<60; i++) {
-                const conf = document.createElement('div');
-                conf.style.position = 'fixed';
-                conf.style.width = Math.random() * 10 + 6 + 'px';
-                conf.style.height = conf.style.width;
-                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.top = '-20px';
-                conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '9999px';
-                conf.style.zIndex = '9999';
-                conf.style.pointerEvents = 'none';
-                document.body.appendChild(conf);
-
-                const speed = Math.random() * 4 + 4;
-                const angle = (Math.random() - 0.5) * 5;
-                let top = -20;
-                let left = parseFloat(conf.style.left);
-
-                const fall = setInterval(() => {
-                    top += speed;
-                    left += angle;
-                    conf.style.top = top + 'px';
-                    conf.style.left = left + 'vw';
-                    conf.style.transform = `rotate(${top * 5}deg)`;
-
-                    if (top > window.innerHeight) {
-                        clearInterval(fall);
-                        conf.remove();
-                    }
-                }, 20);
+                setTimeout(() => {
+                    nextEl.classList.add('active');
+                    updateProgressUI(currentStep);
+                }, 150);
             }
         }
+
+        function saveState() {
+            localStorage.setItem('cba_med_test', JSON.stringify({ currentStep, score }));
+        }
+
+        function updateProgressUI(step) {
+            const progressText = document.getElementById('progress-text');
+            const progressBar = document.getElementById('progress-bar');
+            
+            if (step === 0) {
+                progressText.innerText = `Shift: 0%`;
+                if(progressBar) progressBar.style.width = `0%`;
+            } else if (step <= totalQuestions) {
+                progressText.innerText = `Patient ${step}/${totalQuestions}`;
+                const percentage = ((step - 1) / totalQuestions) * 100;
+                if(progressBar) progressBar.style.width = `${percentage}%`;
+            } else {
+                progressText.innerText = 'Shift Ended ✅';
+                if(progressBar) progressBar.style.width = `100%`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Load from LocalStorage
+            const savedState = localStorage.getItem('cba_med_test');
+            if (savedState) {
+                const parsed = JSON.parse(savedState);
+                if (parsed.currentStep <= totalQuestions && parsed.currentStep > 0) {
+                    currentStep = parsed.currentStep;
+                    score = parsed.score || 0;
+                    
+                    document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+                    const stepEl = document.getElementById(`step-${currentStep}`);
+                    if (stepEl) stepEl.classList.add('active');
+                    
+                    updateProgressUI(currentStep);
+                } else if (parsed.currentStep > totalQuestions) {
+                    currentStep = totalQuestions + 1;
+                    score = parsed.score || 0;
+                    document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+                    document.getElementById('step-16').classList.add('active');
+                    updateProgressUI(currentStep);
+                    showResults();
+                } else {
+                    updateProgressUI(0);
+                }
+            } else {
+                updateProgressUI(0);
+            }
+
+            // Handle custom radio selection visual state
+            document.querySelectorAll('.radio-option input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.closest('.radio-option').classList.contains('disabled')) return;
+                    
+                    const name = this.getAttribute('name');
+                    document.querySelectorAll(`input[name="${name}"]`).forEach(sibling => {
+                        sibling.closest('.radio-option').classList.remove('selected', 'incorrect');
+                    });
+                    
+                    if (this.checked) {
+                        this.closest('.radio-option').classList.add('selected');
+                        
+                        // Reveal the submit button when an option is chosen
+                        const form = this.closest('form');
+                        const btnWrapper = form.lastElementChild;
+                        if (btnWrapper && !btnWrapper.classList.contains('revealed')) {
+                            btnWrapper.classList.add('revealed');
+                        }
+                    }
+                });
+            });
+
+            // Handle form submissions
+            document.querySelectorAll('.task-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const stepNum = parseInt(this.dataset.step);
+                    const btn = this.querySelector('.submit-btn');
+                    
+                    if (btn.dataset.action === 'next') {
+                        goToNextStep(stepNum);
+                        return;
+                    }
+
+                    const checkedRadio = this.querySelector('input[type="radio"]:checked');
+                    
+                    if (!checkedRadio) {
+                        showToast('Please make a medical decision first. ☝️', 'warning');
+                        return;
+                    }
+
+                    const isCorrect = checkedRadio.dataset.correct === 'true';
+
+                    if (isCorrect) {
+                        score++;
+                        checkedRadio.closest('.radio-option').classList.add('correct');
+                        showToast('Good call, Doctor! 👏', 'success');
+                    } else {
+                        checkedRadio.closest('.radio-option').classList.add('incorrect');
+                        const correctRadio = this.querySelector('input[data-correct="true"]');
+                        if(correctRadio) correctRadio.closest('.radio-option').classList.add('correct');
+                        showToast('Incorrect call. The Attending stepped in. 👀', 'warning');
+                    }
+
+                    disableAllInputs(this);
+                    btn.innerText = 'Next Patient 🏃';
+                    btn.classList.remove('btn-warning');
+                    btn.classList.add('btn-success');
+                    btn.dataset.action = 'next';
+                    
+                    saveState();
+                });
+            });
+
+            function disableAllInputs(form) {
+                form.querySelectorAll('.radio-option').forEach(opt => {
+                    opt.classList.add('disabled');
+                    opt.querySelector('input').disabled = true;
+                });
+            }
+
+            function goToNextStep(currentStepNum) {
+                const currentEl = document.getElementById(`step-${currentStepNum}`);
+                const nextEl = document.getElementById(`step-${currentStepNum + 1}`);
+                
+                if (currentEl && nextEl) {
+                    currentEl.classList.remove('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    
+                    currentStep++;
+                    saveState();
+                    stopAllAudio(); // Stop audio if they advance before it finishes
+
+                    setTimeout(() => {
+                        nextEl.classList.add('active');
+                        updateProgressUI(currentStep);
+                        
+                        if (currentStep > totalQuestions) {
+                            showResults();
+                        }
+                    }, 150);
+                }
+            }
+
+            function showResults() {
+                let level = "Beginner (A1-A2)";
+                let colorClass = "text-[#ea580c]"; 
+                
+                if (score >= 13) {
+                    level = "Chief Resident (C1-C2)";
+                    colorClass = "text-[#7e22ce]"; 
+                } else if (score >= 10) {
+                    level = "Attending Level (B2)";
+                    colorClass = "text-[#16a34a]"; 
+                } else if (score >= 6) {
+                    level = "Intern Level (B1)";
+                    colorClass = "text-[#f59e0b]"; 
+                }
+
+                document.getElementById('final-score').innerText = `${score} / ${totalQuestions}`;
+                const levelEl = document.getElementById('final-level');
+                levelEl.innerText = level;
+                levelEl.className = `text-2xl font-bold ${colorClass}`;
+
+                triggerConfetti();
+            }
+
+            function showToast(message, type) {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                
+                toast.className = 'px-6 py-4 rounded-full font-bold text-sm mb-3 shadow-xl transform transition-all duration-300 translate-y-[-100%] opacity-0 text-center w-full max-w-sm';
+                
+                if (type === 'success') toast.classList.add('bg-[#f0fdf4]', 'text-[#16a34a]', 'border-2', 'border-[#16a34a]');
+                else if (type === 'warning') toast.classList.add('bg-[#fff7ed]', 'text-[#ea580c]', 'border-2', 'border-[#ea580c]');
+                else if (type === 'error') toast.classList.add('bg-red-100', 'text-red-800', 'border-2', 'border-red-500');
+                
+                toast.innerText = message;
+                container.appendChild(toast);
+                
+                requestAnimationFrame(() => {
+                    toast.classList.remove('translate-y-[-100%]', 'opacity-0');
+                });
+                
+                setTimeout(() => {
+                    toast.classList.add('translate-y-[-100%]', 'opacity-0');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
+            function triggerConfetti() {
+                const colors = ['#7e22ce', '#16a34a', '#ea580c', '#1c1917', '#fcd34d'];
+                for (let i = 0; i < 100; i++) {
+                    createConfettiPiece(colors);
+                }
+            }
+
+            function createConfettiPiece(colors) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%';
+                }
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        });
     </script>
 </body>
 </html>
