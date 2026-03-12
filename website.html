@@ -26,27 +26,26 @@
             background-color: var(--board-bg);
             background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
             background-size: 30px 30px;
-            border: 14px solid #475569;
-            border-radius: 12px;
+            border-radius: 24px; /* Modern, rounded look */
             box-shadow: 
-                0 25px 50px -12px rgb(0 0 0 / 0.25), 
-                inset 0 2px 10px 0 rgb(0 0 0 / 0.05);
+                0 25px 50px -12px rgb(0 0 0 / 0.15), 
+                0 0 0 1px rgb(0 0 0 / 0.05); /* Soft modern shadow, no thick frame */
             min-height: 90vh;
             position: relative;
             max-width: 1000px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Keeps the header rounded with the board */
         }
 
         .board-header {
-            border-bottom: 4px solid #e2e8f0;
+            border-bottom: 2px solid #e2e8f0;
             padding: 1.5rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: white;
-            border-radius: 0 0 4px 4px;
+            background: rgba(255, 255, 255, 0.9);
         }
 
         .logo-text {
@@ -187,6 +186,34 @@
             box-shadow: 6px 6px 0px var(--brand-purple-hover);
         }
 
+        .timer-btn {
+            background-color: white;
+            border: 3px solid var(--marker-black);
+            color: var(--marker-black);
+            font-weight: 800;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .timer-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0px var(--marker-black);
+        }
+
+        .timer-btn.counting {
+            background-color: var(--brand-purple);
+            border-color: var(--brand-purple);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px -5px rgba(126, 34, 206, 0.5);
+        }
+
+        .timer-btn.finished {
+            background-color: #ef4444; /* red-500 */
+            border-color: #ef4444;
+            color: white;
+            transform: scale(1);
+        }
+
         .progress-indicator {
             font-weight: 900;
             color: #94a3b8;
@@ -225,8 +252,8 @@
                     <h1 class="text-5xl font-black mb-6 tracking-tighter text-stone-900">VOCABULARY<br><span class="text-purple-700">WHITEBOARD</span></h1>
                     <p class="text-xl font-medium text-stone-600 mb-10 leading-relaxed">
                         Ласкаво просимо! Цей формат створений для вивчення нової лексики. 
-                        Спочатку ми розберемо питання та оберемо відповідь, 
-                        а на наступному екрані переглянемо пояснення та відео з вимовою.
+                        Прочитайте питання, запустіть таймер на 3 секунди, а потім оберіть відповідь, 
+                        щоб переглянути пояснення та відео з вимовою.
                     </p>
                     <button onclick="nextStep()" class="btn-marker text-lg inline-block w-auto">
                         Взяти маркер та почати ✏️
@@ -241,6 +268,12 @@
                     <div class="question-tag">Question #1</div>
                     <p class="text-xl font-bold">A senior consultant says: <span class="text-purple-700 underline underline-offset-4 decoration-2">"He needs a full work-up"</span>.</p>
                     <p class="text-stone-700 mt-4 font-medium">What does "Work-up" imply in clinical practice?</p>
+                </div>
+
+                <div class="flex justify-center mb-6">
+                    <button id="timer-btn-1" onclick="startTimer(1)" class="timer-btn py-3 px-8 rounded-full text-xl flex items-center justify-center gap-2 min-w-[250px]">
+                        ⏱️ <span>Start 3s Timer</span>
+                    </button>
                 </div>
 
                 <div class="grid grid-cols-1 gap-3 max-w-xl mx-auto w-full">
@@ -262,7 +295,7 @@
 
             <!-- STEP 1 EXPLANATION -->
             <div id="step-1-e" class="step-container">
-                <div id="result-badge-1"></div> <!-- Dynamically filled with Correct/Incorrect -->
+                <div id="result-badge-1"></div>
 
                 <div class="p-5 border-2 border-stone-300 rounded-xl bg-white mb-6">
                     <p class="marker-font text-purple-700 mb-2">💡 THE FACT:</p>
@@ -275,15 +308,7 @@
                 <div class="video-box">
                     <h4 class="marker-font text-sm mb-3 text-stone-500">PRONUNCIATION & CONTEXT:</h4>
                     <div class="video-container">
-                        <!-- Standard Embed (No Autoplay, Strict Origin allowed) -->
                         <iframe src="https://www.youtube.com/embed/ETFkztcoMVc?start=407" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <!-- FALLBACK BUTTON (Always works) -->
-                    <div class="mt-4 flex justify-center">
-                        <a href="https://youtu.be/ETFkztcoMVc?t=407" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-full border border-red-200 transition">
-                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-                            Відео видає помилку? Відкрити прямо в YouTube
-                        </a>
                     </div>
                 </div>
 
@@ -299,6 +324,12 @@
                 <div class="question-card">
                     <div class="question-tag">Question #2</div>
                     <p class="text-xl font-bold">You finally found the cause of the disease. In English, we don't say <span class="italic text-purple-700">"put a diagnosis"</span>. What is the correct professional verb?</p>
+                </div>
+
+                <div class="flex justify-center mb-6">
+                    <button id="timer-btn-2" onclick="startTimer(2)" class="timer-btn py-3 px-8 rounded-full text-xl flex items-center justify-center gap-2 min-w-[250px]">
+                        ⏱️ <span>Start 3s Timer</span>
+                    </button>
                 </div>
 
                 <div class="grid grid-cols-1 gap-3 max-w-xl mx-auto w-full">
@@ -335,13 +366,6 @@
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/VLuv6t8rhDc?start=1069" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <!-- FALLBACK BUTTON -->
-                    <div class="mt-4 flex justify-center">
-                        <a href="https://youtu.be/VLuv6t8rhDc?t=1069" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-full border border-red-200 transition">
-                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-                            Відео видає помилку? Відкрити прямо в YouTube
-                        </a>
-                    </div>
                 </div>
 
                 <div class="flex justify-center mt-8">
@@ -356,6 +380,12 @@
                 <div class="question-card">
                     <div class="question-tag">Question #3</div>
                     <p class="text-xl font-bold">Testing reflexes with a hammer. You want to describe <span class="text-purple-700 underline">provoking</span> a response professionally. You...</p>
+                </div>
+
+                <div class="flex justify-center mb-6">
+                    <button id="timer-btn-3" onclick="startTimer(3)" class="timer-btn py-3 px-8 rounded-full text-xl flex items-center justify-center gap-2 min-w-[250px]">
+                        ⏱️ <span>Start 3s Timer</span>
+                    </button>
                 </div>
 
                 <div class="grid grid-cols-1 gap-3 max-w-xl mx-auto w-full">
@@ -392,13 +422,6 @@
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/0SgKAxj5UHw?start=769" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <!-- FALLBACK BUTTON -->
-                    <div class="mt-4 flex justify-center">
-                        <a href="https://youtu.be/0SgKAxj5UHw?t=769" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-full border border-red-200 transition">
-                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-                            Відео видає помилку? Відкрити прямо в YouTube
-                        </a>
-                    </div>
                 </div>
 
                 <div class="flex justify-center mt-8">
@@ -427,15 +450,42 @@
         };
 
         const totalQuestions = 3;
+        let timerIntervals = {}; // Store intervals to clear them if needed
 
         window.onload = () => {
-            const saved = localStorage.getItem('cba_whiteboard_v3_state');
+            const saved = localStorage.getItem('cba_whiteboard_v4_state');
             if (saved) {
                 state = JSON.parse(saved);
                 showCurrentScreen();
             }
             setupOptions();
         };
+
+        function startTimer(qId) {
+            const btn = document.getElementById(`timer-btn-${qId}`);
+            if (!btn || btn.disabled) return;
+            
+            const span = btn.querySelector('span');
+            btn.disabled = true;
+            
+            // Apply visual counting state
+            btn.classList.add('counting');
+            
+            let count = 3;
+            btn.innerHTML = `⏱️ <span class="text-2xl">${count}</span>`;
+            
+            timerIntervals[qId] = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    btn.innerHTML = `⏱️ <span class="text-2xl">${count}</span>`;
+                } else {
+                    clearInterval(timerIntervals[qId]);
+                    btn.classList.remove('counting');
+                    btn.classList.add('finished');
+                    btn.innerHTML = `⏰ <span>Time's Up!</span>`;
+                }
+            }, 1000);
+        }
 
         function showCurrentScreen() {
             // Hide all screens
@@ -456,7 +506,7 @@
                 target.classList.add('step-active');
                 updateUI();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                localStorage.setItem('cba_whiteboard_v3_state', JSON.stringify(state));
+                localStorage.setItem('cba_whiteboard_v4_state', JSON.stringify(state));
                 
                 if (state.phase === 'result') triggerConfetti();
             }
@@ -502,6 +552,11 @@
             const selected = stepDiv.querySelector('.radio-option.selected');
             const isCorrect = selected.getAttribute('data-correct') === 'true';
 
+            // Stop timer if it's still running
+            if (timerIntervals[questionId]) {
+                clearInterval(timerIntervals[questionId]);
+            }
+
             // Visual feedback
             if (isCorrect) {
                 state.score++;
@@ -541,15 +596,28 @@
         }
 
         function resetTest() {
+            // Clear any running timers
+            Object.values(timerIntervals).forEach(clearInterval);
+            timerIntervals = {};
+
             state = { question: 0, phase: 'welcome', score: 0 };
-            localStorage.removeItem('cba_whiteboard_v3_state');
+            localStorage.removeItem('cba_whiteboard_v4_state');
             
-            // Reset UI states
+            // Reset UI states (Options)
             document.querySelectorAll('.radio-option').forEach(r => {
                 r.classList.remove('selected', 'correct', 'incorrect', 'disabled');
             });
+            
+            // Reset Submit Buttons
             document.querySelectorAll('[id^="submit-btn-"]').forEach(btn => {
                 btn.classList.add('hidden');
+            });
+            
+            // Reset Timer Buttons
+            document.querySelectorAll('.timer-btn').forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('counting', 'finished');
+                btn.innerHTML = `⏱️ <span>Start 3s Timer</span>`;
             });
 
             showCurrentScreen();
