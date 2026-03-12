@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Black Academy - Medical English Course</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brandBg: '#f5f4f0',
+                        brandText: '#1c1917',
+                        brandPrimary: '#7e22ce',
+                        brandPrimaryHover: '#6b21a8',
+                        brandPrimaryLight: '#faf5ff',
+                        brandSuccess: '#16a34a',
+                        brandSuccessLight: '#f0fdf4',
+                        brandWarning: '#ea580c',
+                        brandWarningLight: '#fff7ed',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f5f4f0;
+            color: #1c1917;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Reveal Animations on Scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Video Wrapper */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            background-color: #000;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Custom Tabs */
+        .tab-btn {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-btn.active {
+            border-bottom-color: #7e22ce;
+            color: #7e22ce;
+            font-weight: 700;
+            background-color: #faf5ff;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Custom Accordion */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+            opacity: 0;
+        }
+        .accordion-content.expanded {
+            opacity: 1;
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        .accordion-button[aria-expanded="true"] .accordion-icon {
+            transform: rotate(180deg);
+            color: #7e22ce;
+        }
+        .accordion-button[aria-expanded="true"] {
+            color: #7e22ce;
+        }
+
+        /* Pricing Card Effects */
+        .pricing-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(126, 34, 206, 0.1), 0 10px 10px -5px rgba(126, 34, 206, 0.04);
+            border-color: #c084fc;
+        }
+        .pricing-card.popular {
+            border-color: #7e22ce;
+            box-shadow: 0 10px 15px -3px rgba(126, 34, 206, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sticky Bottom CTA for Mobile */
+        .mobile-cta {
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-cta.visible {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased relative">
+
+    <!-- Sticky Header -->
+    <header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300" id="main-header">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="font-bold text-lg flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                <span class="text-2xl">⚕️</span>
+                <span class="text-brandPrimary">Code Black Academy</span>
+            </div>
+            <a href="#tariffs" class="hidden sm:inline-block bg-brandPrimary hover:bg-brandPrimaryHover text-white px-6 py-2 rounded-full font-semibold transition-colors shadow-md shadow-purple-200">
+                Обрати тариф
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16 pb-32">
+        
+        <!-- Hero Section -->
+        <section class="relative pt-16 pb-20 px-4 sm:px-6 max-w-5xl mx-auto text-center reveal active">
+            <div class="inline-flex items-center gap-2 bg-brandPrimaryLight text-brandPrimary px-4 py-2 rounded-full text-sm font-bold mb-6 border border-purple-200 shadow-sm">
+                <span>🎂</span> НАМ 6 РОКІВ! СВЯТКОВИЙ РОЗПРОДАЖ
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6 text-brandText leading-tight">
+                Medical English: <br class="hidden sm:block" />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brandPrimary to-pink-500">A2-B1 level</span>
+            </h1>
+            <p class="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 font-medium">
+                Удоскональте медичну англійську за 4 місяці. <br class="hidden sm:block" />
+                Навчання для амбітних лікарів, інтернів та студентів-медиків.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="#tariffs" class="w-full sm:w-auto bg-brandPrimary hover:bg-brandPrimaryHover text-white text-lg font-bold py-4 px-10 rounded-full transition-all shadow-lg shadow-purple-300 transform hover:scale-105">
+                    Записатись на курс 🚀
+                </a>
+                <a href="#how-it-works" class="w-full sm:w-auto bg-white hover:bg-gray-50 text-brandText border-2 border-gray-200 text-lg font-bold py-4 px-10 rounded-full transition-all">
+                    Як проходить навчання?
+                </a>
+            </div>
+        </section>
+
+        <!-- Stats / Features Band -->
+        <div class="bg-white border-y border-gray-200 py-8 mb-20 reveal">
+            <div class="max-w-5xl mx-auto px-4 flex flex-wrap justify-center gap-8 sm:gap-16 text-center">
+                <div>
+                    <div class="text-3xl font-extrabold text-brandPrimary mb-1">40+</div>
+                    <div class="text-sm font-medium text-gray-500 uppercase tracking-wider">Відеоуроків</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-extrabold text-brandPrimary mb-1">500+</div>
+                    <div class="text-sm font-medium text-gray-500 uppercase tracking-wider">Нових слів</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-extrabold text-brandPrimary mb-1">20</div>
+                    <div class="text-sm font-medium text-gray-500 uppercase tracking-wider">Практичних діалогів</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-extrabold text-brandPrimary mb-1">100%</div>
+                    <div class="text-sm font-medium text-gray-500 uppercase tracking-wider">Медичний фокус</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works Section (Videos) -->
+        <section id="how-it-works" class="max-w-5xl mx-auto px-4 mb-24 reveal">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-4">Як проходить навчання?</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Отримуєте доступ до платформи, вчитесь по відео, виконуєте інтерактивні завдання з автоперевіркою та закріплюєте знання з викладачем.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <!-- Tabs Header -->
+                <div class="flex border-b border-gray-200">
+                    <button class="tab-btn active flex-1 py-4 px-2 sm:px-6 text-sm sm:text-base font-medium text-gray-600 hover:bg-gray-50 outline-none" onclick="switchTab('video-platform', this)">
+                        💻 Огляд платформи
+                    </button>
+                    <button class="tab-btn flex-1 py-4 px-2 sm:px-6 text-sm sm:text-base font-medium text-gray-600 hover:bg-gray-50 outline-none" onclick="switchTab('video-teacher', this)">
+                        👩‍⚕️ Заняття з викладачем
+                    </button>
+                </div>
+
+                <!-- Tabs Content -->
+                <div class="p-4 sm:p-6 bg-brandBg/30">
+                    <div id="video-platform" class="tab-content active">
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/m3COOPsJXxg?si=p8_P_Lz-TInF_L5P" title="Platform Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <p class="text-center text-gray-600 mt-4 font-medium">Подивіться, як зручно організовані матеріали, відео та завдання на нашій навчальній платформі.</p>
+                    </div>
+                    
+                    <div id="video-teacher" class="tab-content">
+                        <div class="video-wrapper">
+                            <iframe src="https://www.youtube.com/embed/A2UbavkdQr8?si=N-a1OQh1yvGZQj0X" title="Teacher Interaction" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <p class="text-center text-gray-600 mt-4 font-medium">Фрагмент реального розмовного заняття (Speaking Club) з нашими студентами та викладачем.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Program Structure -->
+        <section class="max-w-4xl mx-auto px-4 mb-24 reveal">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-4">Детальна програма курсу</h2>
+                <p class="text-gray-600">Що саме ви вивчите за 4 місяці інтенсивної роботи.</p>
+            </div>
+
+            <!-- Main Course Accordions -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-2 sm:p-4 mb-8">
+                <div class="px-4 py-3 bg-brandPrimaryLight text-brandPrimary font-bold rounded-xl mb-4 text-lg">
+                    ОСНОВНИЙ КУРС
+                </div>
+
+                <!-- Vocab 1 -->
+                <div class="border-b border-gray-100 last:border-0">
+                    <button class="accordion-button w-full flex justify-between items-center py-4 px-4 font-semibold text-lg text-left hover:bg-gray-50 rounded-lg transition-colors" aria-expanded="false" onclick="toggleAccordion(this)">
+                        <span class="flex items-center gap-3">
+                            <span class="text-brandPrimary bg-purple-100 p-2 rounded-lg text-xl">📚</span> 
+                            Вокабулярна частина 1 <span class="text-sm font-normal text-gray-500 hidden sm:inline">(10 блоків, 20 мінілекцій)</span>
+                        </span>
+                        <svg class="accordion-icon w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="accordion-content px-4 sm:px-14">
+                        <ul class="list-disc text-gray-600 pb-4 pl-4 space-y-1">
+                            <li>Частини тіла (базова лексика)</li>
+                            <li>Функції тіла</li>
+                            <li>Історія хвороби</li>
+                            <li>Симптоми та ознаки</li>
+                            <li>Медичні спеціальності</li>
+                            <li>У клініці</li>
+                            <li>Збір анамнезу</li>
+                            <li>Медичний огляд</li>
+                            <li>Базові дослідження 1</li>
+                            <li>Поради та рекомендації</li>
+                            <li>Базове лікування</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Grammar 1 -->
+                <div class="border-b border-gray-100 last:border-0">
+                    <button class="accordion-button w-full flex justify-between items-center py-4 px-4 font-semibold text-lg text-left hover:bg-gray-50 rounded-lg transition-colors" aria-expanded="false" onclick="toggleAccordion(this)">
+                        <span class="flex items-center gap-3">
+                            <span class="text-brandPrimary bg-purple-100 p-2 rounded-lg text-xl">✍️</span> 
+                            Граматична частина 1 <span class="text-sm font-normal text-gray-500 hidden sm:inline">(10 блоків, 20 мінілекцій)</span>
+                        </span>
+                        <svg class="accordion-icon w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="accordion-content px-4 sm:px-14">
+                        <ul class="list-disc text-gray-600 pb-4 pl-4 space-y-1">
+                            <li>Базовий порядок слів</li>
+                            <li>Теперішні часи (Present Tenses)</li>
+                            <li>Минулі часи (Past Tenses)</li>
+                            <li>Present Perfect</li>
+                            <li>Порівняння Past Simple та Present Perfect</li>
+                            <li>Past Continuous</li>
+                            <li>Past Simple vs Past Continuous</li>
+                            <li>Past Perfect</li>
+                            <li>Майбутні часи</li>
+                            <li>Путівник часами англійської мови</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bonus Course Accordions -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-2 sm:p-4">
+                <div class="px-4 py-3 bg-brandSuccessLight text-brandSuccess font-bold rounded-xl mb-4 text-lg flex items-center justify-between">
+                    <span>БОНУСНИЙ КУРС</span>
+                    <span class="text-sm font-medium bg-white px-2 py-1 rounded-md text-brandSuccess border border-green-200">В подарунок 🎁</span>
+                </div>
+
+                <!-- Vocab 2 -->
+                <div class="border-b border-gray-100 last:border-0">
+                    <button class="accordion-button w-full flex justify-between items-center py-4 px-4 font-semibold text-lg text-left hover:bg-gray-50 rounded-lg transition-colors" aria-expanded="false" onclick="toggleAccordion(this)">
+                        <span class="flex items-center gap-3">
+                            <span class="text-brandSuccess bg-green-100 p-2 rounded-lg text-xl">🧠</span> 
+                            Вокабулярна частина 2 <span class="text-sm font-normal text-gray-500 hidden sm:inline">(10 блоків, 20 мінілекцій)</span>
+                        </span>
+                        <svg class="accordion-icon w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="accordion-content px-4 sm:px-14">
+                        <ul class="list-disc text-gray-600 pb-4 pl-4 space-y-1">
+                            <li>Частини тіла (просунута лексика)</li>
+                            <li>Ендокринна система</li>
+                            <li>Система шлунково-кишкового тракту</li>
+                            <li>Чоловіча репродуктивна система</li>
+                            <li>Жіноча репродуктивна система</li>
+                            <li>Серцево-судинна система</li>
+                            <li>Нервова система</li>
+                            <li>Дихальна система</li>
+                            <li>Шкіра (частина 1 та 2)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Grammar 2 -->
+                <div class="border-b border-gray-100 last:border-0">
+                    <button class="accordion-button w-full flex justify-between items-center py-4 px-4 font-semibold text-lg text-left hover:bg-gray-50 rounded-lg transition-colors" aria-expanded="false" onclick="toggleAccordion(this)">
+                        <span class="flex items-center gap-3">
+                            <span class="text-brandSuccess bg-green-100 p-2 rounded-lg text-xl">⚙️</span> 
+                            Граматична частина 2 <span class="text-sm font-normal text-gray-500 hidden sm:inline">(10 блоків, 20 мінілекцій)</span>
+                        </span>
+                        <svg class="accordion-icon w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="accordion-content px-4 sm:px-14">
+                        <ul class="list-disc text-gray-600 pb-4 pl-4 space-y-1">
+                            <li>Asking questions</li>
+                            <li>Possessive adjectives, reflexive pronouns</li>
+                            <li>Basic phrasal verbs</li>
+                            <li>Prepositions (place, movement, time)</li>
+                            <li>Comparative & superlative</li>
+                            <li>Conjunctions & clauses</li>
+                            <li>Verbs with gerund and infinitive</li>
+                            <li>Articles</li>
+                            <li>Quantifiers</li>
+                            <li>Grammar review</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Birthday Bonuses Banner -->
+        <section class="max-w-5xl mx-auto px-4 mb-24 reveal">
+            <div class="bg-gradient-to-br from-purple-900 to-brandPrimary rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
+                <!-- Decorative element -->
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-pink-500 opacity-20 rounded-full blur-3xl"></div>
+                
+                <div class="relative z-10 flex flex-col md:flex-row items-center gap-8 justify-between">
+                    <div class="flex-1">
+                        <div class="inline-block bg-white/20 backdrop-blur-sm px-4 py-1 rounded-full text-sm font-bold tracking-widest mb-4">
+                            ⏳ ДІЄ 24 ГОДИНИ
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-bold mb-4">Святкові бонуси на суму 8 840 грн!</h2>
+                        <p class="text-purple-100 text-lg mb-6">Приєднуйтесь зараз та отримайте три потужні подарунки безкоштовно до будь-якого тарифу.</p>
+                        
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-white text-brandPrimary rounded-full p-1 mt-1 text-sm">✓</span>
+                                <div>
+                                    <strong class="block text-xl">5 розмовних клубів на місяць</strong>
+                                    <span class="text-purple-200">Економія 5 940 грн</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-white text-brandPrimary rounded-full p-1 mt-1 text-sm">✓</span>
+                                <div>
+                                    <strong class="block text-xl">Доступ на 1 рік замість 100 днів</strong>
+                                    <span class="text-purple-200">Економія 1 800 грн</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-white text-brandPrimary rounded-full p-1 mt-1 text-sm">✓</span>
+                                <div>
+                                    <strong class="block text-xl">Грант на навчання</strong>
+                                    <span class="text-purple-200">Економія 1 000 грн</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-1/3 text-center bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+                        <div class="text-6xl mb-2">🎁</div>
+                        <div class="font-bold text-xl mb-1">Усі бонуси включені</div>
+                        <div class="text-purple-200 text-sm">Автоматично при реєстрації сьогодні</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="tariffs" class="max-w-6xl mx-auto px-4 mb-24 reveal scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold mb-4">Оберіть свій формат навчання</h2>
+                <p class="text-gray-600 text-lg">Старт курсу: <strong class="text-brandText">13 квітня 2026 року</strong></p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+                
+                <!-- Tariff 1: Independent -->
+                <div class="pricing-card bg-white rounded-2xl p-8 shadow-sm flex flex-col relative">
+                    <h3 class="font-bold text-2xl text-brandText mb-2">Самостійний</h3>
+                    <p class="text-gray-500 mb-6 flex-grow">Ідеально для дисциплінованих студентів, які навчаються у власному темпі.</p>
+                    
+                    <div class="mb-6">
+                        <div class="text-gray-400 line-through text-lg">5 890 грн</div>
+                        <div class="text-4xl font-extrabold text-brandPrimary mb-2">4 890 грн</div>
+                        <div class="bg-green-50 text-brandSuccess font-medium py-1 px-3 rounded-md inline-block text-sm border border-green-100">
+                            Оплата частинами: 1 223 грн/міс
+                        </div>
+                    </div>
+
+                    <ul class="space-y-3 mb-8 text-gray-700 text-sm">
+                        <li class="flex items-center gap-2"><span>✅</span> 20 блоків курсу</li>
+                        <li class="flex items-center gap-2"><span>✅</span> 40 відеоуроків на платформі</li>
+                        <li class="flex items-center gap-2"><span>✅</span> 500+ нових слів та фраз</li>
+                        <li class="flex items-center gap-2"><span>✅</span> 20 діалогів на SPEAK платформі</li>
+                        <li class="flex items-center gap-2"><span>✅</span> 20 презентацій у PDF</li>
+                        <li class="flex items-center gap-2 text-brandPrimary font-medium"><span>🎁</span> Усі святкові бонуси</li>
+                        <li class="flex items-center gap-2 text-gray-400 opacity-50"><span>❌</span> Заняття з викладачем</li>
+                    </ul>
+
+                    <a href="https://tally.so/r/woZZEV" target="_blank" class="w-full block text-center bg-gray-900 hover:bg-black text-white font-bold py-3 px-4 rounded-xl transition-colors mt-auto">
+                        Обрати тариф
+                    </a>
+                </div>
+
+                <!-- Tariff 2: Group (Popular) -->
+                <div class="pricing-card popular bg-white rounded-2xl p-8 shadow-xl flex flex-col relative transform md:-translate-y-4">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-brandPrimary to-pink-500 text-white font-bold px-4 py-1 rounded-full text-sm shadow-md">
+                        ХІТ ПРОДАЖІВ 🔥
+                    </div>
+                    <h3 class="font-bold text-2xl text-brandText mb-2 mt-2">Груповий</h3>
+                    <p class="text-gray-500 mb-6 flex-grow">Максимум розмовної практики у міні-групах <strong>до 4 людей</strong>.</p>
+                    
+                    <div class="mb-6">
+                        <div class="text-gray-400 line-through text-lg">8 890 грн</div>
+                        <div class="text-4xl font-extrabold text-brandPrimary mb-2">7 890 грн</div>
+                        <div class="bg-green-50 text-brandSuccess font-medium py-1 px-3 rounded-md inline-block text-sm border border-green-100">
+                            Оплата частинами: 1 975 грн/міс
+                        </div>
+                    </div>
+
+                    <ul class="space-y-3 mb-8 text-gray-700 text-sm">
+                        <li class="flex items-center gap-2"><span>✅</span> Усе, що в "Самостійному"</li>
+                        <li class="flex items-center gap-2 font-bold text-brandText"><span>✅</span> 14 занять з викладачем</li>
+                        <li class="flex items-center gap-2 font-bold text-brandText"><span>✅</span> Міні-група до 4 осіб</li>
+                        <li class="flex items-center gap-2 text-brandPrimary font-medium"><span>🎁</span> Усі святкові бонуси</li>
+                    </ul>
+
+                    <a href="https://tally.so/r/woZZEV" target="_blank" class="w-full block text-center bg-brandPrimary hover:bg-brandPrimaryHover text-white font-bold py-4 px-4 rounded-xl transition-colors mt-auto shadow-lg shadow-purple-200">
+                        Забронювати місце
+                    </a>
+                </div>
+
+                <!-- Tariff 3: Individual -->
+                <div class="pricing-card bg-white rounded-2xl p-8 shadow-sm flex flex-col relative">
+                    <h3 class="font-bold text-2xl text-brandText mb-2">Індивідуальний</h3>
+                    <p class="text-gray-500 mb-6 flex-grow">Персональна увага викладача (1 на 1) та повністю гнучкий графік.</p>
+                    
+                    <div class="mb-6">
+                        <div class="text-gray-400 line-through text-lg">12 890 грн</div>
+                        <div class="text-4xl font-extrabold text-brandPrimary mb-2">11 890 грн</div>
+                        <div class="bg-green-50 text-brandSuccess font-medium py-1 px-3 rounded-md inline-block text-sm border border-green-100">
+                            Оплата частинами: 2 975 грн/міс
+                        </div>
+                    </div>
+
+                    <ul class="space-y-3 mb-8 text-gray-700 text-sm">
+                        <li class="flex items-center gap-2"><span>✅</span> Усе, що в "Груповому"</li>
+                        <li class="flex items-center gap-2 font-bold text-brandText"><span>✅</span> Індивідуальні заняття (1х1)</li>
+                        <li class="flex items-center gap-2 font-bold text-brandText"><span>✅</span> Гнучкий графік</li>
+                        <li class="flex items-center gap-2 text-brandPrimary font-medium"><span>🎁</span> Усі святкові бонуси</li>
+                    </ul>
+
+                    <a href="https://tally.so/r/woZZEV" target="_blank" class="w-full block text-center bg-gray-900 hover:bg-black text-white font-bold py-3 px-4 rounded-xl transition-colors mt-auto">
+                        Обрати тариф
+                    </a>
+                </div>
+
+            </div>
+            
+            <div class="text-center mt-6 flex justify-center items-center gap-2 text-gray-500 text-sm">
+                <span>🛡️</span> Гарантія: Повернення коштів протягом 14 днів, якщо курс не підійде.
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="max-w-3xl mx-auto px-4 reveal">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-4">Часті питання (FAQ)</h2>
+            </div>
+
+            <div class="space-y-3">
+                <!-- FAQ Item 1 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="accordion-button w-full flex justify-between items-center p-5 font-semibold text-lg text-left hover:bg-gray-50 transition-colors" aria-expanded="false" onclick="toggleAccordion(this)">
+                        Коли початок та яка тривалість?
+                        <svg class="accordion-icon w-5 h-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="accordion-content px-5 text-gray-600">
+                        <div class="pb-5">
+                            Старт для груп заплановано на <strong>13 квітня 2026 року</strong>. Активна частина навчання триває <strong>12-14 тижнів</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="accordion-button w-full flex justify-between items-center p-5 font-semibold text-lg text-left hover:bg-gray-50 transition-colors" aria-expanded="false" onclick="toggleAccordion(this)">
+                        Скільки часу в мене буде доступ до матеріалів?
+                        <svg class="accordion-icon w-5 h-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="accordion-content px-5 text-gray-600">
+                        <div class="pb-5">
+                            Зазвичай доступ надається на 100 днів. Але за умови купівлі у межах акційних 24 годин (Святковий розпродаж), ви отримаєте доступ <strong>на 1 рік</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="accordion-button w-full flex justify-between items-center p-5 font-semibold text-lg text-left hover:bg-gray-50 transition-colors" aria-expanded="false" onclick="toggleAccordion(this)">
+                        Що робити, якщо я пропущу заняття?
+                        <svg class="accordion-icon w-5 h-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="accordion-content px-5 text-gray-600">
+                        <div class="pb-5">
+                            Не хвилюйтеся! Викладач завжди робить запис зустрічі, і всі матеріали будуть доступні вам на платформі для перегляду у зручний час.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="accordion-button w-full flex justify-between items-center p-5 font-semibold text-lg text-left hover:bg-gray-50 transition-colors" aria-expanded="false" onclick="toggleAccordion(this)">
+                        Хто викладачі та чи є сертифікат?
+                        <svg class="accordion-icon w-5 h-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="accordion-content px-5 text-gray-600">
+                        <div class="pb-5">
+                            Наші викладачі — це медики або професійні педагоги з підтвердженим рівнем англійської <strong>C1+ (IELTS, TOEFL)</strong>. При успішному виконанні навчального плану ви гарантовано отримаєте <strong>Сертифікат</strong> про проходження курсу.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-10">
+                <p class="text-gray-500 mb-4">Все одно не впевнені або маєте додаткові запитання?</p>
+                <a href="https://tally.so/r/woZZEV" target="_blank" class="text-brandPrimary font-semibold hover:underline border-b border-transparent hover:border-brandPrimary transition-all pb-1">
+                    Зв'яжіться з нами
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-12 text-center text-sm border-t border-gray-800">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="text-2xl mb-4 opacity-50">⚕️ Code Black Academy</div>
+            <p>© 2026 Code Black Academy. Всі права захищені.</p>
+        </div>
+    </footer>
+
+    <!-- Mobile Sticky CTA (Appears on scroll) -->
+    <div id="mobile-cta" class="mobile-cta fixed bottom-0 left-0 w-full p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] z-50 sm:hidden flex justify-between items-center">
+        <div>
+            <div class="text-xs text-gray-500 font-medium">Святковий сейл</div>
+            <div class="font-bold text-brandText">від 1 223 грн/міс</div>
+        </div>
+        <a href="#tariffs" class="bg-brandPrimary text-white font-bold py-3 px-6 rounded-full shadow-lg shadow-purple-200">
+            Записатись
+        </a>
+    </div>
+
+    <script>
+        // --- Intersection Observer for Scroll Animations ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const reveals = document.querySelectorAll(".reveal");
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                        // Optional: stop observing once revealed
+                        // observer.unobserve(entry.target); 
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: "0px",
+                threshold: 0.15
+            });
+
+            reveals.forEach(reveal => {
+                revealObserver.observe(reveal);
+            });
+
+            // Mobile Sticky CTA Logic
+            const mobileCta = document.getElementById('mobile-cta');
+            const heroSection = document.querySelector('section.relative'); // Hero
+            
+            window.addEventListener('scroll', () => {
+                if(window.scrollY > heroSection.offsetHeight) {
+                    mobileCta.classList.add('visible');
+                } else {
+                    mobileCta.classList.remove('visible');
+                }
+            });
+        });
+
+        // --- Tabs Logic for Video Section ---
+        function switchTab(tabId, buttonElement) {
+            // Remove active classes from all buttons and contents in this container
+            const container = buttonElement.closest('.bg-white'); // The wrapper
+            const buttons = container.querySelectorAll('.tab-btn');
+            const contents = container.querySelectorAll('.tab-content');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Add active class to clicked button and target content
+            buttonElement.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // --- Accordion Logic ---
+        function toggleAccordion(button) {
+            const expanded = button.getAttribute('aria-expanded') === 'true';
+            const content = button.nextElementSibling;
+            
+            // Close all other accordions in the same group (optional, but good UX)
+            const parentGroup = button.closest('.space-y-3') || button.closest('.bg-white');
+            const allButtons = parentGroup.querySelectorAll('.accordion-button');
+            
+            allButtons.forEach(btn => {
+                if (btn !== button && btn.getAttribute('aria-expanded') === 'true') {
+                    btn.setAttribute('aria-expanded', 'false');
+                    const otherContent = btn.nextElementSibling;
+                    otherContent.style.maxHeight = null;
+                    otherContent.style.paddingTop = '0px';
+                    otherContent.classList.remove('expanded');
+                }
+            });
+
+            // Toggle current
+            if (!expanded) {
+                button.setAttribute('aria-expanded', 'true');
+                content.classList.add('expanded');
+                content.style.paddingTop = '0.5rem';
+                content.style.maxHeight = content.scrollHeight + 20 + "px"; // +20 for padding buffer
+            } else {
+                button.setAttribute('aria-expanded', 'false');
+                content.classList.remove('expanded');
+                content.style.maxHeight = null;
+                setTimeout(() => {
+                     content.style.paddingTop = '0px';
+                }, 100); // small delay to match transition
+            }
+        }
+    </script>
+</body>
+</html>
