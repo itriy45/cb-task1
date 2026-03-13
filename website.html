@@ -3,637 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocabulary Whiteboard - Code Black Academy</title>
+    <title>Медична англійська: Неврологія</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --brand-purple: #7e22ce;
-            --brand-purple-hover: #6b21a8;
-            --marker-black: #1c1917;
-            --board-bg: #f8fafc;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #cbd5e1; 
-            color: var(--marker-black);
-            overflow-x: hidden;
-            padding: 20px;
-        }
-
-        .whiteboard {
-            background-color: var(--board-bg);
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 30px 30px;
-            border-radius: 24px; /* Modern, rounded look */
-            box-shadow: 
-                0 25px 50px -12px rgb(0 0 0 / 0.15), 
-                0 0 0 1px rgb(0 0 0 / 0.05); /* Soft modern shadow, no thick frame */
-            min-height: 90vh;
-            position: relative;
-            max-width: 1000px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; /* Keeps the header rounded with the board */
-        }
-
-        .board-header {
-            border-bottom: 2px solid #e2e8f0;
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        .logo-text {
-            font-weight: 900;
-            font-size: 1.5rem;
-            letter-spacing: -0.05em;
-            color: var(--marker-black);
-        }
-
-        .logo-text span {
-            color: var(--brand-purple);
-        }
-
-        .step-container {
-            display: none;
-            padding: 2rem 2rem;
-            flex-direction: column;
-            animation: markerSketch 0.4s ease-out forwards;
-            flex-grow: 1;
-        }
-
-        .step-active {
-            display: flex;
-        }
-
-        @keyframes markerSketch {
-            from { opacity: 0; transform: scale(0.99); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .question-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            border: 3px solid var(--brand-purple);
-            box-shadow: 6px 6px 0px var(--brand-purple);
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .question-tag {
-            position: absolute;
-            top: -15px;
-            left: 20px;
-            background: var(--brand-purple);
-            color: white;
-            padding: 4px 12px;
-            font-weight: 900;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            border-radius: 4px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            margin-bottom: 0.75rem;
-            border: 3px solid var(--marker-black);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: white;
-            font-weight: 600;
-        }
-
-        .radio-option:hover:not(.disabled) {
-            transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0px var(--marker-black);
-        }
-
-        .radio-option.selected {
-            background-color: #faf5ff;
-            border-color: var(--brand-purple);
-            color: var(--brand-purple);
-            box-shadow: 4px 4px 0px var(--brand-purple);
-        }
-
-        .dot {
-            width: 18px;
-            height: 18px;
-            border: 3px solid currentColor;
-            border-radius: 4px;
-            margin-right: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .selected .dot::after {
-            content: "✓";
-            font-size: 14px;
-        }
-
-        .video-box {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 3px solid var(--marker-black);
-            margin-top: 1.5rem;
-            box-shadow: 6px 6px 0px rgba(0,0,0,0.1);
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 8px;
-            background: #000;
-            border: 2px solid var(--marker-black);
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-        }
-
-        .btn-marker {
-            background: var(--marker-black);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-            box-shadow: 4px 4px 0px #475569;
-            width: 100%;
-            text-align: center;
-        }
-
-        .btn-marker:hover {
-            transform: translate(-2px, -2px);
-            background: var(--brand-purple);
-            box-shadow: 6px 6px 0px var(--brand-purple-hover);
-        }
-
-        .timer-btn {
-            background-color: white;
-            border: 3px solid var(--marker-black);
-            color: var(--marker-black);
-            font-weight: 800;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .timer-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 4px 4px 0px var(--marker-black);
-        }
-
-        .timer-btn.counting {
-            background-color: var(--brand-purple);
-            border-color: var(--brand-purple);
-            color: white;
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px -5px rgba(126, 34, 206, 0.5);
-        }
-
-        .timer-btn.finished {
-            background-color: #ef4444; /* red-500 */
-            border-color: #ef4444;
-            color: white;
-            transform: scale(1);
-        }
-
-        .progress-indicator {
-            font-weight: 900;
-            color: #94a3b8;
-            font-size: 0.875rem;
-            letter-spacing: 2px;
-        }
-
-        .toast-board {
-            position: fixed;
-            top: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        .marker-font {
-            font-weight: 800;
-        }
+        :root { --brand-purple: #7e22ce; --brand-purple-hover: #6b21a8; --marker-black: #1c1917; --board-bg: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background-color: #cbd5e1; color: var(--marker-black); overflow-x: hidden; margin: 0; padding: 20px; }
+        .whiteboard { background-color: var(--board-bg); background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 30px 30px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.15), 0 0 0 1px rgb(0 0 0 / 0.05); min-height: 90vh; position: relative; max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; overflow: hidden; }
+        .board-header { border-bottom: 2px solid #e2e8f0; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.9); }
+        .logo-text { font-weight: 900; font-size: 1.5rem; letter-spacing: -0.05em; color: var(--marker-black); }
+        .logo-text span { color: var(--brand-purple); }
+        .step-container { display: none; padding: 2rem 2rem; flex-direction: column; animation: markerSketch 0.4s ease-out forwards; flex-grow: 1; }
+        .step-active { display: flex; }
+        @keyframes markerSketch { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
+        .question-card { background: white; padding: 2rem; border-radius: 12px; border: 3px solid var(--brand-purple); box-shadow: 6px 6px 0px var(--brand-purple); margin-bottom: 2rem; position: relative; }
+        .question-tag { position: absolute; top: -15px; left: 20px; background: var(--brand-purple); color: white; padding: 4px 12px; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; border-radius: 4px; }
+        .radio-option { display: flex; align-items: center; padding: 1rem 1.5rem; margin-bottom: 0.75rem; border: 3px solid var(--marker-black); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; background: white; font-weight: 600; }
+        .radio-option:hover:not(.disabled) { transform: translate(-2px, -2px); box-shadow: 4px 4px 0px var(--marker-black); }
+        .radio-option.selected { background-color: #faf5ff; border-color: var(--brand-purple); color: var(--brand-purple); box-shadow: 4px 4px 0px var(--brand-purple); }
+        .dot { width: 18px; height: 18px; border: 3px solid currentColor; border-radius: 4px; margin-right: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .selected .dot::after { content: "✓"; font-size: 14px; }
+        .video-box { background: white; padding: 1.5rem; border-radius: 12px; border: 3px solid var(--marker-black); margin-top: 1.5rem; box-shadow: 6px 6px 0px rgba(0,0,0,0.1); }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; border: 2px solid var(--marker-black); }
+        .video-container iframe, .video-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .btn-marker { background: var(--marker-black); color: white; padding: 1rem 2rem; border-radius: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s; border: none; cursor: pointer; box-shadow: 4px 4px 0px #475569; text-align: center; }
+        .btn-marker:hover:not(:disabled) { transform: translate(-2px, -2px); background: var(--brand-purple); box-shadow: 6px 6px 0px var(--brand-purple-hover); }
+        .btn-marker:disabled { opacity: 0.7; cursor: not-allowed; box-shadow: none; }
+        .timer-btn { background-color: white; border: 3px solid var(--marker-black); color: var(--marker-black); font-weight: 800; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .timer-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 4px 4px 0px var(--marker-black); }
+        .timer-btn.counting { background-color: var(--brand-purple); border-color: var(--brand-purple); color: white; transform: scale(1.05); box-shadow: 0 10px 25px -5px rgba(126, 34, 206, 0.5); }
+        .timer-btn.finished { background-color: #ef4444; border-color: #ef4444; color: white; transform: scale(1); }
+        .progress-indicator { font-weight: 900; color: #94a3b8; font-size: 0.875rem; letter-spacing: 2px; }
+        .toast-board { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); z-index: 100; pointer-events: none; }
+        .marker-font { font-weight: 800; }
     </style>
 </head>
 <body>
-
     <div id="toast-container" class="toast-board"></div>
-
     <div class="whiteboard">
         <header class="board-header">
             <div class="logo-text">CODE <span>BLACK</span> ACADEMY</div>
-            <div id="progress-text" class="progress-indicator">STEP 00</div>
+            <div id="progress-text" class="progress-indicator">START</div>
         </header>
-
-        <main class="flex-grow">
-            <!-- STEP 0: Welcome -->
+        <main class="flex-grow" id="presentation-root">
+            
             <div id="step-0" class="step-container step-active">
                 <div class="max-w-2xl mx-auto text-center py-10">
-                    <h1 class="text-5xl font-black mb-6 tracking-tighter text-stone-900">VOCABULARY<br><span class="text-purple-700">WHITEBOARD</span></h1>
-                    <p class="text-xl font-medium text-stone-600 mb-10 leading-relaxed">
-                        Ласкаво просимо! Цей формат створений для вивчення нової лексики. 
-                        Прочитайте питання, запустіть таймер на 3 секунди, а потім оберіть відповідь, 
-                        щоб переглянути пояснення та відео з вимовою.
-                    </p>
-                    <button onclick="nextStep()" class="btn-marker text-lg inline-block w-auto">
-                        Взяти маркер та почати ✏️
-                    </button>
+                    <h1 class="text-5xl font-black mb-6 tracking-tighter text-stone-900">Медична англійська: Неврологія</h1>
+                    <p class="text-xl font-medium text-stone-600 mb-10 leading-relaxed">Вивчення термінів lesion, gaze paresis та stroke workup</p>
+                    <button onclick="nextStep()" class="btn-marker text-lg inline-block w-auto">Взяти маркер та почати ✏️</button>
                 </div>
             </div>
-
-            <!-- ================= Q1 ================= -->
-            <!-- STEP 1 QUESTION -->
-            <div id="step-1-q" class="step-container">
-                <div class="question-card">
-                    <div class="question-tag">Question #1</div>
-                    <p class="text-xl font-bold">A senior consultant says: <span class="text-purple-700 underline underline-offset-4 decoration-2">"He needs a full work-up"</span>.</p>
-                    <p class="text-stone-700 mt-4 font-medium">What does "Work-up" imply in clinical practice?</p>
-                </div>
-
-                <div class="flex justify-center mb-6">
-                    <button id="timer-btn-1" onclick="startTimer(1)" class="timer-btn py-3 px-8 rounded-full text-xl flex items-center justify-center gap-2 min-w-[250px]">
-                        ⏱️ <span>Start 3s Timer</span>
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 gap-3 max-w-xl mx-auto w-full">
-                    <div class="radio-option" data-value="A" data-correct="false">
-                        <div class="dot"></div> A) Morning physical exercise
+                <div id="step-1-q" class="step-container">
+                    <div class="question-card"><div class="question-tag">Question #1</div><p class="text-xl font-bold">Яке слово використовується для позначення вогнища ураження або патологічних змін у тканинах? (I can't localize the ________.)</p></div>
+                    <div class="flex justify-center mb-6"><button id="timer-btn-1" onclick="startTimer(1)" class="timer-btn py-3 px-8 rounded-full text-xl min-w-[250px]">⏱️ <span>Start 3s Timer</span></button></div>
+                    <div class="grid grid-cols-1 gap-3 max-w-xl mx-auto w-full">
+                        <div class="radio-option" data-value="A" data-correct="false"><div class="dot"></div> A) deficit</div>
+                        <div class="radio-option" data-value="B" data-correct="true"><div class="dot"></div> B) lesion</div>
+                        <div class="radio-option" data-value="C" data-correct="false"><div class="dot"></div> C) transmission</div>
                     </div>
-                    <div class="radio-option" data-value="B" data-correct="true">
-                        <div class="dot"></div> B) Full diagnostic investigation
+                    <div class="flex justify-center mt-8"><button id="submit-btn-1" onclick="checkAnswer(1)" class="hidden btn-marker">Перевірити ➔</button></div>
+                </div>
+                <div id="step-1-e" class="step-container">
+                    <div id="result-badge-1"></div>
+                    <div class="p-5 border-2 border-stone-300 rounded-xl bg-white mb-6 shadow-sm">
+                        <p class="marker-font text-purple-700 mb-2">💡 THE FACT:</p>
+                        <p class="text-lg leading-relaxed">Білл зізнається, що не може локалізувати lesion (ураження).</p>
                     </div>
-                    <div class="radio-option" data-value="C" data-correct="false">
-                        <div class="dot"></div> C) Waking the patient up early
+                    <div class="video-box"><h4 class="marker-font text-sm mb-3 text-stone-500">PRONUNCIATION & CONTEXT:</h4><div class="video-container"><iframe src="https://www.youtube.com/embed/QsqsT3659Ss?start=11&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div></div>
+                    <div class="flex justify-center mt-8"><button onclick="nextStep()" class="btn-marker bg-purple-700 hover:bg-purple-800 max-w-sm">Next Question ➔</button></div>
+                </div>
+                <div id="step-2-q" class="step-container">
+                    <div class="question-card"><div class="question-tag">Question #2</div><p class="text-xl font-bold">Яким терміном у відео описується параліч погляду в горизонтальній площині? (The patient has contralateral hemiparesis and horizontal ________.)</p></div>
+                    <div class="flex justify-center mb-6"><button id="timer-btn-2" onclick="startTimer(2)" class="timer-btn py-3 px-8 rounded-full text-xl min-w-[250px]">⏱️ <span>Start 3s Timer</span></button></div>
+                    <div class="grid grid-cols-1 gap-3 max-w-xl mx-auto w-full">
+                        <div class="radio-option" data-value="A" data-correct="true"><div class="dot"></div> A) gaze paresis</div>
+                        <div class="radio-option" data-value="B" data-correct="false"><div class="dot"></div> B) ophthalmoplegia</div>
+                        <div class="radio-option" data-value="C" data-correct="false"><div class="dot"></div> C) neurologic deficit</div>
                     </div>
+                    <div class="flex justify-center mt-8"><button id="submit-btn-2" onclick="checkAnswer(2)" class="hidden btn-marker">Перевірити ➔</button></div>
                 </div>
-
-                <div class="flex justify-center mt-8 max-w-xl mx-auto w-full">
-                    <button id="submit-btn-1" onclick="checkAnswer(1)" class="hidden btn-marker">Перевірити відповідь ➔</button>
-                </div>
-            </div>
-
-            <!-- STEP 1 EXPLANATION -->
-            <div id="step-1-e" class="step-container">
-                <div id="result-badge-1"></div>
-
-                <div class="p-5 border-2 border-stone-300 rounded-xl bg-white mb-6">
-                    <p class="marker-font text-purple-700 mb-2">💡 THE FACT:</p>
-                    <p class="text-lg"><strong>Work-up</strong> — комплексне обстеження (аналізи, сканування) для встановлення діагнозу.</p>
-                    <div class="mt-3 bg-purple-50 p-3 rounded-lg border border-purple-200">
-                        <p class="text-sm font-bold text-purple-800">Correct Answer: B) Full diagnostic investigation</p>
+                <div id="step-2-e" class="step-container">
+                    <div id="result-badge-2"></div>
+                    <div class="p-5 border-2 border-stone-300 rounded-xl bg-white mb-6 shadow-sm">
+                        <p class="marker-font text-purple-700 mb-2">💡 THE FACT:</p>
+                        <p class="text-lg leading-relaxed">Лікар перелічує симптоми, серед яких horizontal gaze paresis (парез горизонтального погляду).</p>
                     </div>
+                    <div class="video-box"><h4 class="marker-font text-sm mb-3 text-stone-500">PRONUNCIATION & CONTEXT:</h4><div class="video-container"><iframe src="https://www.youtube.com/embed/QsqsT3659Ss?start=43&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div></div>
+                    <div class="flex justify-center mt-8"><button onclick="nextStep()" class="btn-marker bg-purple-700 hover:bg-purple-800 max-w-sm">Next Question ➔</button></div>
                 </div>
-
-                <div class="video-box">
-                    <h4 class="marker-font text-sm mb-3 text-stone-500">PRONUNCIATION & CONTEXT:</h4>
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/ETFkztcoMVc?start=407" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div id="step-3-q" class="step-container">
+                    <div class="question-card"><div class="question-tag">Question #3</div><p class="text-xl font-bold">Що означає термін "stroke workup" у контексті фінальної фрази лікаря?</p></div>
+                    <div class="flex justify-center mb-6"><button id="timer-btn-3" onclick="startTimer(3)" class="timer-btn py-3 px-8 rounded-full text-xl min-w-[250px]">⏱️ <span>Start 3s Timer</span></button></div>
+                    <div class="grid grid-cols-1 gap-3 max-w-xl mx-auto w-full">
+                        <div class="radio-option" data-value="A" data-correct="false"><div class="dot"></div> A) Surgical intervention</div>
+                        <div class="radio-option" data-value="B" data-correct="false"><div class="dot"></div> B) Laboratory blood test</div>
+                        <div class="radio-option" data-value="C" data-correct="true"><div class="dot"></div> C) Diagnostic medical examination</div>
                     </div>
+                    <div class="flex justify-center mt-8"><button id="submit-btn-3" onclick="checkAnswer(3)" class="hidden btn-marker">Перевірити ➔</button></div>
                 </div>
-
-                <div class="flex justify-center mt-8">
-                    <button onclick="nextStep()" class="btn-marker bg-purple-700 hover:bg-purple-800 max-w-sm">Наступне питання ➔</button>
-                </div>
-            </div>
-
-
-            <!-- ================= Q2 ================= -->
-            <!-- STEP 2 QUESTION -->
-            <div id="step-2-q" class="step-container">
-                <div class="question-card">
-                    <div class="question-tag">Question #2</div>
-                    <p class="text-xl font-bold">You finally found the cause of the disease. In English, we don't say <span class="italic text-purple-700">"put a diagnosis"</span>. What is the correct professional verb?</p>
-                </div>
-
-                <div class="flex justify-center mb-6">
-                    <button id="timer-btn-2" onclick="startTimer(2)" class="timer-btn py-3 px-8 rounded-full text-xl flex items-center justify-center gap-2 min-w-[250px]">
-                        ⏱️ <span>Start 3s Timer</span>
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 gap-3 max-w-xl mx-auto w-full">
-                    <div class="radio-option" data-value="A" data-correct="false">
-                        <div class="dot"></div> A) To put a diagnosis
+                <div id="step-3-e" class="step-container">
+                    <div id="result-badge-3"></div>
+                    <div class="p-5 border-2 border-stone-300 rounded-xl bg-white mb-6 shadow-sm">
+                        <p class="marker-font text-purple-700 mb-2">💡 THE FACT:</p>
+                        <p class="text-lg leading-relaxed">Наприкінці відео пропонується скасувати stroke workup — комплекс діагностичних заходів для виявлення інсульту.</p>
                     </div>
-                    <div class="radio-option" data-value="B" data-correct="true">
-                        <div class="dot"></div> B) To reach / establish a diagnosis
-                    </div>
-                    <div class="radio-option" data-value="C" data-correct="false">
-                        <div class="dot"></div> C) To give a diagnosis
-                    </div>
+                    <div class="video-box"><h4 class="marker-font text-sm mb-3 text-stone-500">PRONUNCIATION & CONTEXT:</h4><div class="video-container"><iframe src="https://www.youtube.com/embed/QsqsT3659Ss?start=54&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div></div>
+                    <div class="flex justify-center mt-8"><button onclick="nextStep()" class="btn-marker bg-purple-700 hover:bg-purple-800 max-w-sm">Завершити ➔</button></div>
                 </div>
-
-                <div class="flex justify-center mt-8 max-w-xl mx-auto w-full">
-                    <button id="submit-btn-2" onclick="checkAnswer(2)" class="hidden btn-marker">Перевірити відповідь ➔</button>
-                </div>
-            </div>
-
-            <!-- STEP 2 EXPLANATION -->
-            <div id="step-2-e" class="step-container">
-                <div id="result-badge-2"></div>
-
-                <div class="p-5 border-2 border-stone-300 rounded-xl bg-white mb-6">
-                    <p class="marker-font text-purple-700 mb-2">💡 THE FACT:</p>
-                    <p class="text-lg">До діагнозу "доходять" (<strong>Reach</strong>) або його "встановлюють" (<strong>Establish</strong>).</p>
-                    <div class="mt-3 bg-purple-50 p-3 rounded-lg border border-purple-200">
-                        <p class="text-sm font-bold text-purple-800">Correct Answer: B) To reach / establish a diagnosis</p>
-                    </div>
-                </div>
-
-                <div class="video-box">
-                    <h4 class="marker-font text-sm mb-3 text-stone-500">PRONUNCIATION & CONTEXT:</h4>
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/VLuv6t8rhDc?start=1069" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <div class="flex justify-center mt-8">
-                    <button onclick="nextStep()" class="btn-marker bg-purple-700 hover:bg-purple-800 max-w-sm">Наступне питання ➔</button>
-                </div>
-            </div>
-
-
-            <!-- ================= Q3 ================= -->
-            <!-- STEP 3 QUESTION -->
-            <div id="step-3-q" class="step-container">
-                <div class="question-card">
-                    <div class="question-tag">Question #3</div>
-                    <p class="text-xl font-bold">Testing reflexes with a hammer. You want to describe <span class="text-purple-700 underline">provoking</span> a response professionally. You...</p>
-                </div>
-
-                <div class="flex justify-center mb-6">
-                    <button id="timer-btn-3" onclick="startTimer(3)" class="timer-btn py-3 px-8 rounded-full text-xl flex items-center justify-center gap-2 min-w-[250px]">
-                        ⏱️ <span>Start 3s Timer</span>
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 gap-3 max-w-xl mx-auto w-full">
-                    <div class="radio-option" data-value="A" data-correct="false">
-                        <div class="dot"></div> A) To induce
-                    </div>
-                    <div class="radio-option" data-value="B" data-correct="true">
-                        <div class="dot"></div> B) To elicit
-                    </div>
-                    <div class="radio-option" data-value="C" data-correct="false">
-                        <div class="dot"></div> C) To extract
-                    </div>
-                </div>
-
-                <div class="flex justify-center mt-8 max-w-xl mx-auto w-full">
-                    <button id="submit-btn-3" onclick="checkAnswer(3)" class="hidden btn-marker">Перевірити відповідь ➔</button>
-                </div>
-            </div>
-
-            <!-- STEP 3 EXPLANATION -->
-            <div id="step-3-e" class="step-container">
-                <div id="result-badge-3"></div>
-
-                <div class="p-5 border-2 border-stone-300 rounded-xl bg-white mb-6">
-                    <p class="marker-font text-purple-700 mb-2">💡 THE FACT:</p>
-                    <p class="text-lg"><strong>Elicit</strong> [і-ЛІ-сіт] — викликати рефлекс або виявляти симптом під час огляду.</p>
-                    <div class="mt-3 bg-purple-50 p-3 rounded-lg border border-purple-200">
-                        <p class="text-sm font-bold text-purple-800">Correct Answer: B) To elicit</p>
-                    </div>
-                </div>
-
-                <div class="video-box">
-                    <h4 class="marker-font text-sm mb-3 text-stone-500">PRONUNCIATION & CONTEXT:</h4>
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/0SgKAxj5UHw?start=769" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <div class="flex justify-center mt-8">
-                    <button onclick="nextStep()" class="btn-marker bg-purple-700 hover:bg-purple-800 max-w-sm">Завершити ➔</button>
-                </div>
-            </div>
-
-            <!-- ================= RESULT ================= -->
             <div id="step-result" class="step-container text-center py-20">
-                <h2 class="text-6xl font-black mb-4">FINISH!</h2>
-                <div class="text-4xl marker-font text-purple-600 mb-8" id="final-score">SCORE: 0/3</div>
-                <div class="max-w-md mx-auto bg-white border-4 border-stone-900 p-8 rounded-xl">
-                    <p class="text-xl font-bold mb-4">Чудовий воркаут для Вашої англійської! 🧠</p>
-                    <p class="text-stone-600 mb-8">Ви готові застосовувати ці слова на практиці.</p>
-                    <button onclick="resetTest()" class="btn-marker w-full bg-purple-700 hover:bg-purple-800">Пройти ще раз 🔄</button>
+                <h2 class="text-6xl font-black mb-4 uppercase tracking-tighter">Чудова робота!</h2>
+                <div class="text-4xl marker-font text-purple-600 mb-8" id="final-score">SCORE: 0/0</div>
+                <div class="max-w-md mx-auto bg-white border-4 border-stone-900 p-8 rounded-xl shadow-[8px_8px_0px_#1c1917]">
+                    <p class="text-xl font-bold mb-8">Ви успішно опрацювали ключові медичні терміни з відео та перевірили свої знання.</p>
+                    <button onclick="nextStep()" class="btn-marker w-full bg-purple-700 hover:bg-purple-800">Restart Presentation 🔄</button>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        let state = {
-            question: 0,
-            phase: 'welcome', // phases: 'welcome', 'q' (question), 'e' (explanation), 'result'
-            score: 0
-        };
+        let presState = { question: 0, phase: 'welcome', score: 0, totalQuestions: 3 };
+        let timerIntervals = {};
 
-        const totalQuestions = 3;
-        let timerIntervals = {}; // Store intervals to clear them if needed
-
-        window.onload = () => {
-            const saved = localStorage.getItem('cba_whiteboard_v4_state');
-            if (saved) {
-                state = JSON.parse(saved);
-                showCurrentScreen();
-            }
-            setupOptions();
-        };
-
-        function startTimer(qId) {
-            const btn = document.getElementById(`timer-btn-${qId}`);
+        function startTimer(n) {
+            const btn = document.getElementById('timer-btn-' + n);
             if (!btn || btn.disabled) return;
-            
-            const span = btn.querySelector('span');
-            btn.disabled = true;
-            
-            // Apply visual counting state
-            btn.classList.add('counting');
-            
-            let count = 3;
-            btn.innerHTML = `⏱️ <span class="text-2xl">${count}</span>`;
-            
-            timerIntervals[qId] = setInterval(() => {
-                count--;
-                if (count > 0) {
-                    btn.innerHTML = `⏱️ <span class="text-2xl">${count}</span>`;
-                } else {
-                    clearInterval(timerIntervals[qId]);
-                    btn.classList.remove('counting');
-                    btn.classList.add('finished');
-                    btn.innerHTML = `⏰ <span>Time's Up!</span>`;
-                }
+            btn.disabled = true; btn.classList.add('counting');
+            let c = 3; btn.innerHTML = '⏱️ <span class="text-2xl">' + c + '</span>';
+            timerIntervals[n] = setInterval(() => {
+                c--; if (c>0) btn.innerHTML = '⏱️ <span class="text-2xl">' + c + '</span>';
+                else { clearInterval(timerIntervals[n]); btn.classList.remove('counting'); btn.classList.add('finished'); btn.innerHTML = '⏰ <span>Time\'s Up!</span>'; }
             }, 1000);
         }
 
         function showCurrentScreen() {
-            // Hide all screens
             document.querySelectorAll('.step-container').forEach(s => s.classList.remove('step-active'));
+            const id = presState.phase === 'welcome' ? 'step-0' : presState.phase === 'result' ? 'step-result' : 'step-' + presState.question + '-' + presState.phase;
+            document.getElementById(id).classList.add('step-active');
             
-            // Determine which screen to show based on state
-            let targetId = '';
-            if (state.phase === 'welcome') {
-                targetId = 'step-0';
-            } else if (state.phase === 'result') {
-                targetId = 'step-result';
-            } else {
-                targetId = `step-${state.question}-${state.phase}`;
-            }
-
-            const target = document.getElementById(targetId);
-            if (target) {
-                target.classList.add('step-active');
-                updateUI();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                localStorage.setItem('cba_whiteboard_v4_state', JSON.stringify(state));
-                
-                if (state.phase === 'result') triggerConfetti();
+            const pt = document.getElementById('progress-text');
+            if (presState.phase==='welcome') pt.innerText = 'START';
+            else if (presState.phase==='result') { pt.innerText = 'FINISH'; document.getElementById('final-score').innerText = 'SCORE: ' + presState.score + '/' + presState.totalQuestions; triggerConfetti(); }
+            else pt.innerText = (presState.phase==='q'?'QUESTION':'FACT') + ' ' + presState.question + '/' + presState.totalQuestions;
+            
+            if (presState.phase==='q') {
+                document.querySelectorAll('.radio-option').forEach(opt => {
+                    opt.onclick = function() {
+                        const sd = this.closest('.step-container');
+                        sd.querySelectorAll('.radio-option').forEach(r => r.classList.remove('selected'));
+                        this.classList.add('selected');
+                        document.getElementById('submit-btn-' + presState.question).classList.remove('hidden');
+                    }
+                });
             }
         }
 
-        function updateUI() {
-            const text = document.getElementById('progress-text');
-            if (state.phase === 'welcome') {
-                text.innerText = "START";
-            } else if (state.phase === 'result') {
-                text.innerText = "FINISH";
-                document.getElementById('final-score').innerText = `SCORE: ${state.score}/${totalQuestions}`;
-            } else if (state.phase === 'q') {
-                text.innerText = `QUESTION ${state.question}/${totalQuestions}`;
-            } else if (state.phase === 'e') {
-                text.innerText = `EXPLANATION ${state.question}/${totalQuestions}`;
-            }
-        }
-
-        function setupOptions() {
-            document.querySelectorAll('.radio-option').forEach(opt => {
-                opt.onclick = function() {
-                    if (this.classList.contains('disabled')) return;
-                    
-                    const stepDiv = this.closest('.step-container');
-                    
-                    // Deselect others
-                    stepDiv.querySelectorAll('.radio-option').forEach(r => r.classList.remove('selected'));
-                    
-                    // Select clicked
-                    this.classList.add('selected');
-                    
-                    // Show submit button
-                    const btnId = `submit-btn-${state.question}`;
-                    const btn = document.getElementById(btnId);
-                    if (btn) btn.classList.remove('hidden');
-                };
-            });
-        }
-
-        function checkAnswer(questionId) {
-            const stepDiv = document.getElementById(`step-${questionId}-q`);
-            const selected = stepDiv.querySelector('.radio-option.selected');
-            const isCorrect = selected.getAttribute('data-correct') === 'true';
-
-            // Stop timer if it's still running
-            if (timerIntervals[questionId]) {
-                clearInterval(timerIntervals[questionId]);
-            }
-
-            // Visual feedback
-            if (isCorrect) {
-                state.score++;
-                showToast("ПРАВИЛЬНО! ✅");
-                document.getElementById(`result-badge-${questionId}`).innerHTML = `
-                    <div class="mb-4 p-4 rounded-xl bg-green-100 border-2 border-green-500 text-green-800 font-bold flex items-center gap-3">
-                        <span class="text-2xl">✅</span> 
-                        <div>Ваша відповідь: <span class="uppercase">ПРАВИЛЬНА</span></div>
-                    </div>`;
-            } else {
-                showToast("НЕ ЗОВСІМ ❌");
-                document.getElementById(`result-badge-${questionId}`).innerHTML = `
-                    <div class="mb-4 p-4 rounded-xl bg-orange-100 border-2 border-orange-500 text-orange-800 font-bold flex items-center gap-3">
-                        <span class="text-2xl">❌</span> 
-                        <div>Ваша відповідь: <span class="uppercase">НЕВІРНА</span></div>
-                    </div>`;
-            }
-
-            // Move to explanation phase
-            state.phase = 'e';
-            showCurrentScreen();
+        function checkAnswer(n) {
+            const sc = document.getElementById('step-' + n + '-q');
+            const sel = sc.querySelector('.radio-option.selected');
+            const cor = sel.getAttribute('data-correct') === 'true';
+            if (cor) presState.score++;
+            document.getElementById('result-badge-' + n).innerHTML = '<div class="mb-4 p-4 rounded-xl border-2 font-bold ' + (cor?'bg-green-100 border-green-500 text-green-800':'bg-orange-100 border-orange-500 text-orange-800') + '">' + (cor?'✅ ПРАВИЛЬНО':'❌ НЕВІРНО') + '</div>';
+            
+            customToast(cor ? "ПРАВИЛЬНО! ✅" : "НЕ ЗОВСІМ ❌", !cor);
+            presState.phase = 'e'; showCurrentScreen();
         }
 
         function nextStep() {
-            if (state.phase === 'welcome') {
-                state.question = 1;
-                state.phase = 'q';
-            } else if (state.phase === 'e') {
-                if (state.question >= totalQuestions) {
-                    state.phase = 'result';
-                } else {
-                    state.question++;
-                    state.phase = 'q';
-                }
+            if (presState.phase === 'welcome') { presState.question = 1; presState.phase = 'q'; }
+            else if (presState.phase === 'e') {
+                if (presState.question >= presState.totalQuestions) presState.phase = 'result';
+                else { presState.question++; presState.phase = 'q'; }
+            } else if (presState.phase === 'result') {
+                presState = { question: 0, phase: 'welcome', score: 0, totalQuestions: 3 };
+                Object.values(timerIntervals).forEach(clearInterval); timerIntervals = {};
+                document.querySelectorAll('.radio-option').forEach(r => r.classList.remove('selected'));
+                document.querySelectorAll('[id^="submit-btn-"]').forEach(btn => btn.classList.add('hidden'));
+                document.querySelectorAll('.timer-btn').forEach(btn => {
+                    btn.disabled = false; btn.classList.remove('counting', 'finished');
+                    btn.innerHTML = '⏱️ <span>Start 3s Timer</span>';
+                });
+                document.querySelectorAll('[id^="result-badge-"]').forEach(b => b.innerHTML = '');
             }
             showCurrentScreen();
-        }
-
-        function resetTest() {
-            // Clear any running timers
-            Object.values(timerIntervals).forEach(clearInterval);
-            timerIntervals = {};
-
-            state = { question: 0, phase: 'welcome', score: 0 };
-            localStorage.removeItem('cba_whiteboard_v4_state');
-            
-            // Reset UI states (Options)
-            document.querySelectorAll('.radio-option').forEach(r => {
-                r.classList.remove('selected', 'correct', 'incorrect', 'disabled');
-            });
-            
-            // Reset Submit Buttons
-            document.querySelectorAll('[id^="submit-btn-"]').forEach(btn => {
-                btn.classList.add('hidden');
-            });
-            
-            // Reset Timer Buttons
-            document.querySelectorAll('.timer-btn').forEach(btn => {
-                btn.disabled = false;
-                btn.classList.remove('counting', 'finished');
-                btn.innerHTML = `⏱️ <span>Start 3s Timer</span>`;
-            });
-
-            showCurrentScreen();
-        }
-
-        function showToast(msg) {
-            const container = document.getElementById('toast-container');
-            const t = document.createElement('div');
-            t.className = "bg-marker-black text-white px-8 py-3 marker-font rounded-full shadow-2xl mb-2 animate-bounce";
-            t.innerText = msg;
-            container.appendChild(t);
-            setTimeout(() => {
-                t.style.opacity = '0';
-                t.style.transition = 'opacity 0.5s';
-                setTimeout(() => t.remove(), 500);
-            }, 2500);
         }
 
         function triggerConfetti() {
@@ -641,15 +194,22 @@
                 const c = document.createElement('div');
                 c.className = 'fixed w-2 h-2 z-50 pointer-events-none';
                 c.style.backgroundColor = ['#7e22ce','#3b82f6','#16a34a','#000'][Math.floor(Math.random()*4)];
-                c.style.left = Math.random()*100+'vw';
-                c.style.top = '-10px';
+                c.style.left = Math.random()*100+'vw'; c.style.top = '-10px';
                 document.body.appendChild(c);
-                c.animate([
-                    { transform: 'translateY(0) rotate(0)', opacity: 1 },
-                    { transform: `translateY(100vh) translateX(${(Math.random()-0.5)*300}px) rotate(720deg)`, opacity: 0 }
-                ], { duration: 2500 + Math.random()*2500, easing: 'ease-out' }).onfinish = () => c.remove();
+                c.animate([{transform:'translateY(0) rotate(0)',opacity:1},{transform:'translateY(100vh) translateX('+((Math.random()-0.5)*300)+'px) rotate(720deg)',opacity:0}], {duration:2500+Math.random()*2500}).onfinish = () => c.remove();
             }
         }
+        
+        function customToast(msg, isError = false) {
+            const container = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.className = (isError ? 'bg-red-600' : 'bg-purple-700') + ' text-white px-8 py-3 marker-font rounded-full shadow-2xl mb-2 animate-bounce flex items-center gap-2';
+            t.innerHTML = msg;
+            container.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.5s'; setTimeout(() => t.remove(), 500); }, 3000);
+        }
+        
+        window.onload = () => showCurrentScreen();
     </script>
 </body>
 </html>
