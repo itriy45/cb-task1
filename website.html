@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Updated to reorder the welcome step, remove the hero emoji icon, and keep the quiz minimalistic with clear mobile spacing and a compact Start Again button on the results screen. -->
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
@@ -45,8 +46,42 @@
             animation: slideUpFade 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
+        @media (max-width: 640px) {
+            .step-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .question-card {
+                padding: 0.9rem 1rem;
+            }
+        }
+
+        .question-card {
+            background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+            border: 1px solid #e9d5ff;
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 12px 30px -22px rgba(126, 34, 206, 0.9);
+        }
+
+        .step-active .question-card {
+            animation: questionFocus 0.45s ease;
+        }
+
+        .question-title {
+            margin-bottom: 0;
+            color: #1c1917;
+            line-height: 1.45;
+        }
+
         @keyframes slideUpFade {
             from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes questionFocus {
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -182,6 +217,25 @@
             background-color: #15803d;
         }
 
+        .btn-restart {
+            align-self: center;
+            border: 1px solid #d6d3d1;
+            background-color: transparent;
+            color: #57534e;
+            border-radius: 9999px;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            transition: all 0.2s ease;
+        }
+
+        .btn-restart:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background-color: #faf5ff;
+        }
+
         /* Progress Bar */
         .progress-bar-container {
             width: 100%;
@@ -280,28 +334,6 @@
 
     <!-- Main Content -->
     <main id="app-container">
-        
-        <!-- STEP 0: Welcome Screen -->
-        <div id="step-0" class="step-container step-active text-center">
-            <div class="mb-6 text-6xl mt-8">🩺</div>
-            <h1 class="text-3xl font-extrabold mb-4 text-[#1c1917] leading-tight">Grammar Check-Up</h1>
-            <h2 class="text-xl font-semibold mb-6 text-gray-600">Клінічний тест з англійської граматики для лікарів</h2>
-            
-            <p class="text-gray-600 mb-8 leading-relaxed">
-                Пройдіть 15 питань за 4–5 хвилин і отримайте персональний Grammar Diagnosis: що вже працює у Вашій англійській — і де є прогалини, які заважають у клінічній практиці.
-            </p>
-
-            <div class="bg-blue-50 text-blue-800 p-4 rounded-lg text-sm mb-10 text-left flex items-start gap-3">
-                <span class="text-xl">ℹ️</span>
-                <div>
-                    <strong>Правила:</strong> У вас є лише 1 спроба на кожне питання. Правильні відповіді та розбір помилок будуть доступні в кінці тесту.
-                </div>
-            </div>
-
-            <button onclick="startTest()" class="w-full bg-[#7e22ce] hover:bg-[#6b21a8] text-white rounded-full py-4 px-8 font-bold text-lg transition-colors shadow-lg flex items-center justify-center gap-2">
-                Почати тест <span>→</span>
-            </button>
-        </div>
         
         <!-- STEP 1 -->
         <div id="step-1" class="step-container">
@@ -714,6 +746,9 @@
                 <button onclick="scrollToReview()" class="w-full bg-white text-[#1c1917] border-2 border-[#e5e7eb] hover:border-[#7e22ce] rounded-full py-4 px-8 font-bold text-lg transition-colors flex items-center justify-center gap-2">
                     Переглянути результати <span>↓</span>
                 </button>
+                <button onclick="startAgain()" class="btn-restart" type="button">
+                    Start Again
+                </button>
             </div>
 
             <!-- Correct Answers Review Container -->
@@ -724,7 +759,28 @@
         <div id="step-17" class="step-container">
             <iframe data-tally-src="https://tally.so/r/woZZEV?transparentBackground=1" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0" title="Консультація нового студента Code Black Academy 💜"></iframe>
         </div>
-
+        
+        <!-- STEP 0: Welcome Screen -->
+        <div id="step-0" class="step-container step-active text-center">
+            <h1 class="text-3xl font-extrabold mb-4 text-[#1c1917] leading-tight">Grammar Check-Up</h1>
+            <h2 class="text-xl font-semibold mb-6 text-gray-600">Клінічний тест з англійської граматики для лікарів</h2>
+            
+            <p class="text-gray-600 mb-8 leading-relaxed">
+                Пройдіть 15 питань за 4–5 хвилин і отримайте персональний Grammar Diagnosis: що вже працює у Вашій англійській — і де є прогалини, які заважають у клінічній практиці.
+            </p>
+        
+            <div class="bg-blue-50 text-blue-800 p-4 rounded-lg text-sm mb-10 text-left flex items-start gap-3">
+                <span class="text-xl">ℹ️</span>
+                <div>
+                    <strong>Правила:</strong> У вас є лише 1 спроба на кожне питання. Правильні відповіді та розбір помилок будуть доступні в кінці тесту.
+                </div>
+            </div>
+        
+            <button onclick="startTest()" class="w-full bg-[#7e22ce] hover:bg-[#6b21a8] text-white rounded-full py-4 px-8 font-bold text-lg transition-colors shadow-lg flex items-center justify-center gap-2">
+                Почати тест <span>→</span>
+            </button>
+        </div>
+        
     </main>
 
     <!-- Global Action Button -->
@@ -747,6 +803,8 @@
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', () => {
+            enhanceQuestionSteps();
+
             const savedState = localStorage.getItem(STORAGE_KEY);
             if (savedState) {
                 state = JSON.parse(savedState);
@@ -774,12 +832,34 @@
                     }
                 });
             });
+
+            document.addEventListener('keydown', handleQuizKeyboard);
         });
 
         function startTest() {
             state.currentStep = 1;
             saveState();
             showStep(state.currentStep);
+        }
+
+        function enhanceQuestionSteps() {
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const step = document.getElementById(`step-${i}`);
+                const heading = step ? step.querySelector('h3') : null;
+
+                if (!step || !heading || heading.parentElement.classList.contains('question-card')) {
+                    continue;
+                }
+
+                heading.classList.remove('mb-6');
+                heading.classList.add('question-title');
+
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+
+                heading.parentNode.insertBefore(questionCard, heading);
+                questionCard.appendChild(heading);
+            }
         }
 
         function showStep(stepIndex) {
@@ -867,6 +947,29 @@
             } else {
                 state.currentStep = 16; // Results
                 showStep(16);
+            }
+        }
+
+        function handleQuizKeyboard(event) {
+            if (state.currentStep < 1 || state.currentStep > TOTAL_QUESTIONS) return;
+
+            const actionButton = document.getElementById('global-action-btn');
+            const container = document.querySelector(`.options-container[data-question="${state.currentStep}"]`);
+            if (!container) return;
+
+            const radios = Array.from(container.querySelectorAll('.radio-input'));
+
+            if (!state.answers[state.currentStep] && /^[1-4]$/.test(event.key)) {
+                const selectedRadio = radios[Number(event.key) - 1];
+                if (selectedRadio) {
+                    selectedRadio.checked = true;
+                    selectedRadio.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+
+            if ((event.key === 'Enter' || event.key === 'NumpadEnter') && actionButton.classList.contains('show')) {
+                event.preventDefault();
+                handleActionClick();
             }
         }
 
@@ -980,6 +1083,24 @@
 
         function goToWaitlist() {
             showStep(17);
+        }
+
+        function startAgain() {
+            state = {
+                currentStep: 0,
+                score: 0,
+                answers: {},
+                completed: false
+            };
+
+            localStorage.removeItem(STORAGE_KEY);
+
+            document.querySelectorAll('.radio-input').forEach(radio => {
+                radio.checked = false;
+            });
+
+            hideActionButton();
+            showStep(0);
         }
 
         function saveState() {
