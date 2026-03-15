@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Updated to reorder the welcome step, remove the hero emoji icon, left-align and visually refine the first-screen welcome layout for mobile (including reduced extra bottom spacing), and keep the quiz minimalistic with clear spacing and a compact Start Again button on the results screen. -->
+<!-- Updated to reorder the welcome step, remove the hero emoji icon, left-align and visually refine the first-screen welcome layout for mobile (including reduced extra bottom spacing), and slightly reduce option and button sizing for better fit on small screens while keeping the quiz minimalistic with clear spacing and a compact Start Again button on the results screen. -->
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
@@ -98,6 +98,18 @@
                 font-size: 1.6rem;
             }
 
+            .radio-label {
+                padding: 0.95rem 1.25rem;
+                font-size: 0.9rem;
+            }
+
+            .btn-submit {
+                width: 100%;
+                max-width: 100%;
+                padding: 0.85rem 1.5rem;
+                font-size: 1rem;
+            }
+
             .question-card {
                 padding: 0.9rem 1rem;
             }
@@ -148,13 +160,14 @@
         .radio-label {
             display: flex;
             align-items: center;
-            padding: 1.25rem 1.5rem;
+            padding: 1.15rem 1.4rem;
             border: 2px solid #e5e7eb;
             border-radius: 9999px;
             cursor: pointer;
             transition: all 0.2s ease;
             background-color: #ffffff;
             font-weight: 500;
+            font-size: 0.96rem;
         }
 
         .radio-input:not(:disabled) + .radio-label:hover {
