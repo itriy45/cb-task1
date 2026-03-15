@@ -50,18 +50,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Story Block */
-        .story-block {
-            background-color: var(--primary-light);
-            border-left: 4px solid var(--primary);
-            padding: 1rem 1.25rem;
-            border-radius: 0 0.5rem 0.5rem 0;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-            color: #4b5563;
-            line-height: 1.5;
-        }
-
         /* Radio Options */
         .radio-wrapper {
             position: relative;
@@ -276,13 +264,10 @@
 <body>
 
     <!-- Header -->
-    <header class="sticky top-0 bg-white shadow-sm z-40">
-        <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between relative">
-            <div class="font-bold text-lg tracking-tight flex items-center gap-2">
-                <span class="text-2xl">⚕️</span> Code Black Academy
-            </div>
-            <div id="header-progress-text" class="text-sm font-semibold text-gray-500">
-                Welcome
+    <header class="sticky top-0 bg-white z-40">
+        <div class="max-w-3xl mx-auto px-6 h-10 flex items-center justify-center relative">
+            <div class="text-xs font-semibold text-gray-400 tracking-widest uppercase">
+                Code Black Academy
             </div>
             <div class="progress-bar-container">
                 <div id="progress-bar" class="progress-bar-fill"></div>
@@ -323,10 +308,6 @@
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1584308666744-247e87d13ca2?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
             </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                A doctor describes a medication regimen.
-            </div>
             <h3 class="text-xl font-bold mb-6">"The patient ___ insulin twice a day."</h3>
             <div class="options-container" data-question="1">
                 <div class="radio-wrapper">
@@ -352,10 +333,6 @@
         <div id="step-2" class="step-container">
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1513224502586-d1e602410265?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Ward rounds, real-time observation.
             </div>
             <h3 class="text-xl font-bold mb-6">"Look — the patient ___ rapidly right now." (breathe)</h3>
             <div class="options-container" data-question="2">
@@ -383,10 +360,6 @@
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
             </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Patient condition assessment.
-            </div>
             <h3 class="text-xl font-bold mb-6">"The doctor ___ the patient's condition very seriously."</h3>
             <div class="options-container" data-question="3">
                 <div class="radio-wrapper">
@@ -412,10 +385,6 @@
         <div id="step-4" class="step-container">
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1538108149393-cebb47acdd4e?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Discharge summary.
             </div>
             <h3 class="text-xl font-bold mb-6">"The patient ___ the hospital three days ago."</h3>
             <div class="options-container" data-question="4">
@@ -443,10 +412,6 @@
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
             </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Doctor's experience.
-            </div>
             <h3 class="text-xl font-bold mb-6">"She ___ this procedure many times, so she knows exactly what to do."</h3>
             <div class="options-container" data-question="5">
                 <div class="radio-wrapper">
@@ -472,10 +437,6 @@
         <div id="step-6" class="step-container">
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Awaiting lab results.
             </div>
             <h3 class="text-xl font-bold mb-6">"The lab results ___ not ___ yet."</h3>
             <div class="options-container" data-question="6">
@@ -503,10 +464,6 @@
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
             </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Patient transfer.
-            </div>
             <h3 class="text-xl font-bold mb-6">"The patient was transferred to ___ ICU after ___ surgery."</h3>
             <div class="options-container" data-question="7">
                 <div class="radio-wrapper">
@@ -532,10 +489,6 @@
         <div id="step-8" class="step-container">
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                History taking — which question is correct?
             </div>
             <h3 class="text-xl font-bold mb-6">Choose the grammatically correct question:</h3>
             <div class="options-container" data-question="8">
@@ -563,10 +516,6 @@
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
             </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Internal department protocol.
-            </div>
             <h3 class="text-xl font-bold mb-6">"All staff ___ wash their hands before entering the ward."</h3>
             <div class="options-container" data-question="9">
                 <div class="radio-wrapper">
@@ -592,10 +541,6 @@
         <div id="step-10" class="step-container">
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Recommendation to a patient with hypertension.
             </div>
             <h3 class="text-xl font-bold mb-6">Which sentence is most appropriate?</h3>
             <div class="options-container" data-question="10">
@@ -623,10 +568,6 @@
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=600&h=300&q=80" alt="[Image of МРТ скан]" class="w-full h-48 object-cover">
             </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Clinical conclusion.
-            </div>
             <h3 class="text-xl font-bold mb-6">"The diagnosis ___ based on MRI results."</h3>
             <div class="options-container" data-question="11">
                 <div class="radio-wrapper">
@@ -652,10 +593,6 @@
         <div id="step-12" class="step-container">
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1551076805-e1869043e560?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Planned surgery.
             </div>
             <h3 class="text-xl font-bold mb-6">"The operation ___ tomorrow morning."</h3>
             <div class="options-container" data-question="12">
@@ -683,10 +620,6 @@
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
             </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Explaining consequences to a patient.
-            </div>
             <h3 class="text-xl font-bold mb-6">"If the patient ___ antibiotics on time, the infection will spread." (not take)</h3>
             <div class="options-container" data-question="13">
                 <div class="radio-wrapper">
@@ -713,10 +646,6 @@
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1581056771107-11a4e8d35e39?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
             </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                Clinical decision analysis.
-            </div>
             <h3 class="text-xl font-bold mb-6">"If I ___ the diagnosis earlier, I ___ a different treatment."</h3>
             <div class="options-container" data-question="14">
                 <div class="radio-wrapper">
@@ -742,10 +671,6 @@
         <div id="step-15" class="step-container">
             <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
                 <img src="https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <div class="story-block">
-                <span class="font-semibold text-[#7e22ce] mb-1 block">Context:</span>
-                ECG interpretation, clinical reasoning.
             </div>
             <h3 class="text-xl font-bold mb-6">"Based on the ECG, this ___ be a myocardial infarction."</h3>
             <div class="options-container" data-question="15">
@@ -872,15 +797,12 @@
 
             // Update Header & Progress
             const progressFill = document.getElementById('progress-bar');
-            const headerText = document.getElementById('header-progress-text');
             
             hideActionButton();
 
             if (stepIndex === 0) {
-                headerText.innerText = "Welcome";
                 progressFill.style.width = '0%';
             } else if (stepIndex >= 1 && stepIndex <= TOTAL_QUESTIONS) {
-                headerText.innerText = `Питання ${stepIndex}/${TOTAL_QUESTIONS}`;
                 progressFill.style.width = `${(stepIndex / TOTAL_QUESTIONS) * 100}%`;
                 
                 // If this step was already answered (shouldn't be shown normally due to auto-resume logic, but just in case)
@@ -888,7 +810,6 @@
                     showActionButton(stepIndex === TOTAL_QUESTIONS ? "Отримати результати →" : "Далі →", true);
                 }
             } else {
-                headerText.innerText = "Results";
                 progressFill.style.width = '100%';
                 if (stepIndex === 16) {
                     renderResults();
