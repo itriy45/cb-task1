@@ -1,1217 +1,533 @@
 <!DOCTYPE html>
-<!-- Updated to reorder the welcome step, remove the hero emoji icon, left-align and visually refine the first-screen welcome layout for mobile (including reduced extra bottom spacing), and slightly reduce option and button sizing for better fit on small screens while keeping the quiz minimalistic with clear spacing and a compact Start Again button on the results screen. -->
-<html lang="uk">
+<html lang="uk" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grammar Check-Up | Code Black Academy</title>
+    <title>Grammar in Medicine | Курс медичної англійської</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Tally Embed Script -->
-    <script async src="https://tally.so/widgets/embed.js"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f4f2fb',
+                            100: '#e0dafc',
+                            200: '#c5b8f7',
+                            300: '#a38df2',
+                            400: '#7a5ce8',
+                            500: '#462cdb',
+                            600: '#321bb8',
+                            700: '#1f038d', // Основний колір
+                            800: '#16026b',
+                            900: '#10014a',
+                        },
+                        dark: {
+                            DEFAULT: '#0f172a',
+                            text: '#334155'
+                        }
+                    },
+                    boxShadow: {
+                        'brand': '0 10px 25px -5px rgba(31, 3, 141, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS for Animations & Refinements -->
     <style>
-        :root {
-            --bg-color: #f5f4f0;
-            --text-color: #1c1917;
-            --primary: #7e22ce;
-            --primary-hover: #6b21a8;
-            --primary-light: #faf5ff;
-            --success: #16a34a;
-            --success-light: #f0fdf4;
-            --warning: #ea580c;
-            --warning-light: #fff7ed;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            -webkit-font-smoothing: antialiased;
+        body, html {
+            background-color: #fcfcfc;
+            color: #334155;
             overflow-x: hidden;
-            padding-bottom: 100px; /* Space for fixed button */
-        }
-
-        body.no-action-padding {
-            padding-bottom: 40px;
-        }
-
-        /* Step Transitions */
-        .step-container {
-            display: none;
-            flex-direction: column;
             width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
         }
 
-        .step-active {
-            display: flex;
-            animation: slideUpFade 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        h1, h2, h3, h4, h5, h6 {
+            color: #000000;
         }
 
-        /* Welcome Screen */
-        #step-0 {
-            align-items: flex-start;
-            justify-content: center;
-            min-height: calc(100vh - 4rem); /* Center card between header and bottom */
-        }
-
-        .welcome-hero {
-            width: 100%;
-            background: #fefdfb;
-            border-radius: 1.5rem;
-            padding: 1.75rem 1.5rem 1.75rem;
-            box-shadow: 0 18px 45px -30px rgba(15, 23, 42, 0.4);
-            border: 1px solid rgba(148, 163, 184, 0.22);
-        }
-
-        .welcome-heading {
-            font-size: 1.9rem;
-            line-height: 1.25;
-            margin-bottom: 0.75rem;
-        }
-
-        .welcome-subtitle {
-            font-size: 1.15rem;
-        }
-
-        .welcome-body {
-            font-size: 0.98rem;
-        }
-
-        @media (max-width: 640px) {
-            .step-container {
-                padding: 1.5rem 1rem;
-            }
-
-            #step-0 {
-                padding-top: 1.75rem;
-            }
-
-            .welcome-hero {
-                padding: 1.5rem 1.25rem 1.75rem;
-                border-radius: 1.25rem;
-            }
-
-            .welcome-heading {
-                font-size: 1.6rem;
-            }
-
-            .radio-label {
-                padding: 0.95rem 1.25rem;
-                font-size: 0.9rem;
-            }
-
-            .btn-submit {
-                padding: 0.85rem 2.25rem;
-                font-size: 1rem;
-            }
-
-            .question-card {
-                padding: 0.9rem 1rem;
-            }
-        }
-
-        .question-card {
-            background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
-            border: 1px solid #e9d5ff;
-            border-radius: 1rem;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 12px 30px -22px rgba(126, 34, 206, 0.9);
-        }
-
-        .step-active .question-card {
-            animation: questionFocus 0.45s ease;
-        }
-
-        .question-title {
-            margin-bottom: 0;
-            color: #1c1917;
-            line-height: 1.45;
-        }
-
-        @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes questionFocus {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Radio Options */
-        .radio-wrapper {
-            position: relative;
-            margin-bottom: 0.75rem;
-        }
-
-        .radio-input {
-            position: absolute;
+        /* Scroll Reveal Animation */
+        .scroll-reveal {
             opacity: 0;
-            width: 0;
-            height: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        .radio-label {
-            display: flex;
-            align-items: center;
-            padding: 1.15rem 1.4rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            font-weight: 500;
-            font-size: 0.96rem;
-        }
-
-        .radio-input:not(:disabled) + .radio-label:hover {
-            border-color: var(--primary);
-        }
-
-        .radio-dot {
-            width: 1.25rem;
-            height: 1.25rem;
-            min-width: 1.25rem;
-            border: 2px solid #d1d5db;
-            border-radius: 50%;
-            margin-right: 1rem;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Selected State */
-        .radio-input:checked + .radio-label {
-            border-color: var(--primary);
-            background-color: var(--primary-light);
-        }
-
-        .radio-input:checked + .radio-label .radio-dot {
-            border-color: var(--primary);
-            background-color: var(--primary);
-            box-shadow: inset 0 0 0 3px var(--primary-light);
-        }
-
-        /* Validated Correct State */
-        .radio-correct.radio-label {
-            border-color: var(--success) !important;
-            background-color: var(--success-light) !important;
-            color: #14532d;
-        }
-        .radio-correct .radio-dot {
-            border-color: var(--success) !important;
-            background-color: var(--success) !important;
-            box-shadow: inset 0 0 0 3px var(--success-light) !important;
-        }
-
-        /* Validated Incorrect State */
-        .radio-incorrect.radio-label {
-            border-color: var(--warning) !important;
-            background-color: var(--warning-light) !important;
-            color: #7c2d12;
-        }
-        .radio-incorrect .radio-dot {
-            border-color: var(--warning) !important;
-            background-color: var(--warning) !important;
-            box-shadow: inset 0 0 0 3px var(--warning-light) !important;
-        }
-
-        /* Disabled State */
-        .radio-input:disabled + .radio-label {
-            cursor: default;
-            opacity: 0.8;
-        }
-
-        /* Fixed Action Button */
-        .action-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1.5rem;
-            display: flex;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 50;
-        }
-
-        .btn-submit {
-            pointer-events: auto;
-            background-color: var(--text-color);
-            color: white;
-            border: none;
-            border-radius: 9999px;
-            padding: 1rem 3rem;
-            font-size: 1.125rem;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            transform: translateY(150%);
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-submit:hover {
-            background-color: var(--primary);
-        }
-
-        .btn-submit.show {
-            transform: translateY(0);
+        .scroll-reveal.visible {
             opacity: 1;
+            transform: translateY(0);
         }
 
-        .btn-submit.btn-next {
-            background-color: var(--success);
-        }
-        .btn-submit.btn-next:hover {
-            background-color: #15803d;
-        }
-
-        .btn-restart {
-            align-self: center;
-            border: 1px solid #d6d3d1;
-            background-color: transparent;
-            color: #57534e;
-            border-radius: 9999px;
-            padding: 0.45rem 0.9rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            transition: all 0.2s ease;
-        }
-
-        .btn-restart:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            background-color: #faf5ff;
-        }
-
-        /* Progress Bar */
-        .progress-bar-container {
-            width: 100%;
-            height: 4px;
-            background-color: #e5e7eb;
+        /* Background Blobs - Made Responsive */
+        .blob {
             position: absolute;
-            bottom: 0;
-            left: 0;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: -1;
+            animation: pulse 10s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .blob-1 { background-color: #c5b8f7; top: -5%; left: -10%; width: 70vw; max-width: 500px; height: 70vw; max-height: 500px; }
+        .blob-2 { background-color: #e0dafc; top: 40%; right: -10%; width: 80vw; max-width: 600px; height: 80vw; max-height: 600px; animation-delay: -5s; }
+
+        @keyframes pulse {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.1) translate(20px, -20px); }
         }
 
-        .progress-bar-fill {
-            height: 100%;
-            background-color: var(--primary);
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            pointer-events: none;
-        }
-
-        .toast {
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            color: white;
-            font-weight: 600;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            animation: toastEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards, toastExit 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards 2.7s;
-            opacity: 0;
-        }
-
-        .toast-success { background-color: var(--success); }
-        .toast-warning { background-color: var(--warning); }
-
-        @keyframes toastEnter {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes toastExit {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-20px); }
-        }
-
-        /* Form styling */
-        .input-field {
-            width: 100%;
-            padding: 1rem 1.5rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.75rem;
-            margin-bottom: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
-            font-family: inherit;
-        }
-        .input-field:focus {
-            border-color: var(--primary);
-        }
-        
-        /* Specific adjustments for Tally container step */
-        #step-17 {
-            padding: 0;
-            max-width: 100%;
-            height: calc(100vh - 4rem); /* Full height minus header */
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c5b8f7; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1f038d; }
     </style>
 </head>
-<body>
+<body class="antialiased">
 
-    <!-- Header -->
-    <header class="sticky top-0 bg-white z-40">
-        <div class="max-w-3xl mx-auto px-6 h-10 flex items-center justify-center relative">
-            <div class="text-xs font-semibold text-gray-400 tracking-widest uppercase">
-                Code Black Academy
-            </div>
-            <div class="progress-bar-container">
-                <div id="progress-bar" class="progress-bar-fill"></div>
-            </div>
-        </div>
-    </header>
+    <!-- Strict Wrapper to prevent any horizontal scrolling / jiggling -->
+    <main class="relative overflow-x-hidden w-full min-h-screen">
 
-    <!-- Toasts -->
-    <div id="toast-container" class="toast-container"></div>
+        <!-- Decorative Background Blobs -->
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
 
-    <!-- Main Content -->
-    <main id="app-container">
-        
-        <!-- STEP 1 -->
-        <div id="step-1" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://img.lb.wbmdstatic.com/vim/live/webmd/consumer_assets/site_images/article_thumbnails/BigBead/how_insulin_works_bigbead/1800x1200_how_insulin_works_bigbead.jpg?resize=750px:*&output-quality=75" alt="" class="w-full h-48 object-cover">
+        <!-- Navigation (Sticky Glassmorphism) -->
+        <nav id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 py-4 px-4 sm:px-8 lg:px-12">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <img src="https://spk-cb.b-cdn.net/c.case/logo_codeblack.png" alt="Code Black" class="h-8 sm:h-10 object-contain rounded-lg">
+                </div>
+                <div class="hidden md:flex gap-8 font-medium text-sm text-slate-600">
+                    <a href="#features" class="hover:text-brand-700 transition-colors py-2">Особливості</a>
+                    <a href="#program" class="hover:text-brand-700 transition-colors py-2">Програма</a>
+                    <a href="#pricing" class="hover:text-brand-700 transition-colors py-2">Тарифи</a>
+                </div>
+                <a href="https://tally.so/r/woZZEV" target="_blank" rel="noopener noreferrer" class="bg-brand-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs sm:text-sm uppercase tracking-wider hover:bg-brand-900 shadow-brand transition-colors text-center">
+                    Консультація
+                </a>
             </div>
-            <h3 class="text-xl font-bold mb-6">"The patient ___ insulin twice a day."</h3>
-            <div class="options-container" data-question="1">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q1" id="q1-a" value="A" class="radio-input">
-                    <label for="q1-a" class="radio-label"><div class="radio-dot"></div> A) is taking</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q1" id="q1-b" value="B" data-correct="true" class="radio-input">
-                    <label for="q1-b" class="radio-label"><div class="radio-dot"></div> B) takes</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q1" id="q1-c" value="C" class="radio-input">
-                    <label for="q1-c" class="radio-label"><div class="radio-dot"></div> C) take</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q1" id="q1-d" value="D" class="radio-input">
-                    <label for="q1-d" class="radio-label"><div class="radio-dot"></div> D) has taken</label>
-                </div>
-            </div>
-        </div>
+        </nav>
 
-        <!-- STEP 2 -->
-        <div id="step-2" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1513224502586-d1e602410265?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"Look — the patient ___ rapidly right now." (breathe)</h3>
-            <div class="options-container" data-question="2">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q2" id="q2-a" value="A" class="radio-input">
-                    <label for="q2-a" class="radio-label"><div class="radio-dot"></div> A) breathes</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q2" id="q2-b" value="B" class="radio-input">
-                    <label for="q2-b" class="radio-label"><div class="radio-dot"></div> B) has breathed</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q2" id="q2-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q2-c" class="radio-label"><div class="radio-dot"></div> C) is breathing</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q2" id="q2-d" value="D" class="radio-input">
-                    <label for="q2-d" class="radio-label"><div class="radio-dot"></div> D) breathed</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 3 -->
-        <div id="step-3" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"The doctor ___ the patient's condition very seriously."</h3>
-            <div class="options-container" data-question="3">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q3" id="q3-a" value="A" class="radio-input">
-                    <label for="q3-a" class="radio-label"><div class="radio-dot"></div> A) is considering</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q3" id="q3-b" value="B" data-correct="true" class="radio-input">
-                    <label for="q3-b" class="radio-label"><div class="radio-dot"></div> B) considers</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q3" id="q3-c" value="C" class="radio-input">
-                    <label for="q3-c" class="radio-label"><div class="radio-dot"></div> C) has been considering</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q3" id="q3-d" value="D" class="radio-input">
-                    <label for="q3-d" class="radio-label"><div class="radio-dot"></div> D) considered</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 4 -->
-        <div id="step-4" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://assets.medpagetoday.net/media/images/104xxx/104361.jpg?width=0.8" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"The patient ___ the hospital three days ago."</h3>
-            <div class="options-container" data-question="4">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q4" id="q4-a" value="A" class="radio-input">
-                    <label for="q4-a" class="radio-label"><div class="radio-dot"></div> A) has left</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q4" id="q4-b" value="B" class="radio-input">
-                    <label for="q4-b" class="radio-label"><div class="radio-dot"></div> B) is leaving</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q4" id="q4-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q4-c" class="radio-label"><div class="radio-dot"></div> C) left</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q4" id="q4-d" value="D" class="radio-input">
-                    <label for="q4-d" class="radio-label"><div class="radio-dot"></div> D) had left</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 5 -->
-        <div id="step-5" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"She ___ this procedure many times, so she knows exactly what to do."</h3>
-            <div class="options-container" data-question="5">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q5" id="q5-a" value="A" class="radio-input">
-                    <label for="q5-a" class="radio-label"><div class="radio-dot"></div> A) did</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q5" id="q5-b" value="B" class="radio-input">
-                    <label for="q5-b" class="radio-label"><div class="radio-dot"></div> B) was doing</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q5" id="q5-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q5-c" class="radio-label"><div class="radio-dot"></div> C) has done</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q5" id="q5-d" value="D" class="radio-input">
-                    <label for="q5-d" class="radio-label"><div class="radio-dot"></div> D) does</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 6 -->
-        <div id="step-6" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"The lab results ___ not ___ yet."</h3>
-            <div class="options-container" data-question="6">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q6" id="q6-a" value="A" class="radio-input">
-                    <label for="q6-a" class="radio-label"><div class="radio-dot"></div> A) did / arrive</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q6" id="q6-b" value="B" class="radio-input">
-                    <label for="q6-b" class="radio-label"><div class="radio-dot"></div> B) are / arriving</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q6" id="q6-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q6-c" class="radio-label"><div class="radio-dot"></div> C) have / arrived</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q6" id="q6-d" value="D" class="radio-input">
-                    <label for="q6-d" class="radio-label"><div class="radio-dot"></div> D) had / arrived</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 7 -->
-        <div id="step-7" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"The patient was transferred to ___ ICU after ___ surgery."</h3>
-            <div class="options-container" data-question="7">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q7" id="q7-a" value="A" class="radio-input">
-                    <label for="q7-a" class="radio-label"><div class="radio-dot"></div> A) a / the</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q7" id="q7-b" value="B" class="radio-input">
-                    <label for="q7-b" class="radio-label"><div class="radio-dot"></div> B) the / a</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q7" id="q7-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q7-c" class="radio-label"><div class="radio-dot"></div> C) the / —</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q7" id="q7-d" value="D" class="radio-input">
-                    <label for="q7-d" class="radio-label"><div class="radio-dot"></div> D) — / a</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 8 -->
-        <div id="step-8" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">Choose the grammatically correct question:</h3>
-            <div class="options-container" data-question="8">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q8" id="q8-a" value="A" class="radio-input">
-                    <label for="q8-a" class="radio-label"><div class="radio-dot"></div> A) "Since when you have this pain?"</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q8" id="q8-b" value="B" class="radio-input">
-                    <label for="q8-b" class="radio-label"><div class="radio-dot"></div> B) "How long do you have this pain?"</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q8" id="q8-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q8-c" class="radio-label"><div class="radio-dot"></div> C) "How long have you had this pain?"</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q8" id="q8-d" value="D" class="radio-input">
-                    <label for="q8-d" class="radio-label"><div class="radio-dot"></div> D) "Since when this pain started?"</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 9 -->
-        <div id="step-9" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"All staff ___ wash their hands before entering the ward."</h3>
-            <div class="options-container" data-question="9">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q9" id="q9-a" value="A" class="radio-input">
-                    <label for="q9-a" class="radio-label"><div class="radio-dot"></div> A) should</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q9" id="q9-b" value="B" class="radio-input">
-                    <label for="q9-b" class="radio-label"><div class="radio-dot"></div> B) can</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q9" id="q9-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q9-c" class="radio-label"><div class="radio-dot"></div> C) must</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q9" id="q9-d" value="D" class="radio-input">
-                    <label for="q9-d" class="radio-label"><div class="radio-dot"></div> D) would</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 10 -->
-        <div id="step-10" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">Which sentence is most appropriate?</h3>
-            <div class="options-container" data-question="10">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q10" id="q10-a" value="A" class="radio-input">
-                    <label for="q10-a" class="radio-label"><div class="radio-dot"></div> A) "You must stop eating salt immediately."</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q10" id="q10-b" value="B" data-correct="true" class="radio-input">
-                    <label for="q10-b" class="radio-label"><div class="radio-dot"></div> B) "You should reduce your salt intake."</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q10" id="q10-c" value="C" class="radio-input">
-                    <label for="q10-c" class="radio-label"><div class="radio-dot"></div> C) "You can stop eating salt."</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q10" id="q10-d" value="D" class="radio-input">
-                    <label for="q10-d" class="radio-label"><div class="radio-dot"></div> D) "You will stop eating salt."</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 11 -->
-        <div id="step-11" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=600&h=300&q=80" alt="[Image of МРТ скан]" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"The diagnosis ___ based on MRI results."</h3>
-            <div class="options-container" data-question="11">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q11" id="q11-a" value="A" class="radio-input">
-                    <label for="q11-a" class="radio-label"><div class="radio-dot"></div> A) made</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q11" id="q11-b" value="B" class="radio-input">
-                    <label for="q11-b" class="radio-label"><div class="radio-dot"></div> B) is making</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q11" id="q11-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q11-c" class="radio-label"><div class="radio-dot"></div> C) was made</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q11" id="q11-d" value="D" class="radio-input">
-                    <label for="q11-d" class="radio-label"><div class="radio-dot"></div> D) makes</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 12 -->
-        <div id="step-12" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://surgicare.horizonnaupada.com/wp-content/uploads/2025/06/Difference-between-surgery-and-operation-scaled.webp" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"The operation ___ tomorrow morning."</h3>
-            <div class="options-container" data-question="12">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q12" id="q12-a" value="A" class="radio-input">
-                    <label for="q12-a" class="radio-label"><div class="radio-dot"></div> A) performs</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q12" id="q12-b" value="B" class="radio-input">
-                    <label for="q12-b" class="radio-label"><div class="radio-dot"></div> B) will perform</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q12" id="q12-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q12-c" class="radio-label"><div class="radio-dot"></div> C) will be performed</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q12" id="q12-d" value="D" class="radio-input">
-                    <label for="q12-d" class="radio-label"><div class="radio-dot"></div> D) is performing</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 13 -->
-        <div id="step-13" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"If the patient ___ antibiotics on time, the infection will spread." (not take)</h3>
-            <div class="options-container" data-question="13">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q13" id="q13-a" value="A" class="radio-input">
-                    <label for="q13-a" class="radio-label"><div class="radio-dot"></div> A) didn't take</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q13" id="q13-b" value="B" data-correct="true" class="radio-input">
-                    <label for="q13-b" class="radio-label"><div class="radio-dot"></div> B) doesn't take</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q13" id="q13-c" value="C" class="radio-input">
-                    <label for="q13-c" class="radio-label"><div class="radio-dot"></div> C) won't take</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q13" id="q13-d" value="D" class="radio-input">
-                    <label for="q13-d" class="radio-label"><div class="radio-dot"></div> D) hadn't taken</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 14 -->
-        <div id="step-14" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://www.toc.md/wp-content/uploads/sites/82/2019/01/iStock-823884788.jpg" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"If I ___ the diagnosis earlier, I ___ a different treatment."</h3>
-            <div class="options-container" data-question="14">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q14" id="q14-a" value="A" class="radio-input">
-                    <label for="q14-a" class="radio-label"><div class="radio-dot"></div> A) knew / would choose</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q14" id="q14-b" value="B" class="radio-input">
-                    <label for="q14-b" class="radio-label"><div class="radio-dot"></div> B) know / will choose</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q14" id="q14-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q14-c" class="radio-label"><div class="radio-dot"></div> C) had known / would have chosen</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q14" id="q14-d" value="D" class="radio-input">
-                    <label for="q14-d" class="radio-label"><div class="radio-dot"></div> D) would know / chose</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 15 -->
-        <div id="step-15" class="step-container">
-            <div class="mb-6 rounded-xl overflow-hidden shadow-sm border border-gray-100">
-                <img src="https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&w=600&h=300&q=80" alt="" class="w-full h-48 object-cover">
-            </div>
-            <h3 class="text-xl font-bold mb-6">"Based on the ECG, this ___ be a myocardial infarction."</h3>
-            <div class="options-container" data-question="15">
-                <div class="radio-wrapper">
-                    <input type="radio" name="q15" id="q15-a" value="A" class="radio-input">
-                    <label for="q15-a" class="radio-label"><div class="radio-dot"></div> A) can</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q15" id="q15-b" value="B" class="radio-input">
-                    <label for="q15-b" class="radio-label"><div class="radio-dot"></div> B) will</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q15" id="q15-c" value="C" data-correct="true" class="radio-input">
-                    <label for="q15-c" class="radio-label"><div class="radio-dot"></div> C) could / might</label>
-                </div>
-                <div class="radio-wrapper">
-                    <input type="radio" name="q15" id="q15-d" value="D" class="radio-input">
-                    <label for="q15-d" class="radio-label"><div class="radio-dot"></div> D) must not</label>
-                </div>
-            </div>
-        </div>
-
-        <!-- STEP 16: Dynamic Result Screen -->
-        <div id="step-16" class="step-container text-center">
-            <div id="result-icon" class="text-6xl mt-8 mb-4"></div>
-            <h2 id="result-title" class="text-2xl font-extrabold mb-6 leading-tight"></h2>
-            
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8 text-left">
-                <p id="result-score" class="text-lg font-bold mb-4 border-b pb-4"></p>
-                <div id="result-text" class="text-gray-700 leading-relaxed space-y-3"></div>
-            </div>
-
-            <div class="bg-[#faf5ff] border border-[#e9d5ff] p-5 rounded-xl text-left mb-8 shadow-sm">
-                <p id="result-cta-text" class="text-sm font-medium text-[#7e22ce]"></p>
-            </div>
-
-            <div class="flex flex-col gap-3 mb-8">
-                <button onclick="goToWaitlist()" class="w-full bg-[#7e22ce] hover:bg-[#6b21a8] text-white rounded-full py-4 px-8 font-bold text-lg transition-colors shadow-lg flex items-center justify-center gap-2">
-                    Отримати 30% знижки та записатися на курс <span>→</span>
-                </button>
-                <button onclick="scrollToReview()" class="w-full bg-white text-[#1c1917] border-2 border-[#e5e7eb] hover:border-[#7e22ce] rounded-full py-4 px-8 font-bold text-lg transition-colors flex items-center justify-center gap-2">
-                    Переглянути результати <span>↓</span>
-                </button>
-                <button onclick="startAgain()" class="btn-restart" type="button">
-                    Start Again
-                </button>
-            </div>
-
-            <!-- Correct Answers Review Container -->
-            <div id="answers-review-container"></div>
-        </div>
-
-        <!-- STEP 17: Tally Embed Form -->
-        <div id="step-17" class="step-container">
-            <iframe data-tally-src="https://tally.so/r/woZZEV?transparentBackground=1" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0" title="Консультація нового студента Code Black Academy 💜"></iframe>
-        </div>
-        
-        <!-- STEP 0: Welcome Screen -->
-        <div id="step-0" class="step-container step-active">
-            <div class="welcome-hero">
-                <h1 class="welcome-heading text-3xl font-extrabold text-[#1c1917] leading-tight">Grammar Check-Up</h1>
-                <h2 class="welcome-subtitle text-xl font-semibold mb-6 text-gray-600">Тест з англійської граматики для лікарів</h2>
+        <!-- Hero Section -->
+        <section class="relative pt-28 pb-12 sm:pt-36 sm:pb-20 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+            <div class="flex-1 text-center lg:text-left z-10 scroll-reveal">
                 
-                <p class="welcome-body text-gray-600 mb-8 leading-relaxed">
-                    Пройдіть 15 питань й отримайте персональний Grammar Diagnosis: що вже працює у Вашій англійській — і де є прогалини, які заважають у роботі.
+                <div class="inline-block bg-brand-50 text-brand-700 font-bold px-4 py-1.5 rounded-xl text-xs sm:text-sm mb-6 border border-brand-100 uppercase tracking-widest shadow-sm">
+                    Новий набір відкрито
+                </div>
+                
+                <!-- Strong Text H1 instead of Logo -->
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.1] mb-6 tracking-tight text-dark uppercase">
+                    Grammar <br/> <span class="text-brand-700">in Medicine</span>
+                </h1>
+                
+                <p class="text-base sm:text-lg text-slate-500 mb-8 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
+                    Спеціалізований курс граматики для медиків. Опануйте медичну англійську для роботи, стажування та читання фахової літератури.
                 </p>
-            
-                <div class="bg-blue-50 text-blue-800 p-4 rounded-lg text-sm mt-2 mb-8 text-left flex items-start gap-3">
-                    <span class="text-xl">ℹ️</span>
+                
+                <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-10">
+                    <a href="https://tally.so/r/woZZEV" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-brand-700 text-white font-bold py-4 px-10 rounded-xl shadow-brand uppercase tracking-wider hover:bg-brand-900 transition-colors text-center text-sm sm:text-base">
+                        Записатись на консультацію
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 pt-8 border-t border-gray-200">
                     <div>
-                        <strong>Правила:</strong> У вас є лише 1 спроба на кожне питання.
+                        <div class="text-2xl sm:text-3xl font-black text-dark mb-1">32</div>
+                        <div class="text-xs sm:text-sm font-medium text-slate-500 leading-tight">Блоки на платформі</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl sm:text-3xl font-black text-dark mb-1">6</div>
+                        <div class="text-xs sm:text-sm font-medium text-slate-500 leading-tight">Типів завдань</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl sm:text-3xl font-black text-dark mb-1">32</div>
+                        <div class="text-xs sm:text-sm font-medium text-slate-500 leading-tight">Заняття із викладачем</div>
                     </div>
                 </div>
-            
-                <button onclick="startTest()" class="w-full sm:w-auto bg-[#7e22ce] hover:bg-[#6b21a8] text-white rounded-full py-4 px-8 font-bold text-lg transition-colors shadow-lg flex items-center justify-center gap-2">
-                    Почати тест <span>→</span>
-                </button>
             </div>
-        </div>
-        
+
+            <div class="flex-1 w-full relative scroll-reveal mx-auto flex justify-center lg:justify-end" style="transition-delay: 200ms;">
+                <!-- Hero Image - Updated to square & max-w-sm to be less bulky -->
+                <div class="relative w-full max-w-sm">
+                    <img src="https://spk-cb.b-cdn.net/c.case/COURSES/Grammar/Doctor.jpg" alt="Студентка медик" class="rounded-2xl shadow-2xl w-full object-cover aspect-square">
+                    
+                    <!-- Floating Element -->
+                    <div class="absolute -bottom-6 -left-4 sm:-left-8 bg-white p-4 sm:p-5 rounded-2xl shadow-xl flex items-center gap-4 animate-bounce" style="animation-duration: 3s;">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <div>
+                            <div class="font-bold text-dark text-xs sm:text-sm">Сертифікат</div>
+                            <div class="text-[10px] sm:text-xs text-slate-500">Після завершення</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-16 sm:py-24 px-4 sm:px-8 bg-white relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12 scroll-reveal">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black mb-4">Як проходить навчання</h2>
+                    <p class="text-slate-500 font-medium max-w-2xl mx-auto text-sm sm:text-base">Комплексний підхід до вивчення граматики в контексті медичної практики.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 scroll-reveal">
+                    
+                    <!-- Platform -->
+                    <div class="bg-brand-50 rounded-2xl border border-brand-100 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300 shadow-sm">
+                        <div class="p-6 sm:p-8 flex-1">
+                            <h3 class="text-xl sm:text-2xl font-black flex items-center gap-3 mb-4">
+                                <span class="text-brand-700 text-2xl sm:text-3xl">💻</span> Платформа
+                            </h3>
+                            <p class="text-slate-600 font-medium text-sm sm:text-base">Інтерактивна платформа для виконання завдань, перегляду прогресу та доступу до матеріалів 24/7. Навчайтесь у зручний для вас час.</p>
+                        </div>
+                        <div class="bg-black aspect-video relative w-full border-t border-brand-200">
+                            <iframe src="https://www.youtube.com/embed/C32wti-wZLg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen class="absolute top-0 left-0 w-full h-full"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- Mini lessons -->
+                    <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300 shadow-sm">
+                        <div class="p-6 sm:p-8 flex-1">
+                            <h3 class="text-xl sm:text-2xl font-black flex items-center gap-3 mb-4">
+                                <span class="text-brand-700 text-2xl sm:text-3xl">📝</span> Міні уроки
+                            </h3>
+                            <p class="text-slate-600 font-medium text-sm sm:text-base">Короткі та змістовні відео для повторення. Вступ: Основи граматики, Порядок слів та Частини мови.</p>
+                        </div>
+                        <img src="https://spk-cb.b-cdn.net/c.case/COURSES/Grammar/MINI%20LESSONS.jpg" alt="Міні уроки" class="w-full object-cover border-t border-gray-200 aspect-video">
+                    </div>
+
+                    <!-- Vocabulary -->
+                    <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300 shadow-sm">
+                        <div class="p-6 sm:p-8 flex-1">
+                            <h3 class="text-xl sm:text-2xl font-black flex items-center gap-3 mb-4">
+                                <span class="text-brand-700 text-2xl sm:text-3xl">🧠</span> Словниковий запас
+                            </h3>
+                            <p class="text-slate-600 font-medium text-sm sm:text-base">Code Black Academy. Вивчення медичних термінів: Examine, Scrub Nurse, Pregnant та сотні інших за допомогою ефективних інструментів.</p>
+                        </div>
+                        <img src="https://spk-cb.b-cdn.net/c.case/COURSES/Grammar/VOCAB.jpg" alt="Словниковий запас" class="w-full object-cover border-t border-gray-200 aspect-video">
+                    </div>
+
+                    <!-- Reading -->
+                    <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300 shadow-sm">
+                        <div class="p-6 sm:p-8 flex-1">
+                            <h3 class="text-xl sm:text-2xl font-black flex items-center gap-3 mb-4">
+                                <span class="text-brand-700 text-2xl sm:text-3xl">🎧</span> Читання + Аудіо
+                            </h3>
+                            <p class="text-slate-600 font-medium text-sm sm:text-base">Практика на реальних текстах. Наприклад: "Reading: Harley Street in London" з оптимальним аудіо-супроводом для розвитку сприйняття на слух.</p>
+                        </div>
+                        <img src="https://spk-cb.b-cdn.net/c.case/COURSES/Grammar/READING.jpg" alt="Читання та аудіо" class="w-full object-cover border-t border-gray-200 aspect-video">
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Program Structure (New Grid App-Like UI) -->
+        <section id="program" class="py-16 sm:py-24 px-4 sm:px-8 max-w-7xl mx-auto">
+            <div class="text-center mb-12 sm:mb-16 scroll-reveal">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black mb-4">Програма курсу</h2>
+                <p class="text-slate-500 font-medium text-sm sm:text-base">Детальний розбір усіх граматичних тем від базових до просунутих.</p>
+            </div>
+
+            <div class="flex flex-col gap-10">
+                
+                <!-- Part 1 -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-10 scroll-reveal">
+                    <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-100">
+                        <div class="bg-brand-100 text-brand-700 text-xl font-black w-14 h-14 rounded-xl flex items-center justify-center shrink-0">1</div>
+                        <div>
+                            <h3 class="text-2xl font-black">PART №1</h3>
+                            <p class="text-brand-700 font-bold text-xs sm:text-sm uppercase tracking-wider mt-1">17 Занять</p>
+                        </div>
+                    </div>
+                    
+                    <!-- App-like Grid for Lessons -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <!-- Card Template -->
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">1</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Present Simple</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">2</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Present Simple. Prepositions of place</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">3</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Present Continuous. Stative Verbs</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">4</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Present Continuous. Prepositions of time</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">5</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Past Simple. Used to</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">6</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Past Simple. Used to, would</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">7</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Present Perfect</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">8</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Present Perfect Part II</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">9</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Present Perfect vs Past Simple</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">10</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Past Continuous</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">11</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Past Continuous 2</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">12</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Articles</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">13</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Articles 2. Giving reasons</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">14</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Tenses table. Summarization</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">15</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Past Perfect</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">16</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Future Simple & be going to</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">17</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Future Simple, be going to & Pres. Cont.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 2 -->
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-10 scroll-reveal" style="transition-delay: 100ms;">
+                    <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-100">
+                        <div class="bg-brand-100 text-brand-700 text-xl font-black w-14 h-14 rounded-xl flex items-center justify-center shrink-0">2</div>
+                        <div>
+                            <h3 class="text-2xl font-black">PART №2</h3>
+                            <p class="text-brand-700 font-bold text-xs sm:text-sm uppercase tracking-wider mt-1">15 Занять</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <!-- Cards for Part 2 -->
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">18</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Question forms</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">19</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Question forms. Pronouns. Possessives.</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">20</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Verb patterns: -ing to Infinitive</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">21</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Verb patterns: -ing; to-infinitive</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">22</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Use of Modals. Ability & Possibility</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">23</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Degrees of Certainty</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">24</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Obligation and Necessity</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">25</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Advice & recommendations</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">26</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Instructions, requests, permission</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">27</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Making comparisons</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">28</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Passive voice</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">29</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Passive Voice 2</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">30</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors leading-tight">Prepositions of place and movement</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">31</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Conditionals 0 & 1</div>
+                        </div>
+                        <div class="group flex items-center gap-3 p-3.5 rounded-xl bg-gray-50 border border-gray-100 hover:bg-white hover:border-brand-300 hover:shadow-md transition-all cursor-default">
+                            <div class="bg-white text-slate-400 border border-gray-200 text-xs font-black w-8 h-8 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-brand-700 group-hover:text-white group-hover:border-brand-700 transition-colors">32</div>
+                            <div class="text-sm font-semibold text-slate-700 group-hover:text-brand-800 transition-colors">Conditionals 2 & 3</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="py-16 sm:py-24 bg-dark text-white relative overflow-hidden">
+            <!-- Dark background blob responsive width/height -->
+            <div class="absolute top-0 right-0 w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] bg-brand-900 rounded-full filter blur-[100px] opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
+                <div class="text-center mb-12 sm:mb-16 scroll-reveal">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-4">Тарифи навчання</h2>
+                    <p class="text-gray-400 font-medium text-sm sm:text-base">Оберіть частину курсу або пройдіть їх послідовно.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                    <!-- Tariff 1 -->
+                    <div class="bg-[#1e293b] rounded-2xl p-6 sm:p-10 border border-gray-700 flex flex-col scroll-reveal relative overflow-hidden hover:border-gray-500 transition-colors">
+                        <div class="absolute top-0 right-0 bg-brand-700 text-white text-[10px] sm:text-xs font-bold uppercase py-1.5 px-4 sm:py-2 sm:px-6 rounded-bl-xl shadow-md">Ваш Грант</div>
+                        
+                        <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">PART 1</h3>
+                        <p class="text-brand-300 font-bold text-xs sm:text-sm mb-8 tracking-wide">17 ЗАНЯТЬ ІЗ ВИКЛАДАЧЕМ МЕДИКОМ</p>
+                        
+                        <ul class="space-y-4 mb-10 text-gray-300 font-medium flex-1 text-sm sm:text-base">
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 17 блоків курсу</li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 17 мініуроків на платформі</li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 400+ нових слів та фраз</li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Сертифікат</li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Бонуси 24 години</li>
+                        </ul>
+
+                        <div class="mb-8">
+                            <div class="text-gray-500 line-through text-sm sm:text-base mb-1">13 899 ГРН</div>
+                            <div class="text-4xl sm:text-5xl font-black text-white mb-2">12 899 <span class="text-lg sm:text-xl">ГРН</span></div>
+                            <div class="text-brand-300 font-bold text-sm sm:text-base">Або 3225 ГРН/МІС</div>
+                        </div>
+
+                        <a href="https://tally.so/r/woZZEV" target="_blank" rel="noopener noreferrer" class="w-full bg-white text-dark font-bold py-4 rounded-xl uppercase tracking-wider hover:bg-gray-100 transition-colors text-center text-sm sm:text-base block">
+                            Обрати тариф
+                        </a>
+                    </div>
+
+                    <!-- Tariff 2 -->
+                    <div class="bg-gradient-to-br from-brand-900 to-brand-700 rounded-2xl p-6 sm:p-10 border border-brand-500 shadow-brand flex flex-col scroll-reveal relative overflow-hidden transform hover:-translate-y-1 transition-transform duration-300" style="transition-delay: 200ms;">
+                         <div class="absolute top-0 right-0 bg-white text-brand-700 text-[10px] sm:text-xs font-bold uppercase py-1.5 px-4 sm:py-2 sm:px-6 rounded-bl-xl shadow-md">Ваш Грант</div>
+                         
+                        <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">PART 2</h3>
+                        <p class="text-brand-200 font-bold text-xs sm:text-sm mb-8 tracking-wide">15 ЗАНЯТЬ ІЗ ВИКЛАДАЧЕМ МЕДИКОМ</p>
+                        
+                        <ul class="space-y-4 mb-10 text-white font-medium flex-1 text-sm sm:text-base">
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 15 блоків курсу</li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 15 мініуроків на платформі</li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 350+ нових слів та фраз</li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Сертифікат</li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Бонуси 24 години</li>
+                        </ul>
+
+                        <div class="mb-8">
+                            <div class="text-brand-300 line-through text-sm sm:text-base mb-1">12 899 ГРН</div>
+                            <div class="text-4xl sm:text-5xl font-black text-white mb-2">11 899 <span class="text-lg sm:text-xl">ГРН</span></div>
+                            <div class="text-brand-200 font-bold text-sm sm:text-base">Або 2975 ГРН/МІС</div>
+                        </div>
+
+                        <a href="https://tally.so/r/woZZEV" target="_blank" rel="noopener noreferrer" class="w-full bg-black text-white font-bold py-4 rounded-xl uppercase tracking-wider shadow-lg hover:bg-gray-900 transition-colors text-center text-sm sm:text-base block">
+                            Обрати тариф
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-white py-10 text-center border-t border-gray-100">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-center mb-4">
+                    <img src="https://spk-cb.b-cdn.net/c.case/logo_codeblack.png" alt="Code Black" class="h-6 object-contain grayscale opacity-60 rounded-md">
+                </div>
+                <p class="text-slate-400 text-xs sm:text-sm font-medium">© 2026 Code Black Academy. Всі права захищені.</p>
+            </div>
+        </footer>
+
     </main>
 
-    <!-- Global Action Button -->
-    <div class="action-bar">
-        <button id="global-action-btn" class="btn-submit" onclick="handleActionClick()">
-            <span id="btn-text">Check Answer</span>
-        </button>
-    </div>
-
+    <!-- Scripts -->
     <script>
-        const TOTAL_QUESTIONS = 15;
-        let state = {
-            currentStep: 0,
-            score: 0,
-            answers: {},
-            completed: false
-        };
-
-        const STORAGE_KEY = 'cba_test_state';
-
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', () => {
-            enhanceQuestionSteps();
-
-            const savedState = localStorage.getItem(STORAGE_KEY);
-            if (savedState) {
-                state = JSON.parse(savedState);
-                if (state.completed) {
-                    showStep(16); // Jump to results if completed
-                } else {
-                    // Find the first unanswered question to resume
-                    let nextStep = 1;
-                    while (state.answers[nextStep]) {
-                        nextStep++;
-                    }
-                    state.currentStep = nextStep <= TOTAL_QUESTIONS ? nextStep : 16;
-                    showStep(state.currentStep);
-                }
+        // Sticky Navbar Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                navbar.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-3');
+                navbar.classList.remove('py-4');
             } else {
-                showStep(0);
+                navbar.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-3');
+                navbar.classList.add('py-4');
             }
-
-            // Setup radio listeners: Reveal button when selected
-            document.querySelectorAll('.radio-input').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    const stepNum = state.currentStep;
-                    if (!state.answers[stepNum]) {
-                        showActionButton(stepNum === TOTAL_QUESTIONS ? "Отримати результати →" : "Далі →", true);
-                    }
-                });
-            });
-
-            document.addEventListener('keydown', handleQuizKeyboard);
         });
 
-        function startTest() {
-            state.currentStep = 1;
-            saveState();
-            showStep(state.currentStep);
-        }
+        // Scroll Reveal Logic
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+        const revealOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
 
-        function enhanceQuestionSteps() {
-            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
-                const step = document.getElementById(`step-${i}`);
-                const heading = step ? step.querySelector('h3') : null;
-
-                if (!step || !heading || heading.parentElement.classList.contains('question-card')) {
-                    continue;
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
                 }
-
-                heading.classList.remove('mb-6');
-                heading.classList.add('question-title');
-
-                const questionCard = document.createElement('div');
-                questionCard.className = 'question-card';
-
-                heading.parentNode.insertBefore(questionCard, heading);
-                questionCard.appendChild(heading);
-            }
-        }
-
-        function showStep(stepIndex) {
-            // Hide all
-            document.querySelectorAll('.step-container').forEach(el => {
-                el.classList.remove('step-active');
             });
+        }, revealOptions);
 
-            // Show target
-            const targetStep = document.getElementById(`step-${stepIndex}`);
-            if (targetStep) {
-                targetStep.classList.add('step-active');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+        revealElements.forEach(el => revealOnScroll.observe(el));
 
-            // Update Header & Progress
-            const progressFill = document.getElementById('progress-bar');
-            
-            hideActionButton();
-
-            if (stepIndex === 0) {
-                progressFill.style.width = '0%';
-                document.body.classList.add('no-action-padding');
-            } else if (stepIndex >= 1 && stepIndex <= TOTAL_QUESTIONS) {
-                document.body.classList.remove('no-action-padding');
-                progressFill.style.width = `${(stepIndex / TOTAL_QUESTIONS) * 100}%`;
-                
-                // If this step was already answered (shouldn't be shown normally due to auto-resume logic, but just in case)
-                if (state.answers[stepIndex]) {
-                    showActionButton(stepIndex === TOTAL_QUESTIONS ? "Отримати результати →" : "Далі →", true);
-                }
-            } else {
-                progressFill.style.width = '100%';
-                document.body.classList.remove('no-action-padding');
-                if (stepIndex === 16) {
-                    renderResults();
-                    if (!state.completed) shootConfetti();
-                    state.completed = true;
-                    saveState();
-                }
-            }
-        }
-
-        function showActionButton(text, isNext = false) {
-            const btn = document.getElementById('global-action-btn');
-            document.getElementById('btn-text').innerText = text;
-            btn.classList.add('show');
-            if (isNext) {
-                btn.classList.add('btn-next');
-            } else {
-                btn.classList.remove('btn-next');
-            }
-        }
-
-        function hideActionButton() {
-            const btn = document.getElementById('global-action-btn');
-            btn.classList.remove('show');
-        }
-
-        function handleActionClick() {
-            const stepNum = state.currentStep;
-            
-            const container = document.querySelector(`.options-container[data-question="${stepNum}"]`);
-            const selected = container.querySelector('input:checked');
-            
-            // Only process if something is selected and it hasn't been saved yet
-            if (selected && !state.answers[stepNum]) {
-                const isCorrect = selected.dataset.correct === "true";
-                
-                // Update State
-                if (isCorrect) state.score++;
-                state.answers[stepNum] = {
-                    value: selected.value,
-                    isCorrect: isCorrect
-                };
-                saveState();
-            }
-
-            // Move to next step smoothly without validating immediately
-            goToNext();
-        }
-
-        function goToNext() {
-            if (state.currentStep < TOTAL_QUESTIONS) {
-                state.currentStep++;
-                saveState();
-                showStep(state.currentStep);
-            } else {
-                state.currentStep = 16; // Results
-                showStep(16);
-            }
-        }
-
-        function handleQuizKeyboard(event) {
-            if (state.currentStep < 1 || state.currentStep > TOTAL_QUESTIONS) return;
-
-            const actionButton = document.getElementById('global-action-btn');
-            const container = document.querySelector(`.options-container[data-question="${state.currentStep}"]`);
-            if (!container) return;
-
-            const radios = Array.from(container.querySelectorAll('.radio-input'));
-
-            if (!state.answers[state.currentStep] && /^[1-4]$/.test(event.key)) {
-                const selectedRadio = radios[Number(event.key) - 1];
-                if (selectedRadio) {
-                    selectedRadio.checked = true;
-                    selectedRadio.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-            }
-
-            if ((event.key === 'Enter' || event.key === 'NumpadEnter') && actionButton.classList.contains('show')) {
-                event.preventDefault();
-                handleActionClick();
-            }
-        }
-
-        function renderResults() {
-            const score = state.score;
-            let title, icon, ctaText, htmlContent;
-
-            const resultTextEl = document.getElementById('result-text');
-            document.getElementById('result-score').innerText = `Ви відповіли правильно на ${score} з ${TOTAL_QUESTIONS} питань.`;
-
-            if (score <= 5) {
-                icon = "🔴";
-                title = "Ваш Grammar Diagnosis: Acute Grammar Deficiency";
-                htmlContent = `
-                    <p>Ось теми, в яких найчастіше виникали труднощі:</p>
-                    <ul class="list-disc pl-5 mt-2 space-y-1">
-                        <li>Часи дієслова (Present Perfect, Past Simple)</li>
-                        <li>Артиклі у клінічному контексті</li>
-                        <li>Пасивний стан у документації</li>
-                    </ul>
-                    <p class="mt-4"><strong>Хороша новина:</strong> саме ці теми ми розбираємо крок за кроком у курсі «Граматика для лікарів» — з реальними прикладами з медичної практики, без зайвої теорії.</p>
-                `;
-                ctaText = "🎯 Зараз курс у процесі запуску. Ті, хто потрапляє до листа очікування — отримують найнижчу ціну та пріоритетний доступ.";
-            } else if (score <= 11) {
-                icon = "🟡";
-                title = "Ваш Grammar Diagnosis: Stable, but needs monitoring";
-                htmlContent = `
-                    <p>Основа є — але є конкретні прогалини:</p>
-                    <ul class="list-disc pl-5 mt-2 space-y-1">
-                        <li>Conditionals (умовні речення)</li>
-                        <li>Модальні дієслова у медичному контексті</li>
-                        <li>Passive Voice у клінічних записах</li>
-                    </ul>
-                    <p class="mt-4">Саме ці теми розбираються у курсі «Граматика для лікарів» — щоб перейти від «здається правильно» до «знаю точно».</p>
-                `;
-                ctaText = "🎯 Курс незабаром відкриває набір. Заповніть форму — і отримайте найнижчу ціну як учасник листа очікування.";
-            } else {
-                icon = "🟢";
-                title = "Ваш Grammar Diagnosis: Grammar in Remission";
-                htmlContent = `
-                    <p>Відмінний результат! Граматика під контролем — але навіть у цьому сегменті є нюанси:</p>
-                    <ul class="list-disc pl-5 mt-2 space-y-1">
-                        <li>Складні конструкції у наукових статтях і презентаціях</li>
-                        <li>Conditionals у клінічних кейсах</li>
-                        <li>Академічний стиль у медичній документації</li>
-                    </ul>
-                    <p class="mt-4">Курс «Граматика для лікарів» допоможе систематизувати знання і вийти на рівень впевненої міжнародної комунікації.</p>
-                `;
-                ctaText = "🎯 Залиште свій email — і дізнайтесь першими про старт та умови для ранніх учасників.";
-            }
-
-            document.getElementById('result-icon').innerText = icon;
-            document.getElementById('result-title').innerText = title;
-            document.getElementById('result-title').className = `text-2xl font-extrabold mb-6 leading-tight ${score <= 5 ? 'text-red-600' : score <= 11 ? 'text-yellow-600' : 'text-green-600'}`;
-            resultTextEl.innerHTML = htmlContent;
-            document.getElementById('result-cta-text').innerText = ctaText;
-
-            // Generate Correct Answers Review List
-            let reviewListHTML = '';
-            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
-                const ans = state.answers[i];
-                const qContainer = document.querySelector('.options-container[data-question="' + i + '"]');
-                const qHeading = document.querySelector('#step-' + i + ' h3');
-                const qText = qHeading ? qHeading.innerText : '';
-                
-                const correctInput = qContainer ? qContainer.querySelector('input[data-correct="true"]') : null;
-                const correctText = correctInput ? correctInput.nextElementSibling.innerText.replace(/^[A-D]\)\s*/, '').trim() : '';
-                
-                let userText = "Немає відповіді";
-                if (ans && ans.value && qContainer) {
-                    const userInput = qContainer.querySelector('input[value="' + ans.value + '"]');
-                    if (userInput) {
-                        userText = userInput.nextElementSibling.innerText.replace(/^[A-D]\)\s*/, '').trim();
-                    }
-                }
-                
-                const isCorrect = ans && ans.isCorrect;
-                
-                let userAnsHtml = '';
-                if (!isCorrect) {
-                    userAnsHtml = '<p class="text-red-700 text-sm mb-2 flex gap-2"><span class="mt-0.5">❌</span> <span>Ваша відповідь:<br><strong>' + userText + '</strong></span></p>';
-                }
-
-                const borderClass = isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200';
-
-                reviewListHTML += 
-                    '<div class="p-5 rounded-2xl border ' + borderClass + '">' +
-                        '<p class="font-bold text-[#1c1917] mb-3">' + i + '. ' + qText + '</p>' +
-                        userAnsHtml +
-                        '<p class="text-green-800 text-sm flex gap-2"><span class="mt-0.5">✅</span> <span>Правильна відповідь:<br><strong>' + correctText + '</strong></span></p>' +
-                    '</div>';
-            }
-
-            const answersReviewHTML = 
-                '<div id="review-section" class="mt-12 text-left">' +
-                    '<h3 class="text-xl font-bold mb-6 text-[#1c1917]">Аналіз Ваших відповідей:</h3>' +
-                    '<div class="space-y-4">' + reviewListHTML + '</div>' +
-                    '<button onclick="goToWaitlist()" class="w-full bg-[#1c1917] hover:bg-[#7e22ce] text-white rounded-full py-4 px-8 font-bold text-lg transition-colors mt-8 shadow-md flex items-center justify-center gap-2">Записатися в лист очікування курсу →</button>' +
-                '</div>';
-            
-            const reviewContainer = document.getElementById('answers-review-container');
-            if(reviewContainer) reviewContainer.innerHTML = answersReviewHTML;
-        }
-
-        function scrollToReview() {
-            const reviewSection = document.getElementById('review-section');
-            if (reviewSection) {
-                reviewSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        function goToWaitlist() {
-            showStep(17);
-        }
-
-        function startAgain() {
-            state = {
-                currentStep: 0,
-                score: 0,
-                answers: {},
-                completed: false
-            };
-
-            localStorage.removeItem(STORAGE_KEY);
-
-            document.querySelectorAll('.radio-input').forEach(radio => {
-                radio.checked = false;
+        // Initial Trigger for elements in viewport
+        setTimeout(() => {
+            revealElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if(rect.top < window.innerHeight) el.classList.add('visible');
             });
-
-            hideActionButton();
-            showStep(0);
-        }
-
-        function saveState() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        }
-
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            toast.innerText = message;
-            
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                if(container.contains(toast)) {
-                    container.removeChild(toast);
-                }
-            }, 3000);
-        }
-
-        function shootConfetti() {
-            const colors = ['#7e22ce', '#16a34a', '#ea580c', '#3b82f6', '#fcd34d'];
-            for(let i=0; i<100; i++) {
-                const conf = document.createElement('div');
-                conf.style.position = 'fixed';
-                conf.style.width = '10px';
-                conf.style.height = '10px';
-                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.top = '-10px';
-                conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-                conf.style.zIndex = '9999';
-                document.body.appendChild(conf);
-                
-                const duration = Math.random() * 2000 + 1500;
-                
-                conf.animate([
-                    { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
-                    { transform: `translate3d(${Math.random()*200 - 100}px, ${window.innerHeight}px, 0) rotate(${Math.random()*720}deg)`, opacity: 0 }
-                ], { 
-                    duration: duration, 
-                    easing: 'cubic-bezier(.37,0,.63,1)' 
-                });
-                
-                setTimeout(() => conf.remove(), duration);
-            }
-        }
+        }, 100);
     </script>
 </body>
 </html>
