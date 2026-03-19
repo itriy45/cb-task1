@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="uk" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar in Medicine | Курс медичної англійської</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f4f2fb',
+                            100: '#e0dafc',
+                            200: '#c5b8f7',
+                            300: '#a38df2',
+                            400: '#7a5ce8',
+                            500: '#462cdb',
+                            600: '#321bb8',
+                            700: '#1f038d', // Основний колір
+                            800: '#16026b',
+                            900: '#10014a',
+                        },
+                        dark: {
+                            DEFAULT: '#0f172a',
+                            text: '#334155'
+                        }
+                    },
+                    boxShadow: {
+                        'brand': '0 10px 25px -5px rgba(31, 3, 141, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS for Animations & Refinements -->
+    <style>
+        body {
+            background-color: #fcfcfc;
+            color: #334155;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: #000000;
+        }
+
+        /* Scroll Reveal Animation */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Background Blobs */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: -1;
+            animation: pulse 10s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .blob-1 { background-color: #c5b8f7; top: -5%; left: -10%; width: 500px; height: 500px; }
+        .blob-2 { background-color: #e0dafc; top: 40%; right: -20%; width: 600px; height: 600px; animation-delay: -5s; }
+
+        @keyframes pulse {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.1) translate(20px, -20px); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c5b8f7; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1f038d; }
+    </style>
+</head>
+<body class="antialiased relative">
+
+    <!-- Decorative Background Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Navigation (Sticky Glassmorphism) -->
+    <nav id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 py-4 px-4 sm:px-8 lg:px-12">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <img src="https://spk-cb.b-cdn.net/c.case/logo_codeblack.png" alt="Code Black" class="h-8 sm:h-10 object-contain rounded-lg">
+            </div>
+            <div class="hidden md:flex gap-8 font-medium text-sm text-slate-600">
+                <a href="#features" class="hover:text-brand-700 transition-colors py-2">Особливості</a>
+                <a href="#program" class="hover:text-brand-700 transition-colors py-2">Програма</a>
+                <a href="#pricing" class="hover:text-brand-700 transition-colors py-2">Тарифи</a>
+            </div>
+            <a href="https://tally.so/r/woZZEV" target="_blank" rel="noopener noreferrer" class="bg-brand-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs sm:text-sm uppercase tracking-wider hover:bg-brand-900 shadow-brand transition-colors text-center">
+                Консультація
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 sm:pt-40 sm:pb-28 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+        <div class="flex-1 text-center lg:text-left z-10 scroll-reveal">
+            
+            <div class="inline-block bg-brand-50 text-brand-700 font-bold px-4 py-1.5 rounded-xl text-xs sm:text-sm mb-6 border border-brand-100 uppercase tracking-widest">
+                Новий набір відкрито
+            </div>
+            
+            <!-- Logo replaces H1 text with rounded corners -->
+            <div class="flex justify-center lg:justify-start mb-8">
+                <img src="https://spk-cb.b-cdn.net/c.case/logo_codeblack.png" alt="Code Black Academy" class="h-20 sm:h-24 lg:h-32 object-contain rounded-2xl shadow-sm border border-gray-100">
+            </div>
+            
+            <p class="text-base sm:text-lg lg:text-xl text-slate-500 mb-10 max-w-2xl mx-auto lg:mx-0 font-medium">
+                Спеціалізований курс граматики для медиків. Опануйте медичну англійську для роботи, стажування та читання фахової літератури.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-12">
+                <a href="https://tally.so/r/woZZEV" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-brand-700 text-white font-bold py-4 px-10 rounded-xl shadow-brand uppercase tracking-wider hover:bg-brand-900 transition-colors text-center text-sm sm:text-base">
+                    Записатись на консультацію
+                </a>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 pt-8 border-t border-gray-200">
+                <div>
+                    <div class="text-2xl sm:text-3xl font-black text-dark mb-1">32</div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-500 leading-tight">Блоки на платформі</div>
+                </div>
+                <div>
+                    <div class="text-2xl sm:text-3xl font-black text-dark mb-1">6</div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-500 leading-tight">Типів завдань</div>
+                </div>
+                <div>
+                    <div class="text-2xl sm:text-3xl font-black text-dark mb-1">32</div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-500 leading-tight">Заняття із викладачем</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 w-full max-w-md lg:max-w-none relative scroll-reveal mx-auto" style="transition-delay: 200ms;">
+            <!-- Hero Image - Updated slightly less rounded -->
+            <img src="https://spk-cb.b-cdn.net/c.case/COURSES/Grammar/Doctor.jpg" alt="Студентка медик" class="rounded-2xl shadow-2xl w-full object-cover aspect-[4/5]">
+            
+            <!-- Floating Element -->
+            <div class="absolute -bottom-6 -left-4 sm:-left-6 bg-white p-4 sm:p-5 rounded-2xl shadow-xl flex items-center gap-4 animate-bounce" style="animation-duration: 3s;">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <div>
+                    <div class="font-bold text-dark text-xs sm:text-sm">Сертифікат</div>
+                    <div class="text-[10px] sm:text-xs text-slate-500">Після завершення</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section (Grid with Images) -->
+    <section id="features" class="py-20 sm:py-32 px-4 sm:px-8 bg-white relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 sm:mb-16 scroll-reveal">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black mb-4">Як проходить навчання</h2>
+                <p class="text-slate-500 font-medium max-w-2xl mx-auto text-sm sm:text-base">Комплексний підхід до вивчення граматики в контексті медичної практики.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 scroll-reveal">
+                
+                <!-- Platform -->
+                <div class="bg-brand-50 rounded-2xl border border-brand-100 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
+                    <div class="p-6 sm:p-8 flex-1">
+                        <h3 class="text-xl sm:text-2xl font-black flex items-center gap-3 mb-4">
+                            <span class="text-brand-700 text-2xl sm:text-3xl">💻</span> Платформа
+                        </h3>
+                        <p class="text-slate-600 font-medium text-sm sm:text-base">Інтерактивна платформа для виконання завдань, перегляду прогресу та доступу до матеріалів 24/7. Навчайтесь у зручний для вас час.</p>
+                    </div>
+                    <div class="bg-black aspect-video relative w-full border-t border-brand-200">
+                        <iframe src="https://www.youtube.com/embed/C32wti-wZLg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen class="absolute top-0 left-0 w-full h-full"></iframe>
+                    </div>
+                </div>
+
+                <!-- Mini lessons -->
+                <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
+                    <div class="p-6 sm:p-8 flex-1">
+                        <h3 class="text-xl sm:text-2xl font-black flex items-center gap-3 mb-4">
+                            <span class="text-brand-700 text-2xl sm:text-3xl">📝</span> Міні уроки
+                        </h3>
+                        <p class="text-slate-600 font-medium text-sm sm:text-base">Короткі та змістовні відео для повторення. Вступ: Основи граматики, Порядок слів та Частини мови.</p>
+                    </div>
+                    <img src="https://spk-cb.b-cdn.net/c.case/COURSES/Grammar/MINI%20LESSONS.jpg" alt="Міні уроки" class="w-full object-cover border-t border-gray-200 aspect-video">
+                </div>
+
+                <!-- Vocabulary -->
+                <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
+                    <div class="p-6 sm:p-8 flex-1">
+                        <h3 class="text-xl sm:text-2xl font-black flex items-center gap-3 mb-4">
+                            <span class="text-brand-700 text-2xl sm:text-3xl">🧠</span> Словниковий запас
+                        </h3>
+                        <p class="text-slate-600 font-medium text-sm sm:text-base">Code Black Academy. Вивчення медичних термінів: Examine, Scrub Nurse, Pregnant та сотні інших за допомогою ефективних інструментів.</p>
+                    </div>
+                    <img src="https://spk-cb.b-cdn.net/c.case/COURSES/Grammar/VOCAB.jpg" alt="Словниковий запас" class="w-full object-cover border-t border-gray-200 aspect-video">
+                </div>
+
+                <!-- Reading -->
+                <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
+                    <div class="p-6 sm:p-8 flex-1">
+                        <h3 class="text-xl sm:text-2xl font-black flex items-center gap-3 mb-4">
+                            <span class="text-brand-700 text-2xl sm:text-3xl">🎧</span> Читання + Аудіо
+                        </h3>
+                        <p class="text-slate-600 font-medium text-sm sm:text-base">Практика на реальних текстах. Наприклад: "Reading: Harley Street in London" з оптимальним аудіо-супроводом для розвитку сприйняття на слух.</p>
+                    </div>
+                    <img src="https://spk-cb.b-cdn.net/c.case/COURSES/Grammar/READING.jpg" alt="Читання та аудіо" class="w-full object-cover border-t border-gray-200 aspect-video">
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Program Structure (Interactive List Layout) -->
+    <section id="program" class="py-20 sm:py-32 px-4 sm:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-12 sm:mb-16 scroll-reveal">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black mb-4">Програма курсу</h2>
+            <p class="text-slate-500 font-medium text-sm sm:text-base">Детальний розбір усіх граматичних тем від базових до просунутих.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Part 1 -->
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-10 scroll-reveal">
+                <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-100">
+                    <div class="bg-brand-100 text-brand-700 text-xl font-black w-14 h-14 rounded-xl flex items-center justify-center shrink-0">1</div>
+                    <div>
+                        <h3 class="text-2xl font-black">PART №1</h3>
+                        <p class="text-brand-700 font-bold text-xs sm:text-sm uppercase tracking-wider mt-1">17 Занять</p>
+                    </div>
+                </div>
+                
+                <ul class="space-y-1 text-sm sm:text-base font-medium text-slate-600">
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 1. Present Simple</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 2. Present Simple. Prepositions of place</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 3. Present Continuous. Stative Verbs</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 4. Present Continuous. Prepositions of time</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 5. Past Simple. Used to</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 6. Past Simple. Used to, would</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 7. Present Perfect</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 8. Present Perfect Part II</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 9. Present Perfect vs Past Simple</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 10. Past Continuous</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 11. Past Continuous 2</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 12. Articles</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 13. Articles 2. Giving reasons</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 14. Tenses table. Tense summarization</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 15. Past Perfect</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 16. Future Simple & be going to</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 17. Future Simple & be going to & Present Cont.</li>
+                </ul>
+            </div>
+
+            <!-- Part 2 -->
+            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-10 scroll-reveal" style="transition-delay: 100ms;">
+                <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-100">
+                    <div class="bg-brand-100 text-brand-700 text-xl font-black w-14 h-14 rounded-xl flex items-center justify-center shrink-0">2</div>
+                    <div>
+                        <h3 class="text-2xl font-black">PART №2</h3>
+                        <p class="text-brand-700 font-bold text-xs sm:text-sm uppercase tracking-wider mt-1">15 Занять</p>
+                    </div>
+                </div>
+                
+                <ul class="space-y-1 text-sm sm:text-base font-medium text-slate-600">
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 18. Question forms</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 19. Question forms. Pronouns. Possessives.</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 20. Verb patterns: -ing to Infinitive; bare infinitive</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 21. Verb patterns: -ing; to-infinitive</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 22. Use of Modals. Ability & Possibility</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 23. Degrees of Certainty</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 24. Obligation and Necessity</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 25. Advice & recommendations</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 26. Instructions, requests, permission</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 27. Making comparisons</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 28. Passive voice</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 29. Passive Voice 2</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 30. Prepositions of place and movement</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 31. Conditionals 0 & 1</li>
+                    <li class="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-pointer border border-transparent hover:border-brand-100"><span class="text-brand-500 mt-0.5">✓</span> Lesson 32. Conditionals 2 & 3</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 sm:py-32 bg-dark text-white relative overflow-hidden">
+        <!-- Dark background blob -->
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-900 rounded-full filter blur-[100px] opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
+            <div class="text-center mb-12 sm:mb-16 scroll-reveal">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-4">Тарифи навчання</h2>
+                <p class="text-gray-400 font-medium text-sm sm:text-base">Оберіть частину курсу або пройдіть їх послідовно.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <!-- Tariff 1 -->
+                <div class="bg-[#1e293b] rounded-2xl p-6 sm:p-10 border border-gray-700 flex flex-col scroll-reveal relative overflow-hidden hover:border-gray-500 transition-colors">
+                    <div class="absolute top-0 right-0 bg-brand-700 text-white text-[10px] sm:text-xs font-bold uppercase py-1.5 px-4 sm:py-2 sm:px-6 rounded-bl-xl shadow-md">Ваш Грант</div>
+                    
+                    <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">PART 1</h3>
+                    <!-- Змінено колір тексту для кращого контрасту -->
+                    <p class="text-brand-300 font-bold text-xs sm:text-sm mb-8 tracking-wide">17 ЗАНЯТЬ ІЗ ВИКЛАДАЧЕМ МЕДИКОМ</p>
+                    
+                    <ul class="space-y-4 mb-10 text-gray-300 font-medium flex-1 text-sm sm:text-base">
+                        <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 17 блоків курсу</li>
+                        <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 17 мініуроків на платформі</li>
+                        <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 400+ нових слів та фраз</li>
+                        <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Сертифікат</li>
+                        <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Бонуси 24 години</li>
+                    </ul>
+
+                    <div class="mb-8">
+                        <div class="text-gray-500 line-through text-sm sm:text-base mb-1">13 899 ГРН</div>
+                        <div class="text-4xl sm:text-5xl font-black text-white mb-2">12 899 <span class="text-lg sm:text-xl">ГРН</span></div>
+                        <div class="text-brand-300 font-bold text-sm sm:text-base">Або 3225 ГРН/МІС</div>
+                    </div>
+
+                    <a href="https://tally.so/r/woZZEV" target="_blank" rel="noopener noreferrer" class="w-full bg-white text-dark font-bold py-4 rounded-xl uppercase tracking-wider hover:bg-gray-100 transition-colors text-center text-sm sm:text-base block">
+                        Обрати тариф
+                    </a>
+                </div>
+
+                <!-- Tariff 2 -->
+                <div class="bg-gradient-to-br from-brand-900 to-brand-700 rounded-2xl p-6 sm:p-10 border border-brand-500 shadow-brand flex flex-col scroll-reveal relative overflow-hidden transform hover:-translate-y-1 transition-transform duration-300" style="transition-delay: 200ms;">
+                     <div class="absolute top-0 right-0 bg-white text-brand-700 text-[10px] sm:text-xs font-bold uppercase py-1.5 px-4 sm:py-2 sm:px-6 rounded-bl-xl shadow-md">Ваш Грант</div>
+                     
+                    <h3 class="text-2xl sm:text-3xl font-black mb-2 text-white">PART 2</h3>
+                    <p class="text-brand-200 font-bold text-xs sm:text-sm mb-8 tracking-wide">15 ЗАНЯТЬ ІЗ ВИКЛАДАЧЕМ МЕДИКОМ</p>
+                    
+                    <ul class="space-y-4 mb-10 text-white font-medium flex-1 text-sm sm:text-base">
+                        <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 15 блоків курсу</li>
+                        <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 15 мініуроків на платформі</li>
+                        <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 350+ нових слів та фраз</li>
+                        <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Сертифікат</li>
+                        <li class="flex items-center gap-3"><svg class="w-5 h-5 text-brand-200 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Бонуси 24 години</li>
+                    </ul>
+
+                    <div class="mb-8">
+                        <div class="text-brand-300 line-through text-sm sm:text-base mb-1">12 899 ГРН</div>
+                        <div class="text-4xl sm:text-5xl font-black text-white mb-2">11 899 <span class="text-lg sm:text-xl">ГРН</span></div>
+                        <div class="text-brand-200 font-bold text-sm sm:text-base">Або 2975 ГРН/МІС</div>
+                    </div>
+
+                    <a href="https://tally.so/r/woZZEV" target="_blank" rel="noopener noreferrer" class="w-full bg-black text-white font-bold py-4 rounded-xl uppercase tracking-wider shadow-lg hover:bg-gray-900 transition-colors text-center text-sm sm:text-base block">
+                        Обрати тариф
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white py-10 text-center border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-center mb-4">
+                <img src="https://spk-cb.b-cdn.net/c.case/logo_codeblack.png" alt="Code Black" class="h-6 object-contain grayscale opacity-60 rounded-md">
+            </div>
+            <p class="text-slate-400 text-xs sm:text-sm font-medium">© 2026 Code Black Academy. Всі права захищені.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Sticky Navbar Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                navbar.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-3');
+                navbar.classList.remove('py-4');
+            } else {
+                navbar.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-3');
+                navbar.classList.add('py-4');
+            }
+        });
+
+        // Scroll Reveal Logic
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+        const revealOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, revealOptions);
+
+        revealElements.forEach(el => revealOnScroll.observe(el));
+
+        // Initial Trigger for elements in viewport
+        setTimeout(() => {
+            revealElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if(rect.top < window.innerHeight) el.classList.add('visible');
+            });
+        }, 100);
+    </script>
+</body>
+</html>
